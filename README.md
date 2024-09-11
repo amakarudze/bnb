@@ -47,4 +47,4 @@ This project uses SQLite database so there is no need to install any database so
 ## Contributing to this project
 To contribute to this project, create a branch in your local development environment. After you are finished with your 
 changes, push the changes to your fork and make a pull request to the main repo 
-(git@github.com:amakarudze/bnb.git) where you forked this project.
+git@github.com:amakarudze/bnb.git where you forked this project.
