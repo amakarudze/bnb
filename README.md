@@ -42,7 +42,29 @@ or on Windows
 
 ```pip install -r requirements.txt```
 
-This project uses SQLite database so there is no need to install any database software or plugins.
+7. Run migrations to create a local copy of the database:
+
+```python manage.py migrate```
+
+*Note:*- This project uses SQLite database so there is no need to install any database software or plugins.
+
+## Configuring your local environment
+For security reasons, some important and secret configuration values have been removed from the project `settings.py` 
+file. For your project to work properly, create an empty file in the root of your project called `.env`. Copy the 
+contents of `sample_env_file` into your `.env` file and write some values for everything that has a `blank` or `""` value.
+
+## Testing your setup
+With your virtual environment activated, run the following commands:
+
+To run tests:
+
+```pytest``` or ```coverage run pytest```
+
+To see if your development server is set up correctly:
+
+```python manage.py runserver```
+
+and open this URL in the browser to see the homepage ```http://127.0.0.1:8000```.
 
 ## Contributing to this project
 To contribute to this project, create a branch in your local development environment. After you are finished with your 
