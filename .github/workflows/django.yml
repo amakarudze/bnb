@@ -31,8 +31,7 @@ jobs:
 
     - name: Run Django Tests
       run: |
-        coverage run -m pytest
-        coverage xml
+        pytest --cov
 
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v4
