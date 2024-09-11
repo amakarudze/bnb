@@ -55,6 +55,14 @@ For security reasons, some important and secret configuration values have been r
 file. For your project to work properly, create an empty file in the root of your project called `.env`. Copy the
 contents of `sample_env_file` into your `.env` file and write some values for everything that has a `blank` or `""` value.
 
+### Setting up pre-commit
+The project uses `ruff` as a `linter` and `format`. It also uses `pre-commit` to ensure that code is linted and
+formatted properly before being committed. Both ruff and `pre-commit` are already in the `requirements.txt` file.
+However, you will need to run the following command to ensure that all files are properly linted and formatted before
+being pushed to GitHub:
+
+```pre-commit install```
+
 ## Testing your setup
 With your virtual environment activated, run the following commands:
 

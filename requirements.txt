@@ -17,5 +17,6 @@ pytest-django==4.9.0
 pytest-dotenv==0.5.2
 python-dotenv==1.0.1
 PyYAML==6.0.2
+ruff==0.6.4
 sqlparse==0.5.1
 virtualenv==20.26.4
