@@ -7,11 +7,11 @@ This app is developed as a fulfillment to Blekinge Institute of Technology PA255
 Engineering course project for Group 1.
 
 ## Group members
-Anna Makarudze
-Payel
-Jammitri
-Meenakshi
-Sanjeeb
+1. Anna Makarudze
+2. Payel
+3. Jammitri
+4. Meenakshi
+5. Sanjeeb
 
 ## Installation and Set Up
 To set up this project in your local environment do the following steps (this guideline assumes you have Git and Python
