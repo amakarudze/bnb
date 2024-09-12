@@ -1,4 +1,4 @@
-# bnb
+# Bed and Breakfast (BnB) System
 [![codecov](https://codecov.io/gh/amakarudze/bnb/graph/badge.svg?token=u2ZBx7VojS)](https://codecov.io/gh/amakarudze/bnb)
 
 ![codecov](https://codecov.io/gh/amakarudze/bnb/graphs/tree.svg?token=u2ZBx7VojS)
