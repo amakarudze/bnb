@@ -1,9 +1,7 @@
-# Bed and Breakfast (BnB) System
+# Bed and Breakfast (BnB) Reservation System
 [![codecov](https://codecov.io/gh/amakarudze/bnb/graph/badge.svg?token=u2ZBx7VojS)](https://codecov.io/gh/amakarudze/bnb)
 
 ![codecov](https://codecov.io/gh/amakarudze/bnb/graphs/tree.svg?token=u2ZBx7VojS)
-
-Bed and Breakfast (BnB) Reservation System
 
 This app is developed as a fulfillment to Blekinge Institute of Technology PA2550 Seminar Series in Software
 Engineering course project for Group 1.
