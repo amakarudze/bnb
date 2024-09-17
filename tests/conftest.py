@@ -34,7 +34,7 @@ def guests_group(db):
 @pytest.fixture
 def staff_group(db):
     """Fixture for staff group to be used to assign test front desk staff to test their level of access and functionality."""
-    group = Group.objects.create(name="Front Desk")
+    group = Group.objects.create(name="Staff")
     return group
 
 
