@@ -54,7 +54,7 @@ def guest(db):
 @pytest.fixture
 def front_desk(db):
     """Fixture to create a front desk staff user."""
-    user = get_user_model().objects.create_staff(
+    user = User.objects.create_staff(
         email="elias@test.com", first_name="Elias", last_name="Doe", password="pass1234"
     )
     return user

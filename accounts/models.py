@@ -23,9 +23,10 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_staff():
+    def create_staff(self, email, first_name, last_name, password=None, **role_fields):
         """Creates a staff account for front desk staff. Has more priviledges and permissions than guest bue less than manager or superuser."""
-        pass
+        role_fields.setdefault("is_staff", True)
+        return self.create_user(email, first_name, last_name, password, **role_fields)
 
     def create_superuser():
         """Creates a superaccount for manager and systems admin staff. Has all priviledges and permissions in the system."""
