@@ -1,6 +1,5 @@
 import pytest
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import Client
 
@@ -63,7 +62,7 @@ def front_desk(db):
 @pytest.fixture
 def manager(db):
     """Fixture to create a manager/admin user."""
-    user = get_user_model().objects.create_superuser(
+    user = User.objects.create_superuser(
         email="carl@test.com", first_name="Carl", last_name="Doe", password="pass1234"
     )
     return user

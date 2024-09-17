@@ -28,9 +28,13 @@ class UserManager(BaseUserManager):
         role_fields.setdefault("is_staff", True)
         return self.create_user(email, first_name, last_name, password, **role_fields)
 
-    def create_superuser():
+    def create_superuser(
+        self, email, first_name, last_name, password=None, **role_fields
+    ):
         """Creates a superaccount for manager and systems admin staff. Has all priviledges and permissions in the system."""
-        pass
+        role_fields.setdefault("is_staff", True)
+        role_fields.setdefault("is_superuser", True)
+        return self.create_user(email, first_name, last_name, password, **role_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):

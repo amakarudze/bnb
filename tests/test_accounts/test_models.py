@@ -26,3 +26,7 @@ def test_create_superuser_method(manager):
     assert user.is_active
     assert user.is_staff
     assert user.is_superuser
+
+
+def test_string_representation(manager):
+    assert str(manager) == f"{manager.first_name} {manager.last_name}"
