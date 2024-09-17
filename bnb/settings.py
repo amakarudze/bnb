@@ -129,3 +129,5 @@ STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 COVERAGE = os.environ.get("COVERAGE")
+
+AUTH_USER_MODEL = "accounts.User"
