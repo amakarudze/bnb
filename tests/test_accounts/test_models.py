@@ -1,8 +1,8 @@
-from django.contrib.auth import get_user_model
+from accounts.models import User
 
 
 def test_create_user_method(guest):
-    user = get_user_model().objects.get(email=guest.email)
+    user = User.objects.get(email=guest.email)
     assert user is not None
     assert user.email == guest.email
     assert not user.is_staff
@@ -11,7 +11,7 @@ def test_create_user_method(guest):
 
 
 def test_create_staff_method(front_desk):
-    user = get_user_model().objects.get(email=front_desk.email)
+    user = User.objects.get(email=front_desk.email)
     assert user is not None
     assert user.email == front_desk.email
     assert user.is_staff
@@ -20,7 +20,7 @@ def test_create_staff_method(front_desk):
 
 
 def test_create_superuser_method(manager):
-    user = get_user_model().objects.get(email=manager.email)
+    user = User.objects.get(email=manager.email)
     assert user is not None
     assert user.email == manager.email
     assert user.is_active

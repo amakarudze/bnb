@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import Client
 
+from accounts.models import User
+
 
 @pytest.fixture
 def client(db):
@@ -43,8 +45,8 @@ def staff_group_permissions():
 @pytest.fixture
 def guest(db):
     """Fixture to create a guest user."""
-    user = get_user_model().objects.create_user(
-        first_name="Elsa", last_name="Doe", email="elsa@test.com", password="pass1234"
+    user = User.objects.create_user(
+        email="elsa@test.com", first_name="Elsa", last_name="Doe", password="pass1234"
     )
     return user
 
@@ -53,7 +55,7 @@ def guest(db):
 def front_desk(db):
     """Fixture to create a front desk staff user."""
     user = get_user_model().objects.create_staff(
-        first_name="Elias", last_name="Doe", email="elias@test.com", password="pass1234"
+        email="elias@test.com", first_name="Elias", last_name="Doe", password="pass1234"
     )
     return user
 
@@ -62,7 +64,7 @@ def front_desk(db):
 def manager(db):
     """Fixture to create a manager/admin user."""
     user = get_user_model().objects.create_superuser(
-        first_name="Carl", last_name="Doe", email="carl@test.com", password="pass1234"
+        email="carl@test.com", first_name="Carl", last_name="Doe", password="pass1234"
     )
     return user
 
