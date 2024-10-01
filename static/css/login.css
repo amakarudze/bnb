@@ -1,0 +1,20 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.custom-size{
+    height: 100vh;
+}
+
+.custom-card{
+    height: 55%;
+}
+
+
+/* Custom media query for laptop screens */
+@media (min-width: 992px) {
+    .custom-size {
+        width: 30vw;
+    }
+}
