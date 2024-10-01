@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 
 AGE_RESTRICTIONS = [
-    ("None", "None"),
+    ("No age restrictions", "No age restrictions"),
     ("Below 12 years", "Below 12 years"),
     ("12 years+", "12 years+"),
     ("18 years+", "18 years+"),
@@ -13,26 +13,26 @@ AGE_RESTRICTIONS = [
 ]
 
 
-class Event(models.Mode):
+class Event(models.Model):
     """Model for storing event details."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField()
     photo = models.ImageField()
-    host = models.CharField()
-    venue = models.CharField()
+    host = models.CharField(max_length=100)
+    venue = models.CharField(max_length=255)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    min_participants = models.IntegerField()
-    max_participants = models.IntegerField()
-    num_participants = models.IntegerField()
+    min_participants = models.IntegerField(default=0)
+    max_participants = models.IntegerField(default=0)
+    num_participants = models.IntegerField(default=0)
     fully_booked = models.BooleanField(default=False)
-    price = models.FloatField()
-    age_restrictions = models.CharField(max_length=20, choices=AGE_RESTRICTIONS)
+    price = models.FloatField(default=0)
+    age_restrictions = models.CharField(max_length=30, choices=AGE_RESTRICTIONS)
     additional_information = models.TextField(null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    date_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
         managed = True

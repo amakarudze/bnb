@@ -28,5 +28,9 @@ def test_create_superuser_method(manager):
     assert user.is_superuser
 
 
-def test_string_representation(manager):
+def test_user_model_string_representation(manager):
     assert str(manager) == f"{manager.first_name} {manager.last_name}"
+
+
+def test_userprofile_model_string_representation(guest_profile):
+    assert str(guest_profile) == guest_profile.user.get_full_name()

@@ -6,10 +6,21 @@ ROOM_TYPES = [
     ("Single", "Single"),
     ("Double/Twin", "Double/Twin"),
     ("Family", "Family"),
+    ("Queen", "Queen"),
+    ("Executive", "Executive"),
+    ("Honeymoon Suite", "Honeymoon Suite"),
 ]
 BATHROOM_TYPES = [
     ("Ensuite", "Ensuite"),
     ("Shared", "Shared"),
+]
+
+BED_TYPES = [
+    ("Single", "Single"),
+    ("Three Quater", "Three Quarter"),
+    ("Double", "Double"),
+    ("Queen", "Queen"),
+    ("King", "King"),
 ]
 
 
@@ -20,7 +31,7 @@ class Room(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     photo = models.ImageField()
-    bed_type = models.CharField(max_length=10)
+    bed_type = models.CharField(max_length=15, choices=BED_TYPES)
     number_of_beds = models.IntegerField()
     room_type = models.CharField(max_length=20, choices=ROOM_TYPES)
     bathroom = models.CharField(max_length=20, choices=BATHROOM_TYPES)

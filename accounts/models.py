@@ -61,7 +61,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    dob = models.DateField()
     is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
@@ -75,11 +74,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         """String representation of the model."""
         return f"{self.first_name} {self.last_name}"
 
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class UserProfile(models.Model):
     """Model for Guest's details for the profile."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    dob = models.DateField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=100)
@@ -94,4 +97,4 @@ class UserProfile(models.Model):
         verbose_name_plural = "User Profiles"
 
     def __str__(self):
-        return self.user
+        return self.user.get_full_name()
