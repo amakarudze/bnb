@@ -12,13 +12,13 @@ class Reservation(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    number_of_adults = models.IntegerField()
-    number_of_children = models.IntegerField()
+    number_of_adults = models.IntegerField(default=0)
+    number_of_children = models.IntegerField(default=0)
     rooms = models.ManyToManyField(Room, related_name="rooms_reserved")
     events = models.ManyToManyField(Event, related_name="events_reserved")
     check_in_date = models.DateField()
     check_out_date = models.DateField()
-    total_cost = models.FloatField()
+    total_cost = models.FloatField(default=0)
     is_paid = models.BooleanField(default=False)
     checked_in = models.BooleanField(default=False)
     checked_out = models.BooleanField(default=False)
@@ -29,10 +29,12 @@ class Reservation(models.Model):
         managed = True
 
     def __str__(self):
-        return f"{self.user} from {self.check_in_date} to {self.check_out_date} - {self.rooms}"
+        return f"{self.user} {self.check_in_date} - {self.check_out_date}"
 
     def calculate_total_cost(self):
-        pass
+        total = 0
+        self.total_cost = total
+        self.save(update_fields=self.total_cost)
 
 
 class Guest(models.Model):
