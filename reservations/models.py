@@ -1,1 +1,52 @@
-# Create your models here.
+import uuid
+
+from django.db import models
+
+from accounts.models import User
+from events.models import Event
+from rooms.models import Room
+
+
+class Reservation(models.Model):
+    """Model for storing reservation details."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    number_of_adults = models.IntegerField()
+    number_of_children = models.IntegerField()
+    rooms = models.ManyToManyField(Room, related_name="rooms_reserved")
+    events = models.ManyToManyField(Event, related_name="events_reserved")
+    check_in_date = models.DateField()
+    check_out_date = models.DateField()
+    total_cost = models.FloatField()
+    is_paid = models.BooleanField(default=False)
+    checked_in = models.BooleanField(default=False)
+    checked_out = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        managed = True
+
+    def __str__(self):
+        return f"{self.user} from {self.check_in_date} to {self.check_out_date} - {self.rooms}"
+
+    def calculate_total_cost(self):
+        pass
+
+
+class Guest(models.Model):
+    """Model for storing additional guests' details."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    reservation = models.ForeignKey(
+        Reservation, on_delete=models.CASCADE, related_name="reservation_guests"
+    )
+    full_name = models.CharField(max_length=100)
+    is_adult = models.BooleanField(default=True)
+
+    class Meta:
+        managed = True
+
+    def __str__(self):
+        return self.full_name

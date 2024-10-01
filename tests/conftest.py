@@ -3,7 +3,9 @@ import pytest
 from django.contrib.auth.models import Group, Permission
 from django.test import Client
 
-from accounts.models import User
+from accounts.models import User, UserProfile
+from events.models import Event
+from rooms.models import Room
 
 
 def add_permissions(user, group, group_permissions):
@@ -101,3 +103,226 @@ def manager_client(client, manager):
     """
     client.force_login(manager)
     return client
+
+
+@pytest.fixture
+def sample_room(db):
+    return Room.objects.create(
+        name="Acacia",
+        description="A nice single room.",
+        photo="image.jpeg",
+        bed_type="Double",
+        number_of_beds=1,
+        room_type="Single",
+        bathroom="Shared",
+        price=1000.00,
+    )
+
+
+@pytest.fixture
+def rooms(db):
+    return Room.objects.bulk_create(
+        [
+            Room(
+                name="Baobab",
+                description="A nice double room.",
+                photo="image.jpeg",
+                bed_type="Double",
+                number_of_beds=2,
+                room_type="Double",
+                bathroom="Ensuite",
+                price=1200.00,
+            ),
+            Room(
+                name="Muuyu",
+                description="A nice family room.",
+                photo="image.jpeg",
+                bed_type=None,
+                number_of_beds=2,
+                room_type=None,
+                bathroom="Ensuite",
+                price=1500.00,
+            ),
+            Room(
+                name="Mutondo",
+                description=None,
+                photo="image.jpeg",
+                bed_type=None,
+                number_of_beds=2,
+                room_type=None,
+                bathroom="Ensuite",
+                price=1500.00,
+            ),
+            Room(
+                name="Muhacha",
+                description=None,
+                photo="image.jpeg",
+                bed_type=None,
+                number_of_beds=None,
+                room_type=None,
+                bathroom="Ensuite",
+                price=None,
+            ),
+            Room(
+                name="Musekesa",
+                description=None,
+                photo="image.jpeg",
+                bed_type=None,
+                number_of_beds=None,
+                room_type=None,
+                bathroom="Shared",
+                price=None,
+            ),
+            Room(
+                name="Mupangara",
+                description=None,
+                photo="image.jpeg",
+                bed_type=None,
+                number_of_beds=None,
+                room_type=None,
+                bathroom="Shared",
+                price=None,
+            ),
+            Room(
+                name="Mushuku",
+                description=None,
+                photo="image.jpeg",
+                bed_type=None,
+                number_of_beds=2,
+                room_type=None,
+                bathroom="Ensuite",
+                price=None,
+            ),
+            Room(
+                name="Muonde",
+                description=None,
+                photo="image.jpeg",
+                bed_type="Single",
+                number_of_beds=3,
+                room_type="Twin",
+                bathroom="Shared",
+                price=1200.00,
+            ),
+        ]
+    )
+
+
+@pytest.fixture
+def event(db):
+    return Event.objects.create(
+        name=None,
+        description=None,
+        photo=None,
+        host=None,
+        venue=None,
+        start_date=None,
+        end_date=None,
+        min_participants=None,
+        max_participants=None,
+        num_participants=None,
+        fully_booked=None,
+        price=None,
+        age_restrictions=None,
+        additional_information=None,
+    )
+
+
+@pytest.fixture
+def events(db):
+    return Event.objects.bulk_create(
+        [
+            Event(
+                name=None,
+                description=None,
+                photo=None,
+                host=None,
+                venue=None,
+                start_date=None,
+                end_date=None,
+                min_participants=None,
+                max_participants=None,
+                num_participants=None,
+                fully_booked=None,
+                price=None,
+                age_restrictions=None,
+                additional_information=None,
+            ),
+            Event(
+                name=None,
+                description=None,
+                photo=None,
+                host=None,
+                venue=None,
+                start_date=None,
+                end_date=None,
+                min_participants=None,
+                max_participants=None,
+                num_participants=None,
+                fully_booked=None,
+                price=None,
+                age_restrictions=None,
+                additional_information=None,
+            ),
+            Event(
+                name=None,
+                description=None,
+                photo=None,
+                host=None,
+                venue=None,
+                start_date=None,
+                end_date=None,
+                min_participants=None,
+                max_participants=None,
+                num_participants=None,
+                fully_booked=None,
+                price=None,
+                age_restrictions=None,
+                additional_information=None,
+            ),
+            Event(
+                name=None,
+                description=None,
+                photo=None,
+                host=None,
+                venue=None,
+                start_date=None,
+                end_date=None,
+                min_participants=None,
+                max_participants=None,
+                num_participants=None,
+                fully_booked=None,
+                price=None,
+                age_restrictions=None,
+                additional_information=None,
+            ),
+            Event(
+                name=None,
+                description=None,
+                photo=None,
+                host=None,
+                venue=None,
+                start_date=None,
+                end_date=None,
+                min_participants=None,
+                max_participants=None,
+                num_participants=None,
+                fully_booked=None,
+                price=None,
+                age_restrictions=None,
+                additional_information=None,
+            ),
+        ]
+    )
+
+
+@pytest.fixture
+def guest_profile(db):
+    return UserProfile.objects.create(
+        user=None,
+        address=None,
+        city=None,
+        postal_code=None,
+        state="",
+        country="SE",
+        phone_number="",
+    )
