@@ -1,4 +1,6 @@
 import uuid
+
+
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -6,6 +8,8 @@ from django.contrib.auth.models import (
     Group,
     PermissionsMixin,
 )
+
+from django_countries.fields import CountryField
 
 
 class UserManager(BaseUserManager):
@@ -51,7 +55,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Customer user model that uses email as username, instead of the default username provided for by Django."""
+    """Guest user model that uses email as username, instead of the default username provided for by Django."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.CharField(max_length=100, unique=True)
@@ -69,3 +73,28 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """String representation of the model."""
         return f"{self.first_name} {self.last_name}"
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+
+class UserProfile(models.Model):
+    """Model for Guest's details for the profile."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    dob = models.DateField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=200)
+    city = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=10)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    country = CountryField(blank_label="(Select country)")
+    phone_number = models.CharField(max_length=20)
+
+    class Meta:
+        managed = True
+        verbose_name = "User Profile"
+        verbose_name_plural = "User Profiles"
+
+    def __str__(self):
+        return self.user.get_full_name()
