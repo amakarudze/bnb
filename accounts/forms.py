@@ -4,7 +4,6 @@ from .models import User
 
 
 from django.contrib.auth import password_validation
-from django.contrib.auth.models import Group
 from django.forms import ValidationError
 
 
