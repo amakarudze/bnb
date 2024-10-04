@@ -23,9 +23,12 @@ def create_staff(request):
                 first_name = form.cleaned_data.get("first_name")
                 last_name = form.cleaned_data.get("last_name")
                 password1 = form.cleaned_data.get("password1")
-                user = User(email=email, first_name=first_name, last_name=last_name, is_staff=True)
-                user.set_password(password1)
-                user.save()
+                User.objects.create_staff(
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    password=password1,
+                )
                 # Inform the user form was saved successfully.
                 messages.success(request, "New Staff was created successfully")
                 return redirect("website:home")

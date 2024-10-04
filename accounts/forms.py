@@ -7,7 +7,6 @@ from django.contrib.auth import password_validation
 from django.forms import ValidationError
 
 
-
 class LoginForm(forms.ModelForm):
     email = forms.CharField(
         max_length=100,
@@ -89,7 +88,6 @@ class CreateStaffForm(forms.ModelForm):
             }
         ),
     )
-    
 
     class Meta:
         model = User
@@ -99,7 +97,6 @@ class CreateStaffForm(forms.ModelForm):
             "last_name",
             "password1",
             "password2",
-            
         )
 
     def clean_password(self):

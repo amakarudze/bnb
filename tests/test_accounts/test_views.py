@@ -15,8 +15,7 @@ def test_create_staff_by_manager(manager_client):
     response = manager_client.get(reverse("accounts:create_staff"))
     assert response.status_code == 200
 
+
 def test_create_staff_by_guest(guest_client):
     response = guest_client.get(reverse("accounts:create_staff"))
     assert response.status_code == 403
-
-

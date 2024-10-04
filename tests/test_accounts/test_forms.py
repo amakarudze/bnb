@@ -1,6 +1,7 @@
 from accounts.forms import LoginForm
 from accounts.forms import CreateStaffForm
 
+
 def test_missing_email(manager_client, missing_email):
     """Test login with invalid credentials"""
     form = LoginForm(data=missing_email)
@@ -20,6 +21,7 @@ def test_valid_login_form(valid_login_form, manager_client):
     form = LoginForm(data=valid_login_form)
     assert form.is_valid()
     assert form.errors == {}
+
 
 def test_create_staff_form_valid(create_staff_form_valid):
     form = CreateStaffForm(data=create_staff_form_valid)

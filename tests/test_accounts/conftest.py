@@ -28,7 +28,6 @@ def create_staff_form_valid(db):
         "last_name": "Doe",
         "password1": "pass1234",
         "password2": "pass1234",
-        
     }
     return form
 
@@ -42,7 +41,6 @@ def create_staff_form_invalid_email(db):
         "last_name": "Doe",
         "password1": "pass1234",
         "password2": "pass1234",
-       
     }
     return form
 
@@ -56,7 +54,6 @@ def create_staff_form_invalid_first_name(db):
         "last_name": "Doe",
         "password1": "pass1234",
         "password2": "pass1234",
-       
     }
     return form
 
@@ -70,7 +67,6 @@ def create_staff_form_invalid_last_name(db):
         "last_name": "",
         "password1": "pass1234",
         "password2": "pass1234",
-        
     }
     return form
 
@@ -84,6 +80,5 @@ def create_staff_form_invalid_password(db):
         "last_name": "Doe",
         "password1": "",
         "password2": "pass1234",
-
     }
     return form
