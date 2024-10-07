@@ -26,7 +26,7 @@ DEBUG = bool(os.environ.get("DEBUG")) if os.environ.get("DEBUG") else True
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "reservations" if DEBUG else os.environ.get("SECRET_KEY")
 
-ALLOWED_HOSTS = ["annamz.pythonanywhere.com"]
+ALLOWED_HOSTS = []
 
 
 # Application definition

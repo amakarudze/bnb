@@ -1,7 +1,7 @@
 /* Nunito */
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-Regular.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-Regular.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: normal;
@@ -9,7 +9,7 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-SemiBold.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-SemiBold.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 600;
@@ -17,7 +17,7 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-Medium.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-Medium.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 500;
@@ -25,7 +25,7 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-Bold.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-Bold.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 700;
@@ -33,7 +33,7 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-ExtraBold.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-ExtraBold.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 800;
@@ -42,7 +42,7 @@
 /* Roboto */
 @font-face {
     font-family: 'Roboto';
-    src: url(/fonts/Roboto/Roboto-Regular.ttf) format('truetype');
+    src: url(../fonts/Roboto/Roboto-Regular.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: normal;
@@ -50,7 +50,7 @@
 
 @font-face {
     font-family: 'Roboto';
-    src: url(/fonts/Roboto/Roboto-Medium.ttf) format('truetype');
+    src: url(../fonts/Roboto/Roboto-Medium.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 600;
@@ -58,7 +58,7 @@
 
 @font-face {
     font-family: 'Roboto';
-    src: url(/fonts/Roboto/Roboto-Bold.ttf) format('truetype');
+    src: url(../fonts/Roboto/Roboto-Bold.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 700;
@@ -66,7 +66,7 @@
 
 @font-face {
     font-family: 'Roboto';
-    src: url(/fonts/Roboto/Roboto-Black.ttf) format('truetype');
+    src: url(../fonts/Roboto/Roboto-Black.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 800;
