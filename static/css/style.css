@@ -184,9 +184,21 @@ ul.menulist li a {
 }
 
 ul.menulist li a:hover,
+.nav-dropdown:hover,
 .active {
     background: #653208;
     color: #fff;
+}
+
+.nav-dropdown:hover .dropdown-menu {
+    display: block !important;
+    z-index: 999;
+    border-radius: 2px;
+    background-color: #653208;
+}
+
+.dropdown-menu a:hover {
+    background-color: #7e3110 !important;
 }
 
 /* mobile menu */
@@ -573,10 +585,12 @@ form .btn {
     background-color: #fd7e14;
     color: #fff;
 }
+
 form .btn:hover {
     background-color: #ca6510;
     color: #fff;
 }
+
 .signup-form .btn.submit {
     max-width: 160px;
 }
