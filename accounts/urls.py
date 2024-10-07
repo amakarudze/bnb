@@ -10,7 +10,10 @@ urlpatterns = [
         "login/",
         auth_views.LoginView.as_view(
             template_name="accounts/login.html",
-            extra_context={"title": "Login", "form": LoginForm()},
+            extra_context={
+                "title": "Login",
+                "form": LoginForm(),
+            },
         ),
         name="login",
     ),  # Using Django LoginView
