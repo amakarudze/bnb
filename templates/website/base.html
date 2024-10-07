@@ -93,8 +93,17 @@
                     <ul class="menulist">
                         <li><a href="#" class="nav-link active">Home</a></li>
                         <li><a href="" class="nav-link">About Us</a></li>
-                        <li><a href="" class="nav-link">Bookings</a></li>
+                        {% if user.is_staff %}
+                        <li><a href="" class="nav-link">Reservations</a></li>
+                        <li><a href="" class="nav-link">Events</a></li>
+                        {% else  %}
+                        <li><a href="" class="nav-link">Manage Reservations</a></li>
+                        {% endif %}
+                        {% if user.is_superuser %}
                         <li><a href="" class="nav-link">Reports</a></li>
+                        <li><a href="" class="nav-link">Rooms</a></li>
+                        <li><a href="{% url 'accounts:create_staff' %}" class="nav-link">Staff</a></li>
+                        {% endif %}
                         <li><a href="" class="nav-link">Contact US</a></li>
                     </ul>
                 </div>
