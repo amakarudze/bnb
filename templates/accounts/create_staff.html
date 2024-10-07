@@ -1,0 +1,38 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/login.css' %}"/>
+
+{% block content %}
+<br>
+<div class="row">
+      <div class="card col-md-6 offset-3">
+            <div class="card-header bg-success">
+                  <h1 class="text-white"> Create New Staff</h1>
+            </div>
+            <div class="card-body">
+
+                  <form method="POST" class="form">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                        <div class="mb-3 row">
+                              <label class="col-md-4 col-form-label">{{ field.label }}</label>
+                              <div class="col-md-8">{{ field }}</div>
+                        </div>
+                        {% endfor %}
+
+                        <button id="Save" class="btn btn-success">Save</button>
+                        {% if form.non_field_errors %}
+                              {% for error in form.non_field_errors %}
+                                    <div>
+                                          <strong>{{ error }}</strong>
+                                    </div>
+                              {% endfor %}
+                        {% endif %}
+                  </form>
+            </div>
+      </div>
+</div>
+
+{% endblock %}

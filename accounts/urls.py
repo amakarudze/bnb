@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .forms import LoginForm
-
+from . import views
 
 app_name = "accounts"
 
@@ -17,4 +17,5 @@ urlpatterns = [
         ),
         name="login",
     ),  # Using Django LoginView
+    path("create_staff/", views.create_staff, name="create_staff"),
 ]
