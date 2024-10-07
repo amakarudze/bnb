@@ -15,7 +15,7 @@ class Reservation(models.Model):
     number_of_adults = models.IntegerField(default=0)
     number_of_children = models.IntegerField(default=0)
     rooms = models.ManyToManyField(Room, related_name="rooms_reserved")
-    events = models.ManyToManyField(Event, related_name="events_reserved")
+    events = models.ManyToManyField(Event, related_name="events_reserved", blank=True)
     check_in_date = models.DateField()
     check_out_date = models.DateField()
     total_cost = models.FloatField(default=0)

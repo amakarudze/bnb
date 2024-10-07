@@ -5,6 +5,7 @@ from django.test import Client
 
 from accounts.models import User, UserProfile
 from events.models import Event
+from reservations.models import Reservation
 from rooms.models import Room
 
 
@@ -195,7 +196,7 @@ def rooms(db):
             ),
             Room(
                 name="Muonde",
-                description=None,
+                description="A nice single room",
                 photo="image.jpeg",
                 bed_type="Single",
                 number_of_beds=3,
@@ -305,3 +306,35 @@ def guest2_profile(db, guest):
         country="SE",
         phone_number="+46760812456",
     )
+
+
+@pytest.fixture
+def reservations(db, rooms, guest, guest2, room, events):
+    reservation1 = Reservation.objects.create(
+        user=guest2,
+        number_of_adults=1,
+        number_of_children=0,
+        check_in_date="2024-10-29",
+        check_out_date="2024-11-05",
+    )
+    reservation1.rooms.set([room])
+    reservation2 = Reservation.objects.create(
+        user=guest,
+        number_of_adults=3,
+        number_of_children=3,
+        check_in_date="2024-10-28",
+        check_out_date="2024-11-02",
+    )
+
+    reserved_rooms = Room.objects.filter(room_type="Family")
+    reservation2.rooms.set([room.id for room in reserved_rooms])
+    reservation2.events.set([event.id for event in events])
+    return reservation1, reservation2
+
+
+@pytest.fixture
+def search_form():
+    return {
+        "check_in_date": "2024-10-31",
+        "check_out_date": "2024-11-03",
+    }

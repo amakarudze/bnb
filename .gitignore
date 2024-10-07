@@ -53,3 +53,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+.DS_Store
+static/.DS_Store
+
+media/
