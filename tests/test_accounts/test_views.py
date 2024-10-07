@@ -8,7 +8,7 @@ def test_valid_login(manager_client, valid_login_form, client):
     assert response.status_code == 200
     response = client.post(reverse("accounts:login"), data=valid_login_form)
     # Check that the login was successful (e.g., redirect or success message)
-    assert response.status_code == 200
+    assert response.status_code == 302
 
 
 def test_create_staff_by_manager(manager_client):

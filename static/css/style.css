@@ -1,7 +1,7 @@
 /* Nunito */
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-Regular.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-Regular.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: normal;
@@ -9,7 +9,7 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-SemiBold.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-SemiBold.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 600;
@@ -17,7 +17,7 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-Medium.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-Medium.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 500;
@@ -25,7 +25,7 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-Bold.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-Bold.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 700;
@@ -33,7 +33,7 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(/fonts/Nunito/Nunito-ExtraBold.ttf) format('truetype');
+    src: url(../fonts/Nunito/Nunito-ExtraBold.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 800;
@@ -42,7 +42,7 @@
 /* Roboto */
 @font-face {
     font-family: 'Roboto';
-    src: url(/fonts/Roboto/Roboto-Regular.ttf) format('truetype');
+    src: url(../fonts/Roboto/Roboto-Regular.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: normal;
@@ -50,7 +50,7 @@
 
 @font-face {
     font-family: 'Roboto';
-    src: url(/fonts/Roboto/Roboto-Medium.ttf) format('truetype');
+    src: url(../fonts/Roboto/Roboto-Medium.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 600;
@@ -58,7 +58,7 @@
 
 @font-face {
     font-family: 'Roboto';
-    src: url(/fonts/Roboto/Roboto-Bold.ttf) format('truetype');
+    src: url(../fonts/Roboto/Roboto-Bold.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 700;
@@ -66,7 +66,7 @@
 
 @font-face {
     font-family: 'Roboto';
-    src: url(/fonts/Roboto/Roboto-Black.ttf) format('truetype');
+    src: url(../fonts/Roboto/Roboto-Black.ttf) format('truetype');
     font-display: swap;
     font-style: normal;
     font-weight: 800;
@@ -156,7 +156,7 @@ a {
 }
 
 nav {
-    background: #3C396D;
+    background: #fd7e14;
 }
 
 ul.menulist {
@@ -185,7 +185,7 @@ ul.menulist li a {
 
 ul.menulist li a:hover,
 .active {
-    background: #AB2236;
+    background: #653208;
     color: #fff;
 }
 
@@ -274,7 +274,7 @@ ul.menulist li a:hover,
 
 .mobile-menu .active,
 .mobile-menu li a:hover {
-    background: #AB2236;
+    background: #653208;
     color: #fff;
 }
 
@@ -316,7 +316,7 @@ ul.menulist li a:hover,
 }
 
 .swiper-pagination-bullet-active {
-    background-color: #AB2236 !important;
+    background-color: #653208 !important;
     opacity: 1 !important;
 }
 
@@ -512,12 +512,87 @@ ul.menulist li a:hover,
     font-weight: 700;
 }
 
+/* login form */
+.login-form-container,
+.signup-form-container {
+    display: flex;
+    min-height: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    flex-direction: column;
+}
+
+.form-header-logo {
+    margin-bottom: 2rem;
+}
+
+.form-header-logo img {
+    height: 60px;
+    width: auto;
+}
+
+.login-form,
+.signup-form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 6px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+}
+
+.signup-form {
+    max-width: 600px;
+}
+
+.form-title {
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+}
+
+label {
+    font-size: 14px;
+}
+
+.login-form .form-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.btn.submit {
+    width: 100%;
+}
+
+form .btn {
+    background-color: #fd7e14;
+    color: #fff;
+}
+form .btn:hover {
+    background-color: #ca6510;
+    color: #fff;
+}
+.signup-form .btn.submit {
+    max-width: 160px;
+}
+
+.alt-message {
+    text-align: center;
+    font-size: 12px;
+    margin: 0;
+}
+
 /*  */
 /* footer */
 
 /* footer */
 footer {
-    background: #3C396D;
+    background: #653208;
     padding: 80px;
 }
 

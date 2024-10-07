@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 
 from .models import User
 
@@ -7,10 +8,11 @@ from django.contrib.auth import password_validation
 from django.forms import ValidationError
 
 
-class LoginForm(forms.ModelForm):
-    email = forms.CharField(
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(
         max_length=100,
         label="Email Address",
+        help_text="Enter a valid email address",
         widget=forms.EmailInput(
             attrs={
                 "class": "form-control",
@@ -22,6 +24,7 @@ class LoginForm(forms.ModelForm):
     password = forms.CharField(
         max_length=100,
         label="Password",
+        help_text="Enter your password",
         widget=forms.PasswordInput(
             attrs={"class": "form-control", "id": "password", "placeholder": "Password"}
         ),
