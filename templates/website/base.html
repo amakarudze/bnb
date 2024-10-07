@@ -43,8 +43,12 @@
                     <p class="ci-phonenumber">+46 076 0000 000</p>
                 </div>
                 <div class="cta_btns">
+                    {% if user.is_authenticated %}
+                    <a class="p-button" href="#">Log out</a>
+                    {% else %}
                     <a class="p-button signup">Sign Up</a>
                     <a class="p-button" href="{% url 'accounts:login' %}">Log in</a>
+                    {% endif %}
                 </div>
                 <div class="mobilemenu">
                     <div class="hamburger-menu">
