@@ -1,95 +1,5 @@
-/* Nunito */
-@font-face {
-    font-family: 'Nunito';
-    src: url(../fonts/Nunito/Nunito-Regular.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: 'Nunito';
-    src: url(../fonts/Nunito/Nunito-SemiBold.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: 600;
-}
-
-@font-face {
-    font-family: 'Nunito';
-    src: url(../fonts/Nunito/Nunito-Medium.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: 500;
-}
-
-@font-face {
-    font-family: 'Nunito';
-    src: url(../fonts/Nunito/Nunito-Bold.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: 700;
-}
-
-@font-face {
-    font-family: 'Nunito';
-    src: url(../fonts/Nunito/Nunito-ExtraBold.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: 800;
-}
-
-/* Roboto */
-@font-face {
-    font-family: 'Roboto';
-    src: url(../fonts/Roboto/Roboto-Regular.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url(../fonts/Roboto/Roboto-Medium.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: 600;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url(../fonts/Roboto/Roboto-Bold.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: 700;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url(../fonts/Roboto/Roboto-Black.ttf) format('truetype');
-    font-display: swap;
-    font-style: normal;
-    font-weight: 800;
-}
-
-
 * {
     scroll-behavior: smooth;
-    font-family: var(--secondary-font), sans-serif;
-}
-
-body {
-    padding: 0;
-    margin: 0;
-    background-color: #fff;
-    font-family: var(--secondary-font);
-    font-size: 16px;
-    color: var(--default-color);
-    line-height: 24px;
-}
-
-a {
-    text-decoration: none;
 }
 
 :root {
@@ -104,8 +14,22 @@ a {
     --nav-dropdown-background-color: #ffffff;
     --nav-dropdown-color: #313336;
     --nav-dropdown-hover-color: #77b6ca;
-    --default-font: "Roboto", sans-serif;
+    --default-font: "Open Sans", sans-serif;
     --secondary-font: "Nunito", sans-serif;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    font-family: var(--default-font);
+    font-size: 16px;
+    color: var(--default-color);
+    line-height: 24px;
+}
+
+a {
+    text-decoration: none;
 }
 
 /* header css */
