@@ -39,14 +39,8 @@ def home(request):
 
 
 def about_us(request):
-    message = {
-        "message": "We are a Bed and Breakfast place located in Karlskrona, Sweden. We started our small business in Autumn 2024. We welcome guests from all over the world to come and relax in our cozy rooms and enjoy the view of the Baltic Sea.",
-    }
-    return render(request, "website/about_us.html", message)
+    return render(request, "website/about_us.html")
 
 
 def contact_us(request):
-    message = {
-        "message": "Feel free to reach our Desk for support: +46 7779815118. We are available Monday to Sunday 9.00 to 12.00 to answer your queries! Wish you all the best! ",
-    }
-    return render(request, "website/contact_us.html", message)
+    return render(request, "website/contact_us.html")
