@@ -27,3 +27,13 @@ def test_home_view_aunthenticated_guest(guest_client, rooms, search_form, reserv
     # assert len(response.context["available_rooms"]) == len(rooms)
     # response = guest_client.post(reverse("website:home"), data=search_form)
     # assert len(response.context["available_rooms"]) == len(rooms)
+
+
+def test_view_about_us(guest_client):
+    response = guest_client.get(reverse("website:about_us"))
+    assert response.status_code == 200
+
+
+def test_view_contact_us(guest_client):
+    response = guest_client.get(reverse("website:contact_us"))
+    assert response.status_code == 200
