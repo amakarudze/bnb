@@ -36,3 +36,11 @@ def home(request):
         "website/index.html",
         {"title": "Home", "available_rooms": available_rooms},
     )
+
+
+def about_us(request):
+    return render(request, "website/about_us.html")
+
+
+def contact_us(request):
+    return render(request, "website/contact_us.html")
