@@ -5,23 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("reservations", "0001_initial"),
+        ('reservations', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="reservation",
-            name="number_of_adults",
+            model_name='reservation',
+            name='number_of_adults',
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name="reservation",
-            name="number_of_children",
+            model_name='reservation',
+            name='number_of_children',
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name="reservation",
-            name="total_cost",
+            model_name='reservation',
+            name='total_cost',
             field=models.FloatField(default=0),
         ),
     ]

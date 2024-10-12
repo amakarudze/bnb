@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Reservation</title>
+</head>
+<body>
+
+    <h1>Make a Reservation</h1>
+
+    <form action="{% url 'website:make_reservation' %}" method="POST">
+        {% csrf_token %}
+
+        <!-- Reservation Section -->
+        <fieldset>
+            <legend>Reservation Details</legend>
+
+            <!-- Number of Adults -->
+            <label for="id_number_of_adults">Number of Adults:</label>
+            <input type="number" name="number_of_adults" id="id_number_of_adults" min="0" value="1" required>
+            <br><br>
+
+            <!-- Number of Children -->
+            <label for="id_number_of_children">Number of Children:</label>
+            <input type="number" name="number_of_children" id="id_number_of_children" min="0" value="0" required>
+            <br><br>
+
+            <!-- Rooms (Assuming Rooms are chosen by ID) -->
+            <label for="id_rooms">Select Rooms:</label>
+            <select name="rooms" id="id_rooms" multiple required>
+                {% for room in rooms %}
+                    <option value="{{ room.id }}">{{ room.name }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+
+            <!-- Events (Assuming Events are chosen by ID) -->
+            <label for="id_events">Select Events:</label>
+            <select name="events" id="id_events" multiple required>
+                {% for event in events %}
+                    <option value="{{ event.id }}">{{ event.name }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+
+            <!-- Check-in Date -->
+            <label for="id_check_in_date">Check-in Date:</label>
+            <input type="date" name="check_in_date" id="id_check_in_date" required>
+            <br><br>
+
+            <!-- Check-out Date -->
+            <label for="id_check_out_date">Check-out Date:</label>
+            <input type="date" name="check_out_date" id="id_check_out_date" required>
+            <br><br>
+        </fieldset>
+
+        <br>
+
+        <!-- Guest Section -->
+        <fieldset>
+            <legend>Guests</legend>
+
+            <!-- Guest 1 -->
+            <label for="guest_full_name_1">Guest Full Name:</label>
+            <input type="text" name="guest_full_name_1" id="guest_full_name_1" required>
+            <br><br>
+
+            <label for="guest_is_adult_1">Is Adult:</label>
+            <input type="checkbox" name="guest_is_adult_1" id="guest_is_adult_1" checked>
+            <br><br>
+
+            <!-- Add more guests dynamically using JavaScript or include more guest fields here -->
+
+        </fieldset>
+
+        <br>
+
+        <button type="submit">Submit Reservation</button>
+
+    </form>
+
+</body>
+</html>
