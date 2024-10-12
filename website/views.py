@@ -62,7 +62,7 @@ def search(request):
     # number_of_adults = request.GET.get("number_of_adults")
     # number_of_children = request.POST.get("number_of_children")
 
-    if check_in and check_out:
+    if check_in_date and check_out_date:
         try:
             booked_rooms = Reservation.objects.filter(
                 Q(check_in_date__lte=check_in_date, check_out_date__gt=check_out_date)
