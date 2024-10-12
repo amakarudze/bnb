@@ -47,14 +47,33 @@ def staff_group(db):
 @pytest.fixture
 def guests_group_permissions():
     """Fixture for guest group permissions to test their level of access within the system."""
-    group_permissions = ["add_user", "change_user", "view_user"]
+    group_permissions = [
+        "add_user",
+        "change_user",
+        "view_user",
+        "add_userprofile",
+        "change_userprofile",
+        "view_userprofile",
+        "add_reservation",
+        "change_reservation",
+        "view_reservation",
+    ]
     return group_permissions
 
 
 @pytest.fixture
 def staff_group_permissions():
     """Fixture for front desk staff group to test their level of access within the system."""
-    group_permissions = ["change_user", "view_user"]
+    group_permissions = [
+        "change_user",
+        "view_user",
+        "add_reservation",
+        "change_reservation",
+        "view_reservation",
+        "add_userprofile",
+        "change_userprofile",
+        "view_userprofile",
+    ]
     return group_permissions
 
 
@@ -428,8 +447,8 @@ def guests(db, reservation):
         ]
     )
 
-  
-def reservations(db, rooms, guest, guest2, room, events):
+
+def reservations_1(db, rooms, guest, guest2, room, events):
     reservation1 = Reservation.objects.create(
         user=guest2,
         number_of_adults=1,
