@@ -3,12 +3,12 @@ import pytest
 from django.shortcuts import reverse
 
 
-def test_home_view_unauthenticated_guest(client, rooms, reservations):
+def test_home_view_unauthenticated_guest(client, rooms):
     response = client.get("/")
     assert response.status_code == 200
 
 
-def test_home_view_unauthenticated_user_reverse(client):
+def test_home_view_unauthenticated_user_reverse(client, rooms):
     response = client.get(reverse("website:home"))
     assert response.status_code == 200
 
@@ -23,12 +23,9 @@ def test_home_view_front_desk_staff(front_desk_client):
     assert response.status_code == 200
 
 
-def test_home_view_aunthenticated_guest(guest_client, rooms, search_form, reservations):
+def test_home_view_aunthenticated_guest(guest_client):
     response = guest_client.get(reverse("website:home"))
     assert response.status_code == 200
-    # assert len(response.context["available_rooms"]) == len(rooms)
-    # response = guest_client.post(reverse("website:home"), data=search_form)
-    # assert len(response.context["available_rooms"]) == len(rooms)
 
 
 @pytest.mark.django_db

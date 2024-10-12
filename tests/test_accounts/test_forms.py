@@ -1,5 +1,4 @@
-from accounts.forms import LoginForm
-from accounts.forms import CreateStaffForm
+from accounts.forms import CreateStaffForm, LoginForm, SignUpForm
 
 
 def test_missing_email(manager_client, missing_email):
@@ -51,3 +50,17 @@ def test_create_staff_form_invalid_password(create_staff_form_invalid_password):
     form = CreateStaffForm(data=create_staff_form_invalid_password)
     assert form.is_valid() is False
     assert form.errors == {"password1": ["This field is required."]}
+
+
+def test_missing_last_name(db, missing_last_name):
+    """Test sign-up with missing last name"""
+    form = SignUpForm(data=missing_last_name)
+    assert form.is_valid() is False
+    assert form.errors == {"last_name": ["This field is required."]}
+
+
+def test_valid_sign_up_form(db, valid_sign_up_form):
+    """Test sign-up with valid details"""
+    form = SignUpForm(data=valid_sign_up_form)
+    assert form.is_valid()
+    assert form.errors == {}

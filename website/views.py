@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.shortcuts import render, redirect
 
-from resetvations.forms import ReservationForm, GuestFormSet
+from reservations.forms import ReservationForm, GuestFormSet
 from reservations.models import Guest, Reservation
 from rooms.models import Room
 
@@ -78,8 +78,6 @@ def make_reservation(request):
 def reservation_success(request):
     return render(request, "website/reservation_success.html")
 
-  
-  
     check_in = request.GET.get("check_in_date")
     check_out = request.GET.get("check_out_date")
     print(check_in, check_out)
