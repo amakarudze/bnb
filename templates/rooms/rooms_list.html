@@ -1,0 +1,40 @@
+{% extends "website/base.html" %}
+
+{% block content %}
+<div class="container mt-3 mb-3">
+    <h2>List of Rooms for Rent</h2>
+
+    <div class="table-container">
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">S.N</th>
+                    <th scope="col">Room Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Bathroom</th>
+                    <th scope="col">Room Capacity</th>
+                    <th scope="col">Can be Rented</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in rooms %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'rooms:update_room' room.pk %}">{{ room.name }}</a></td>
+                    <td>{{ room.room_type }}</td>
+                    <td>{{ room.bathroom }}</td>
+                    <td>{{ room.room_capacity }}</td>
+                    <td>{% if room.can_be_rented %}
+                        <i class="fa-regular fa-square-check text-success"></i>
+                        {% else %}
+                        <i class="fa-regular fa-rectangle-xmark text-danger"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

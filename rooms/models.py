@@ -30,7 +30,7 @@ class Room(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     description = models.TextField()
-    photo = models.ImageField(upload_to="images")
+    photo = models.ImageField(upload_to="images", blank=True, null=True)
     bed_type = models.CharField(max_length=15, choices=BED_TYPES)
     number_of_beds = models.IntegerField()
     room_type = models.CharField(max_length=20, choices=ROOM_TYPES)
@@ -39,6 +39,7 @@ class Room(models.Model):
     price = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     date_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
+    can_be_rented = models.BooleanField(default=True)
 
     class Meta:
         managed = True

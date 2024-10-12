@@ -23,7 +23,7 @@ def test_home_view_front_desk_staff(front_desk_client):
     assert response.status_code == 200
 
 
-def test_home_view_aunthenticated_guest(guest_client):
+def test_home_view_aunthenticated_guest(guest_client, rooms):
     response = guest_client.get(reverse("website:home"))
     assert response.status_code == 200
 
@@ -46,3 +46,7 @@ def test_view_about_us(guest_client):
 def test_view_contact_us(guest_client):
     response = guest_client.get(reverse("website:contact_us"))
     assert response.status_code == 200
+
+
+def test_search_view(reservations_1):
+    pass
