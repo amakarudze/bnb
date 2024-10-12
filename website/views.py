@@ -58,14 +58,7 @@ def reservation_success(request):
 def search(request):
     check_in_date = request.GET.get("check_in_date", "")
     check_out_date = request.GET.get("check_out_date", "")
-    # number_of_children = request.GET.get("check_out_date", "")
 
-    check_in = request.GET.get("check_in_date")
-    check_out = request.GET.get("check_out_date")
-    print(check_in, check_out)
-
-    check_in_date = request.GET.get("check_in_date")
-    check_out_date = request.GET.get("check_out_date")
     # number_of_adults = request.GET.get("number_of_adults")
     # number_of_children = request.POST.get("number_of_children")
 
@@ -82,53 +75,6 @@ def search(request):
             # available_rooms = Room.objects.exclude(pk__in=booked_rooms)
         except Reservation.DoesNotExist:
             pass
-
-
-"""
-    article_search_results = (
-        Article.objects.filter(
-            Q(title__contains=search_query) | Q(text__contains=search_query)
-        )
-        .filter(visible=True)
-        .order_by("-date_created")
-    )
-
-    downloads_search_results = Download.objects.filter(Q(name__contains=search_query))
-
-    count_articles = len(article_search_results)
-    count_downloads = len(downloads_search_results)
-
-    if article_search_results:
-        paginator = Paginator(article_search_results, 5)
-        page = request.GET.get("page")
-        try:
-            results = paginator.page(page)
-        except PageNotAnInteger:
-            results = paginator.page(1)
-    else:
-        results = None
-
-    if downloads_search_results:
-        paginator = Paginator(downloads_search_results, 5)
-        page = request.GET.get("page")
-        try:
-            downloads = paginator.page(page)
-        except PageNotAnInteger:
-            downloads = paginator.page(1)
-    else:
-        downloads = None
-
-    return render(
-        request,
-        "resources/search.html",
-        {
-            "count": count_articles,
-            "results": results,
-            "count_downloads": count_downloads,
-            "downloads": downloads,
-        },
-    )
-"""
 
 
 def about_us(request):
