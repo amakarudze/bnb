@@ -1,1 +1,110 @@
-<h1>BnB Home</h1>
+{% extends "website/base.html" %}
+{% load static %}
+{% block content %}
+
+    <!-- Banner Section -->
+    <section class="homepagebanner">
+        <!-- Slider main container -->
+        <div class="swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                <div class="swiper-slide">
+                    <img src="{% static 'images/bed_1.jpg' %}" alt="">
+
+                </div>
+                <div class="swiper-slide">
+                    <img src="{% static 'images/bed_2.jpg' %}" alt="">
+                </div>
+                <div class="swiper-slide">
+                    <img src="{% static 'images/breakfast.jpg' %}" alt="">
+                </div>
+            </div>
+            <!-- If we need pagination -->
+            <div class="swiper-pagination"></div>
+
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+
+        <div class="search-section">
+            <div class="container">
+                <div class="search-form">
+                    <h2>Find Your Best Room</h2>
+                    <div class="container">
+                        <form class="form-inline">
+                            <input id="check_in_date" class="form-control mr-sm-2" type="date" aria-label="check_in">
+                            <input id="check_out_date" class="form-control mr-sm-2" type="date" aria-label="check_out">
+                            <input id="number_of_adults" class="form-control mr-sm-2" type="search" placeholder="Number of Guest"
+                                aria-label="Search">
+                            <input id="number_of_children" class="form-control mr-sm-2" type="search" placeholder="Number of Children"
+                                aria-label="Search">
+                            <button class="btn btn btn-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- room listing -->
+    <section class="rooms">
+        <div class="container">
+            <h2 class="section-title">Suggested Rooms</h2>
+            {% if available_rooms %}
+                {% for room in available_rooms %}
+                {% if forloop.first %}<div class="row">{% endif %}
+                    <div class="col-md-4">
+                        <div class="room_card">
+                            <img class="room_img" src="{{ room.photo.url }}" alt="rooms_image">
+                            <div class="room_details">
+                                <h3>{{ room.name }}</h3>
+                                <p>
+                                    {{ room.description }}
+                                </p>
+                            </div>
+                            <div class="price_book_btn">
+                                <div class="price">SEK {{ room.price }}</div>
+                                <a type="button" class="btn btn-primary" href="#">BooK Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+                    {% if forloop.last %}</div>{% endif %}
+                    {% endfor %}
+            {% else %}
+                <h4>Sorry we are fully booked.</h4>
+                <p>No available rooms during the selected period.</p>
+            {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- aout us -->
+    <section class="whoarewe" id="about">
+        <div class="container">
+            <div class="about">
+                <div class="left">
+                    <h2>WHO ARE WE</h2>
+                    <p>Bnb is a dynamic platform where travelers can book charming accommodations and engage in vibrant
+                        social events. We connect guests with unique stays and enriching experiences, fostering
+                        community and memorable interactions. Our platform is designed to enhance your travel journey
+                        with personalized recommendations and opportunities to mingle with fellow explorers. </p>
+                </div>
+                <div class="right">
+                    <div class="imgleft">
+                        <img src="{% static 'images/breakfast.jpg' %}" alt="">
+                    </div>
+                    <div class="imgright">
+                        <img src="{% static 'images/bed_1.jpg' %}" alt="">
+                        <img src="{% static 'images/bed_2.jpg' %}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% endblock %}

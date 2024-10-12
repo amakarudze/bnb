@@ -1,13 +1,22 @@
 from django import forms
+<<<<<<< HEAD
 from django_countries.widgets import CountrySelectWidget
 from .models import User, UserProfile  
+=======
+from django.contrib.auth.forms import AuthenticationForm
+>>>>>>> a50589a3cc94bfe63d93cab94fb15b97633a4ad0
 
 
 
-class LoginForm(forms.ModelForm):
-    email = forms.CharField(
+from django.contrib.auth import password_validation
+from django.forms import ValidationError
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(
         max_length=100,
         label="Email Address",
+        help_text="Enter a valid email address",
         widget=forms.EmailInput(
             attrs={
                 "class": "form-control",
@@ -19,6 +28,7 @@ class LoginForm(forms.ModelForm):
     password = forms.CharField(
         max_length=100,
         label="Password",
+        help_text="Enter your password",
         widget=forms.PasswordInput(
             attrs={"class": "form-control", "id": "password", "placeholder": "Password"}
         ),
@@ -28,6 +38,7 @@ class LoginForm(forms.ModelForm):
         model = User
         fields = ["email", "password"]
 
+<<<<<<< HEAD
 #sign-up form
 class SignUpForm(forms.Form):
     # User fields
@@ -92,3 +103,82 @@ class SignUpForm(forms.Form):
 
         if password != confirm_password:
             raise forms.ValidationError("Passwords do not match.")
+=======
+
+class CreateStaffForm(forms.ModelForm):
+    email = forms.CharField(
+        max_length=100,
+        label="Staff Email Address:",
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "id": "email",
+                "placeholder": "Email address",
+            }
+        ),
+    )
+    first_name = forms.CharField(
+        max_length=100,
+        label="Staff First Name:",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "id": "first_name",
+                "placeholder": "First Name",
+            }
+        ),
+    )
+    last_name = forms.CharField(
+        max_length=100,
+        label="Staff Last Name:",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "id": "last_name",
+                "placeholder": "Last name",
+            }
+        ),
+    )
+    password1 = forms.CharField(
+        max_length=100,
+        label="Password:",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "id": "password1",
+                "placeholder": "Enter Password",
+            }
+        ),
+    )
+    password2 = forms.CharField(
+        max_length=100,
+        label="Confirm Password:",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "id": "password2",
+                "placeholder": "Confirm Password",
+            }
+        ),
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+            "password1",
+            "password2",
+        )
+
+    def clean_password(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+
+        if password1 != password2:
+            raise ValidationError("The two passwords do not match!")
+        else:
+            password_validation.validate_password(password1)
+            return password1
+>>>>>>> a50589a3cc94bfe63d93cab94fb15b97633a4ad0
