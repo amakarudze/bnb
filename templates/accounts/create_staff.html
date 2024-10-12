@@ -1,0 +1,38 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+
+{% block content %}
+<div class="signup-form-container">
+      <div class="form-header-logo">
+          <img src="{% static 'images/logo.jpg' %}" alt="">
+      </div>
+      <form method="POST" class="signup-form">
+            <div class="form-group mb-4">
+                  <h2 class="form-title">Create New Staff</h2>
+            </div>
+            {% csrf_token %}
+
+            {% for field in form %}
+                  <div class="form-group mb-4">
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+                  </div>
+            {% endfor %}
+
+            <div class="form-group text-center ">
+                  <button id="Save" type="submit" class="btn submit">Save</button>
+            </div>
+
+            {% if form.non_field_errors %}
+                  {% for error in form.non_field_errors %}
+                        <div>
+                              <strong>{{ error }}</strong>
+                        </div>
+                  {% endfor %}
+            {% endif %}
+      </form>
+</div>
+
+{% endblock %}
