@@ -31,10 +31,12 @@ def rooms_list(request):
     )
 
 
-class UpdateRoomView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
+class UpdateRoomView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Room
     form_class = RoomForm
     template_name = "rooms/room.html"
+    permission_required = "rooms.change_room"
+    raise_exception = True
 
     def get_success_url(self) -> str:
         return reverse("rooms:rooms_list")

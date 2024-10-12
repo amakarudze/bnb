@@ -34,7 +34,10 @@ class RoomForm(forms.ModelForm):
         choices=BATHROOM_TYPES,
         widget=forms.Select(attrs={"class": "form-control", "id": "bathroom"}),
     )
-    photo = forms.ImageField()
+    photo = forms.ImageField(required=False)
+    can_be_rented = forms.BooleanField(
+        required=False,
+    )
 
     class Meta:
         model = Room
@@ -48,4 +51,5 @@ class RoomForm(forms.ModelForm):
             "bathroom",
             "room_capacity",
             "price",
+            "can_be_rented",
         ]

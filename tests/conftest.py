@@ -54,7 +54,17 @@ def guests_group_permissions():
 @pytest.fixture
 def staff_group_permissions():
     """Fixture for front desk staff group to test their level of access within the system."""
-    group_permissions = ["change_user", "view_user"]
+    group_permissions = [
+        "add_user",
+        "change_user",
+        "view_user",
+        "add_room",
+        "change_room",
+        "view_room",
+        "add_event",
+        "change_event",
+        "view_event",
+    ]
     return group_permissions
 
 
