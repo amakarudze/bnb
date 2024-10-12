@@ -1,37 +1,13 @@
 from django.db.models import Q
 from django.shortcuts import render, redirect
 
-from resetvations.forms import ReservationForm, GuestFormSet
+from reservations.forms import ReservationForm, GuestFormSet
 from reservations.models import Guest, Reservation
 from rooms.models import Room
 
 
 def home(request):
-    check_in = request.GET.get("check_in_date")
-    check_out = request.GET.get("check_out_date")
-    print(check_in, check_out)
-
-    check_in_date = request.GET.get("check_in_date")
-    check_out_date = request.GET.get("check_out_date")
-    # number_of_adults = request.GET.get("number_of_adults")
-    # number_of_children = request.POST.get("number_of_children")
-
-    if check_in and check_out:
-        try:
-            booked_rooms = Reservation.objects.filter(
-                Q(check_in_date__lte=check_in_date, check_out_date__gt=check_out_date)
-                | Q(check_in_date__gte=check_in_date, check_out_date__lt=check_out_date)
-                | Q(
-                    check_in_date__lte=check_in_date, check_out_date__lte=check_out_date
-                )
-            ).only("rooms")
-            print(booked_rooms)
-            available_rooms = Room.objects.exclude(pk__in=booked_rooms)
-        except Reservation.DoesNotExist:
-            pass
-    else:
-        available_rooms = Room.objects.all()
-
+    available_rooms = Room.objects.all()
     return render(
         request,
         "website/index.html",
@@ -78,8 +54,12 @@ def make_reservation(request):
 def reservation_success(request):
     return render(request, "website/reservation_success.html")
 
-  
-  
+
+def search(request):
+    check_in_date = request.GET.get("check_in_date", "")
+    check_out_date = request.GET.get("check_out_date", "")
+    # number_of_children = request.GET.get("check_out_date", "")
+
     check_in = request.GET.get("check_in_date")
     check_out = request.GET.get("check_out_date")
     print(check_in, check_out)
@@ -99,17 +79,56 @@ def reservation_success(request):
                 )
             ).only("rooms")
             print(booked_rooms)
-            available_rooms = Room.objects.exclude(pk__in=booked_rooms)
+            # available_rooms = Room.objects.exclude(pk__in=booked_rooms)
         except Reservation.DoesNotExist:
             pass
+
+
+"""
+    article_search_results = (
+        Article.objects.filter(
+            Q(title__contains=search_query) | Q(text__contains=search_query)
+        )
+        .filter(visible=True)
+        .order_by("-date_created")
+    )
+
+    downloads_search_results = Download.objects.filter(Q(name__contains=search_query))
+
+    count_articles = len(article_search_results)
+    count_downloads = len(downloads_search_results)
+
+    if article_search_results:
+        paginator = Paginator(article_search_results, 5)
+        page = request.GET.get("page")
+        try:
+            results = paginator.page(page)
+        except PageNotAnInteger:
+            results = paginator.page(1)
     else:
-        available_rooms = Room.objects.all()
+        results = None
+
+    if downloads_search_results:
+        paginator = Paginator(downloads_search_results, 5)
+        page = request.GET.get("page")
+        try:
+            downloads = paginator.page(page)
+        except PageNotAnInteger:
+            downloads = paginator.page(1)
+    else:
+        downloads = None
 
     return render(
         request,
-        "website/index.html",
-        {"title": "Home", "available_rooms": available_rooms},
+        "resources/search.html",
+        {
+            "count": count_articles,
+            "results": results,
+            "count_downloads": count_downloads,
+            "downloads": downloads,
+        },
     )
+"""
 
 
 def about_us(request):

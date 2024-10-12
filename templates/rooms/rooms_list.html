@@ -1,0 +1,11 @@
+{% extends "website/base.html" %}
+
+{% block content %}
+
+<h2>List of Rooms for Rent</h2>
+
+{% for room in rooms %}
+<p>{{ room.name }}</p>
+{% endfor %}
+
+{% endblock %}

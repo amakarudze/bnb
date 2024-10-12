@@ -393,8 +393,8 @@ def reservations(
             check_out_date="2024-12-05",
         ),
     )
-    # reservation1.room.set([room])
-    # reservation1.rooms.set([room])
+    reservation1.room.set([room])
+    reservation1.rooms.set([room])
     reservation2 = (
         Reservation.objects.create(
             user=guest,
@@ -404,8 +404,8 @@ def reservations(
             check_out_date="2024-12-02",
         ),
     )
-    # reservation2.rooms.set([room for room in rooms if room.room_type == "Family Room"])
-    # reservation2.events.set([events])
+    reservation2.rooms.set([room for room in rooms if room.room_type == "Family Room"])
+    reservation2.events.set([events])
     return reservation1, reservation2
 
 
@@ -428,8 +428,9 @@ def guests(db, reservation):
         ]
     )
 
-  
-def reservations(db, rooms, guest, guest2, room, events):
+
+@pytest.fixture
+def reservations_1(db, rooms, guest, guest2, room, events):
     reservation1 = Reservation.objects.create(
         user=guest2,
         number_of_adults=1,

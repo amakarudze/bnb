@@ -93,9 +93,9 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Rooms</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Room</a>
-                                <a class="dropdown-item" href="#">Modify Room</a>
-                                <a class="dropdown-item" href="#">Manage Rooms</a>
+                                <a class="dropdown-item" href="{% url 'rooms:add_room' %}">Create New Room</a>
+                                <a class="dropdown-item" href="{% url 'rooms:update_room' room.pk}">Modify Room</a>
+                                <a class="dropdown-item" href="{% url 'rooms:rooms_list' %}">Manage Rooms</a>
                             </div>
                         </li>
                         {% else  %}
@@ -184,9 +184,9 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Rooms</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Room</a>
-                                <a class="dropdown-item" href="#">Modify Room</a>
-                                <a class="dropdown-item" href="#">Manage Rooms</a>
+                                <a class="dropdown-item" href="{% url 'rooms:add_room' %}">Create New Room</a>
+                                <a class="dropdown-item" href="{% url 'rooms:update_room' room.pk}">Modify Room</a>
+                                <a class="dropdown-item" href="{% url 'rooms:rooms_list' %}">Manage Rooms</a>
                             </div>
                         </li>
                         {% else  %}
