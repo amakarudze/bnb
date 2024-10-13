@@ -41,8 +41,6 @@ class ReservationForm(forms.ModelForm):
             "rooms": forms.CheckboxSelectMultiple,
             "number_of_adults": forms.TextInput(attrs={"class": "form-control"}),
             "number_of_children": forms.TextInput(attrs={"class": "form-control"}),
-            # 'check_in_date': forms.DateInput(attrs={'type': 'date'}),
-            # 'check_out_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
     def clean(self):
@@ -79,5 +77,10 @@ GuestFormSet = forms.modelformset_factory(
 )
 
 
+class AddReservationForm(ReservationForm):
+    dob = forms.DateField()
+
+    
 class StaffReservationForm(SignUpForm):
     pass
+  
