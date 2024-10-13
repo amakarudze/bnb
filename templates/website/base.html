@@ -177,9 +177,9 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Event</a>
-                                <a class="dropdown-item" href="#">Modify Event</a>
-                                <a class="dropdown-item" href="#">Manage Events</a>
+                                <a class="dropdown-item" href="{% url 'events:add_event' %}">Create New Event</a>
+                                <a class="dropdown-item" href="{% url 'events:update_event' event.pk}">Modify Event</a>
+                                <a class="dropdown-item" href="{% url 'events:events_list' %}">Manage Events</a>
                             </div>
                         </li>
                         <li class="nav-dropdown"> <a href="" class="nav-link">
