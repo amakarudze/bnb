@@ -1,7 +1,10 @@
 from datetime import date
+
 from django import forms
+
 from .models import Reservation, Guest
 from events.models import Event
+from accounts.forms import SignUpForm
 
 
 class ReservationForm(forms.ModelForm):
@@ -74,3 +77,7 @@ GuestFormSet = forms.modelformset_factory(
     extra=1,  # The initial number of empty forms displayed
     can_delete=True,  # Allow deleting guests from the formset
 )
+
+
+class StaffReservationForm(SignUpForm):
+    pass
