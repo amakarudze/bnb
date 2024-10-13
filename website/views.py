@@ -1,28 +1,31 @@
-from django.db.models import Q
 from django.shortcuts import render, redirect
 
+from events.models import Event
 from reservations.forms import ReservationForm, GuestFormSet
 from reservations.models import Guest, Reservation
 from rooms.models import Room
 
+from .forms import SearchForm
+
 
 def home(request):
-    available_rooms = Room.objects.all()
+    available_rooms = Room.objects.filter(can_be_rented=True)[:6]
+    form = SearchForm()
     return render(
         request,
         "website/index.html",
-        {"title": "Home", "available_rooms": available_rooms},
+        {"title": "Home", "available_rooms": available_rooms, "form": form},
     )
 
 
-def make_reservation(request):
+def make_reservation(request, pk):
     if request.method == "POST":
-        reservation_form = ReservationForm(request.POST)
+        form = ReservationForm(request.POST)
         guest_formset = GuestFormSet(request.POST)
 
-        if reservation_form.is_valid() and guest_formset.is_valid():
+        if form.is_valid() and guest_formset.is_valid():
             # Save the reservation
-            reservation = reservation_form.save(commit=False)
+            reservation = form.save(commit=False)
             reservation.user = request.user  # Set the current logged-in user
             reservation.save()
 
@@ -36,16 +39,31 @@ def make_reservation(request):
             return redirect("website:reservation_success")  # Redirect to a success page
 
     else:
-        reservation_form = ReservationForm()
-        guest_formset = GuestFormSet(
-            queryset=Guest.objects.all()
-        )  # Empty formset for guests
+        room = Room.objects.get(pk=pk)
+        check_in_date = request.GET.get("check_in_date")
+        check_out_date = request.GET.get("check_out_date")
+        if check_in_date and check_out_date:
+            events = Event.objects.filter(
+                start_date__gte=check_in_date, end_date__lte=check_out_date
+            )
+            if events:
+                form = ReservationForm(
+                    initial={
+                        "rooms": room,
+                        "events": events,
+                        "check_in_date": check_in_date,
+                        "check_out_date": check_out_date,
+                    }
+                )
+        else:
+            form = ReservationForm(initial={"rooms": room})
+        guest_formset = GuestFormSet(queryset=Guest.objects.all())
 
     return render(
         request,
         "website/reservation.html",
         {
-            "reservation_form": reservation_form,
+            "form": form,
             "guest_formset": guest_formset,
         },
     )
@@ -58,23 +76,31 @@ def reservation_success(request):
 def search(request):
     check_in_date = request.GET.get("check_in_date", "")
     check_out_date = request.GET.get("check_out_date", "")
+    number_of_adults = request.GET.get("number_of_adults", "")
+    number_of_children = request.POST.get("number_of_children", "")
 
-    # number_of_adults = request.GET.get("number_of_adults")
-    # number_of_children = request.POST.get("number_of_children")
+    reservations = Reservation.objects.filter(
+        check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
+    )
+    booked_rooms = []
+    for reservation in reservations:
+        for room in reservation.rooms.all():
+            booked_rooms.append(room.pk)
+    rooms = Room.objects.exclude(pk__in=booked_rooms)
+    if number_of_children:
+        suggested_rooms = rooms.filter(room_type="Family")
+        if suggested_rooms:
+            rooms = suggested_rooms
+    else:
+        rooms = rooms.exclude(room_type="Family")
+    if number_of_adults:
+        pass
 
-    if check_in_date and check_out_date:
-        try:
-            booked_rooms = Reservation.objects.filter(
-                Q(check_in_date__lte=check_in_date, check_out_date__gt=check_out_date)
-                | Q(check_in_date__gte=check_in_date, check_out_date__lt=check_out_date)
-                | Q(
-                    check_in_date__lte=check_in_date, check_out_date__lte=check_out_date
-                )
-            ).only("rooms")
-            print(booked_rooms)
-            # available_rooms = Room.objects.exclude(pk__in=booked_rooms)
-        except Reservation.DoesNotExist:
-            pass
+    return render(
+        request,
+        "website/search_results.html",
+        {"title": "Search for rooms", "rooms": rooms},
+    )
 
 
 def about_us(request):
@@ -83,3 +109,10 @@ def about_us(request):
 
 def contact_us(request):
     return render(request, "website/contact_us.html")
+
+
+def rooms(request):
+    rooms = Room.objects.filter(can_be_rented=True)
+    return render(
+        request, "website/search_results.html", {"rooms": rooms, "title": "Our Rooms"}
+    )

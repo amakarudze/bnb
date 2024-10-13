@@ -1,0 +1,42 @@
+{% extends 'website/base.html' %}
+
+{% load static % }
+
+{% block content %}
+
+<section class="rooms">
+    <div class="container">
+        <h2 class="section-title">Suggested Rooms</h2>
+        {% if rooms %}
+            {% for room in rooms %}
+            {% if forloop.first %}<div class="row">{% endif %}
+                <div class="col-md-4">
+                    <div class="room_card">
+                        <img class="room_img" src="{{ room.photo.url }}" alt="rooms_image">
+                        <div class="room_details">
+                            <h3>{{ room.name }}</h3>
+                            <p>
+                                {{ room.description }}
+                            </p>
+                            <p>Room type: {{ room.room_type }}</p>
+                            <p>Bathroom: {{ room.bathroom }}</p>
+                            <p>Room capacity: {{ room.room_capacity }}</p>
+                        </div>
+                        <div class="price_book_btn">
+                            <div class="price">SEK {{ room.price }}</div>
+                            <a type="button" class="btn btn-primary" href="{% url 'website:make_reservation' room.pk %}">BooK Now</a>
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+                {% if forloop.last %}</div>{% endif %}
+                {% endfor %}
+        {% else %}
+            <h4>Sorry we are fully booked.</h4>
+            <p>No available rooms during the selected period.</p>
+        {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

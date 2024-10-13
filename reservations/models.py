@@ -42,7 +42,7 @@ class Guest(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     reservation = models.ForeignKey(
-        Reservation, on_delete=models.CASCADE, related_name="reservation_guests"
+        Reservation, on_delete=models.CASCADE, related_name="guest_set"
     )
     full_name = models.CharField(max_length=100)
     is_adult = models.BooleanField(default=True)
