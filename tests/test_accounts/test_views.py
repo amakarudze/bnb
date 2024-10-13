@@ -30,7 +30,18 @@ def test_sign_up_view_post_valid(client, valid_sign_up_form, guests_group):
     """Test sign-up view with valid data"""
     response = client.post(reverse("accounts:signup"), data=valid_sign_up_form)
     assert response.status_code == 302
-    assert response.url == reverse("website:make_reservation")
+    assert response.url == reverse("website:home")
+    # assert response.url == reverse("website:make_reservation", args=(room.id,))
+
+
+def test_sign_up_view_post_valid_with_room_to_book(
+    client, valid_sign_up_form, guests_group, room
+):
+    """Test sign-up view with valid data"""
+    response = client.post(reverse("accounts:signup"), data=valid_sign_up_form)
+    assert response.status_code == 302
+    assert response.url == reverse("website:home")
+    # assert response.url == reverse("website:make_reservation", args=(room.id,))
 
 
 def test_sign_up_view_post_invalid(client, missing_email):

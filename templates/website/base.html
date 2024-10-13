@@ -79,23 +79,20 @@
                             Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="#">Create New Reservation</a>
-                                <a class="dropdown-item" href="#">Modify Reservation</a>
                                 <a class="dropdown-item" href="#">Manage Reservations</a>
                             </div>
                         </li>
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Event</a>
-                                <a class="dropdown-item" href="#">Modify Event</a>
-                                <a class="dropdown-item" href="#">Manage Events</a>
+                                <a class="dropdown-item" href="{% url 'events:add_event' %}">Create New Event</a>
+                                <a class="dropdown-item" href="{% url 'events:events_list' %}">Manage Events</a>
                             </div>
                         </li>
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Rooms</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'rooms:add_room' %}">Create New Room</a>
-                                <a class="dropdown-item" href="{% url 'rooms:update_room' room.pk}">Modify Room</a>
                                 <a class="dropdown-item" href="{% url 'rooms:rooms_list' %}">Manage Rooms</a>
                             </div>
                         </li>
@@ -104,9 +101,8 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Manage Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">New Event Reservation</a>
-                                <a class="dropdown-item" href="#">Modify Reservation</a>
-                                <a class="dropdown-item" href="#">Manage Reservations</a>
+                                <a class="dropdown-item" href="#">Create New Reservation</a>
+                                <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
                             </div>
                         </li>
                         {% endif %}
@@ -123,7 +119,6 @@
                             Staff</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'accounts:create_staff' %}">Create New Staff/a>
-                                <a class="dropdown-item" href="#">Modify Staff</a>
                                 <a class="dropdown-item" href="#">Manage Staff</a>
                             </div>
                         </li>
@@ -170,15 +165,13 @@
                             Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="#">Create New Reservation</a>
-                                <a class="dropdown-item" href="#">Modify Reservation</a>
-                                <a class="dropdown-item" href="#">Manage Reservations</a>
+                                <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
                             </div>
                         </li>
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Events</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'events:add_event' %}">Create New Event</a>
-                                <a class="dropdown-item" href="{% url 'events:update_event' event.pk}">Modify Event</a>
                                 <a class="dropdown-item" href="{% url 'events:events_list' %}">Manage Events</a>
                             </div>
                         </li>
@@ -186,7 +179,6 @@
                             Rooms</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'rooms:add_room' %}">Create New Room</a>
-                                <a class="dropdown-item" href="{% url 'rooms:update_room' room.pk}">Modify Room</a>
                                 <a class="dropdown-item" href="{% url 'rooms:rooms_list' %}">Manage Rooms</a>
                             </div>
                         </li>
@@ -195,8 +187,7 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Manage Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">New Event Reservation</a>
-                                <a class="dropdown-item" href="#">Modify Reservation</a>
+                                <a class="dropdown-item" href="#">Create New Reservation</a>
                                 <a class="dropdown-item" href="#">Manage Reservations</a>
                             </div>
                         </li>
@@ -214,7 +205,6 @@
                             Staff</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'accounts:create_staff' %}">Create New Staff</a>
-                                <a class="dropdown-item" href="#">Modify Staff</a>
                                 <a class="dropdown-item" href="#">Manage Staff</a>
                             </div>
                         </li>
@@ -319,10 +309,10 @@
             </div>
             <div class="footer_menu">
                 <ul class="footer_menulist">
-                    <li><a href="" class="nav-link">Home</a></li>
-                    <li><a href="" class="nav-link">Rooms</a></li>
-                    <li><a href="" class="nav-link">About Us</a></li>
-                    <li><a href="" class="nav-link">Contact</a></li>
+                    <li><a href="{% url 'website:home' %}" class="nav-link">Home</a></li>
+                    <li><a href="{% url 'website:rooms' %}" class="nav-link">Rooms</a></li>
+                    <li><a href="{% url 'website:about_us' %}" class="nav-link">About Us</a></li>
+                    <li><a href="{% url 'website:contact_us' %}" class="nav-link">Contact</a></li>
                 </ul>
             </div>
             <div class="copyright_section">

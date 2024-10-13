@@ -1,7 +1,5 @@
-{% extends 'website/base.html' %}
-
+{% extends "website/base.html" %}
 {% load static %}
-<script src="{% static 'js/reservations.js' %}"></script>
 
 {% block content %}
 
@@ -9,16 +7,11 @@
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
-
-    <form action="" class="signup-form" method="POST">
-        {% csrf_token %}
+    <form class="signup-form">
         <div class="form-group mb-4">
             <h2 class="form-title">{{ title }}</h2>
         </div>
         {% csrf_token %}
-        <fieldset>
-            <legend>Reservation Details</legend>
-
         {% for field in form %}
         <div class="form-group mb-4">
             <label>{{ field.label }}</label>
@@ -40,23 +33,11 @@
             {% endfor %}
         {% endif %}
         {% endfor %}
-    </fieldset>
-
-        <fieldset>
-            <legend>Add More Guests</legend>
-            {% for form in guest_formset.forms %}
-            <div class="row">
-                {% for field in form %}
-                <div class="col">{{ field.label }} {{ field }}</div>
-                {% endfor %}
-                <div class="col"><button><i class="fa-solid fa-plus"></i></button></div>
-            </div>
-            {% endfor %}
-        </fieldset>
-
         <div class="form-group text-center ">
-            <button type="submit" class="btn submit">Save Reservation</button>
+            <button type="submit" class="btn submit">Save</button>
         </div>
     </form>
+
 </div>
+
 {% endblock %}

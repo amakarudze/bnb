@@ -29,11 +29,12 @@ def test_home_view_aunthenticated_guest(guest_client, rooms):
 
 
 @pytest.mark.django_db
-def test_make_reservation_view(guest_client, valid_reservation_rooms):
-    response = guest_client.get(reverse("website:make_reservation"))
+def test_make_reservation_view(guest_client, valid_reservation_rooms, room):
+    response = guest_client.get(reverse("website:make_reservation", args=(room.pk,)))
     assert response.status_code == 200
     response = guest_client.post(
-        reverse("website:make_reservation"), data=valid_reservation_rooms
+        reverse("website:make_reservation", args=(room.pk,)),
+        data=valid_reservation_rooms,
     )
     assert response.status_code == 200
 
@@ -48,5 +49,19 @@ def test_view_contact_us(guest_client):
     assert response.status_code == 200
 
 
-def test_search_view(reservations_1):
-    pass
+def test_rooms_view_unauthenticated_guest(client):
+    response = client.get(reverse("website:rooms"))
+    assert response.status_code == 200
+
+
+def test_rooms_view_authenticated_guest(guest_client):
+    response = guest_client.get(reverse("website:rooms"))
+    assert response.status_code == 200
+
+
+def test_search_view(db, client, reservations_1, rooms, search_form_valid):
+    response = client.get(reverse("website:search"), data=search_form_valid)
+    assert response.status_code == 200
+    assert "rooms" in response.context
+    assert len(response.context["rooms"]) != len(rooms)
+    assert len(response.context["rooms"]) == 6

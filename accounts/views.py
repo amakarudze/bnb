@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from .forms import CreateStaffForm, SignUpForm
 from accounts.models import User, UserProfile
@@ -40,6 +41,7 @@ def create_staff(request):
 
 
 def signup(request):
+    room = request.GET.get("room_id")
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -63,7 +65,11 @@ def signup(request):
 
             login(request, user)
             messages.success(request, "Sign-up successful!")
-            return redirect("website:make_reservation")
+
+            if room:
+                return redirect(reverse("website:make_reservation", args=(room.id)))
+            else:
+                return redirect("website:home")
     else:
         form = SignUpForm()
 

@@ -1,7 +1,9 @@
 from datetime import date
 from django import forms
-from .models import Reservation, Guest
+
 from events.models import Event
+
+from .models import Reservation, Guest
 
 
 class ReservationForm(forms.ModelForm):
@@ -11,17 +13,10 @@ class ReservationForm(forms.ModelForm):
 
     check_in_date = forms.DateField()
     check_out_date = forms.DateField()
-
     events = forms.ModelMultipleChoiceField(
         queryset=Event.objects.all(),
-        label="Events",
+        widget=forms.CheckboxSelectMultiple(),
         required=False,
-        widget=forms.SelectMultiple(
-            attrs={
-                "class": "form-control",
-                "id": "events",
-            }
-        ),
     )
 
     class Meta:
@@ -38,8 +33,6 @@ class ReservationForm(forms.ModelForm):
             "rooms": forms.CheckboxSelectMultiple,
             "number_of_adults": forms.TextInput(attrs={"class": "form-control"}),
             "number_of_children": forms.TextInput(attrs={"class": "form-control"}),
-            # 'check_in_date': forms.DateInput(attrs={'type': 'date'}),
-            # 'check_out_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
     def clean(self):
@@ -54,8 +47,6 @@ class ReservationForm(forms.ModelForm):
             if check_in_date < date.today():
                 raise forms.ValidationError("Check-in date should not be a past date.")
 
-        # return check_in_date, check_out_date
-
 
 class GuestForm(forms.ModelForm):
     """
@@ -67,10 +58,15 @@ class GuestForm(forms.ModelForm):
         fields = ["full_name", "is_adult"]
 
 
-# Creating a formset to handle multiple guests
 GuestFormSet = forms.modelformset_factory(
     Guest,
     form=GuestForm,
-    extra=1,  # The initial number of empty forms displayed
-    can_delete=True,  # Allow deleting guests from the formset
+    extra=1,
+    can_delete=True,
 )
+
+
+class ReservationsUpdateForm(ReservationForm):
+    is_paid = forms.BooleanField(required=False)
+    checked_in = forms.BooleanField(required=False)
+    checked_out = forms.BooleanField(required=False)

@@ -405,33 +405,26 @@ def invalid_reservation_missing_check_in_date(db, room, event, guest):
 
 
 @pytest.fixture
-def reservations(
-    db,
-    guest,
-    guest2,
-):
-    reservation1 = (
-        Reservation.objects.create(
-            user=guest2,
-            number_of_adults=1,
-            number_of_children=0,
-            check_in_date="2024-12-29",
-            check_out_date="2024-12-05",
-        ),
+def reservations(db, guest, guest2, room, events):
+    reservation1 = Reservation.objects.create(
+        user=guest2,
+        number_of_adults=1,
+        number_of_children=0,
+        check_in_date="2024-12-29",
+        check_out_date="2024-12-05",
     )
-    reservation1.room.set([room])
     reservation1.rooms.set([room])
-    reservation2 = (
-        Reservation.objects.create(
-            user=guest,
-            number_of_adults=3,
-            number_of_children=3,
-            check_in_date="2024-12-28",
-            check_out_date="2024-12-02",
-        ),
+
+    reservation2 = Reservation.objects.create(
+        user=guest,
+        number_of_adults=3,
+        number_of_children=3,
+        check_in_date="2024-12-28",
+        check_out_date="2024-12-02",
     )
-    reservation2.rooms.set([room for room in rooms if room.room_type == "Family Room"])
-    reservation2.events.set([events])
+    reserved_rooms = Room.objects.filter(room_type="Family")
+    reservation2.rooms.set([room.id for room in reserved_rooms])
+    reservation2.events.set([event.id for event in events])
     return reservation1, reservation2
 
 
@@ -464,7 +457,7 @@ def reservations_1(db, rooms, guest, guest2, room, events):
         check_in_date="2024-10-29",
         check_out_date="2024-11-05",
     )
-    reservation1.rooms.set([room])
+    reservation1.rooms.set([room.id])
     reservation2 = Reservation.objects.create(
         user=guest,
         number_of_adults=3,
@@ -480,8 +473,70 @@ def reservations_1(db, rooms, guest, guest2, room, events):
 
 
 @pytest.fixture
-def search_form():
+def search_form_valid():
     return {
         "check_in_date": "2024-10-31",
         "check_out_date": "2024-11-03",
+        "number_of_adults": 1,
+        "number_of_children": 0,
+    }
+
+
+@pytest.fixture
+def search_form_invalid_no_adults():
+    return {
+        "check_in_date": "2024-10-31",
+        "check_out_date": "2024-11-03",
+        "number_of_adults": "",
+        "number_of_children": 0,
+    }
+
+
+@pytest.fixture
+def search_form_invalid_zero_adults():
+    return {
+        "check_in_date": "2024-10-31",
+        "check_out_date": "2024-11-03",
+        "number_of_adults": 0,
+        "number_of_children": 0,
+    }
+
+
+@pytest.fixture
+def search_form_invalid_check_out_same_day():
+    return {
+        "check_in_date": "2024-10-31",
+        "check_out_date": "2024-10-31",
+        "number_of_adults": 2,
+        "number_of_children": 0,
+    }
+
+
+@pytest.fixture
+def search_form_invalid_check_in_date_past():
+    return {
+        "check_in_date": "2024-10-12",
+        "check_out_date": "2024-11-03",
+        "number_of_adults": 1,
+        "number_of_children": 0,
+    }
+
+
+@pytest.fixture
+def search_form_invalid_check_out_date_less_than_check_in_date():
+    return {
+        "check_in_date": "2024-10-31",
+        "check_out_date": "2024-10-29",
+        "number_of_adults": 1,
+        "number_of_children": 0,
+    }
+
+
+@pytest.fixture
+def search_form_invalid_no_children_number():
+    return {
+        "check_in_date": "2024-10-31",
+        "check_out_date": "2024-11-03",
+        "number_of_adults": 2,
+        "number_of_children": "",
     }
