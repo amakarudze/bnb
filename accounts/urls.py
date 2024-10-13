@@ -18,4 +18,5 @@ urlpatterns = [
         name="login",
     ),  # Using Django LoginView
     path("create_staff/", views.create_staff, name="create_staff"),
+    path("signup/", views.signup, name="signup"),
 ]

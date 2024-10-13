@@ -525,6 +525,97 @@ form .btn:hover {
     margin: 0;
 }
 
+.table-container {
+    padding: 0 16px;
+}
+
+.table-container table {
+    min-width: 200px;
+    overflow-x: auto;
+}
+
+.bento-item {
+    height: 200px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.bento-item:hover {
+    transform: scale(1.05);
+}
+
+.bento-tall {
+    height: 410px;
+    background-color: #B6EDD7;
+}
+
+.card-title {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    color: #313131;
+    z-index: 99;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.summary-graph {
+    max-height: 350px;
+}
+
+.data-number {
+    font-size: 38px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.guests-number {
+    background-color: #EDDFFE;
+}
+
+.guests-number .data-number {
+    color: #8A2EF4;
+}
+
+.children-number {
+    background-color: #FFF0D8;
+}
+
+.children-number .data-number {
+    color: #FF9B00;
+}
+
+.total-booking {
+    background-color: #D9E5F8;
+}
+
+.total-booking .data-number {
+    color: #3373D8;
+}
+
+.average-guest {
+    background-color: #F9DDDD;
+}
+
+.average-guest .data-number {
+    color: #D52020;
+}
+
+.data-five {
+    background-color: #F7EDFA;
+}
+
+.data-five .data-number {
+    color: #8B3B90;
+}
+
 /*  */
 /* footer */
 

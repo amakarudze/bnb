@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/f24a09bab5.js" crossorigin="anonymous"></script>
 
 
 </head>
@@ -93,9 +94,9 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Rooms</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Room</a>
-                                <a class="dropdown-item" href="#">Modify Room</a>
-                                <a class="dropdown-item" href="#">Manage Rooms</a>
+                                <a class="dropdown-item" href="{% url 'rooms:add_room' %}">Create New Room</a>
+                                <a class="dropdown-item" href="{% url 'rooms:update_room' room.pk}">Modify Room</a>
+                                <a class="dropdown-item" href="{% url 'rooms:rooms_list' %}">Manage Rooms</a>
                             </div>
                         </li>
                         {% else  %}
@@ -184,9 +185,9 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Rooms</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Room</a>
-                                <a class="dropdown-item" href="#">Modify Room</a>
-                                <a class="dropdown-item" href="#">Manage Rooms</a>
+                                <a class="dropdown-item" href="{% url 'rooms:add_room' %}">Create New Room</a>
+                                <a class="dropdown-item" href="{% url 'rooms:update_room' room.pk}">Modify Room</a>
+                                <a class="dropdown-item" href="{% url 'rooms:rooms_list' %}">Manage Rooms</a>
                             </div>
                         </li>
                         {% else  %}
