@@ -1,7 +1,10 @@
 from datetime import date
+
 from django import forms
+
 from .models import Reservation, Guest
 from events.models import Event
+from accounts.forms import SignUpForm
 
 
 class ReservationForm(forms.ModelForm):
@@ -76,3 +79,8 @@ GuestFormSet = forms.modelformset_factory(
 
 class AddReservationForm(ReservationForm):
     dob = forms.DateField()
+
+    
+class StaffReservationForm(SignUpForm):
+    pass
+  
