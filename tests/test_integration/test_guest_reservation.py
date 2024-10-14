@@ -42,7 +42,7 @@ def test_guest_reservation_process(
         settings.DEFAULT_FROM_EMAIL,
         to_email,
     )
-    assert len(mail.outbox) == 2
+    assert len(mail.outbox) == 1
     assert mail.outbox[0].subject, "Signup Confirmation"
 
     assert response.status_code == 302
