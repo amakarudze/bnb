@@ -11,6 +11,7 @@ class SearchForm(forms.Form):
                 "id": "check_in_date",
                 "class": "form-control mr-sm-2",
                 "placeholder": "YYYY-MM-DD",
+                "type": "date",
             }
         )
     )
@@ -20,24 +21,25 @@ class SearchForm(forms.Form):
                 "id": "check_out_date",
                 "class": "form-control mr-sm-2",
                 "placeholder": "YYYY-MM-DD",
+                "type": "date",
             }
         )
     )
     number_of_adults = forms.IntegerField(
-        widget=forms.TextInput(
+        widget=forms.NumberInput(
             attrs={
                 "id": "number_of_adults",
                 "class": "form-control mr-sm-2",
-                "placeholder": "Number of adults",
+                "placeholder": 0,
             }
         )
     )
     number_of_children = forms.IntegerField(
-        widget=forms.TextInput(
+        widget=forms.NumberInput(
             attrs={
                 "id": "number_of_children",
                 "class": "form-control mr-sm-2",
-                "placeholder": "Number of children",
+                "placeholder": 0,
             }
         )
     )

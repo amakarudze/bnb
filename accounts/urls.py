@@ -16,7 +16,12 @@ urlpatterns = [
             },
         ),
         name="login",
-    ),  # Using Django LoginView
+    ),
+    path(
+        "logout/",
+        auth_views.LogoutView.as_view(),
+        name="logout",
+    ),
     path("create_staff/", views.create_staff, name="create_staff"),
     path("signup/", views.signup, name="signup"),
 ]

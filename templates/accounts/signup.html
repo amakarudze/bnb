@@ -3,11 +3,19 @@
 
 {% block content %}
 
+{% if messages %}
+<ul class="messages">
+{% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
 <div class="signup-form-container">
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
-    <form class="signup-form">
+    <form class="signup-form" method="post">
         <div class="form-group mb-4">
             <h2 class="form-title">Sign up</h2>
         </div>
@@ -17,6 +25,7 @@
             <label>{{ field.label }}</label>
             {{ field }}
         </div>
+        {% endfor %}
         {% if field.errors %}
             {% for error in field.errors %}
             <div class="alert alert-danger">
@@ -32,7 +41,6 @@
             </div>
             {% endfor %}
         {% endif %}
-        {% endfor %}
         <div class="form-group text-center ">
             <button type="submit" class="btn submit">Signup</button>
             <p class="alt-message">Already have an account?<a href="{% url 'accounts:login' %}"> Login</a></p>
