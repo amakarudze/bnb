@@ -1,10 +1,15 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Make a Reservation</title>
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+  </head>
 <body>
 
     <h1>Make a Reservation</h1>
@@ -60,25 +65,37 @@
         <!-- Guest Section -->
         <fieldset>
             <legend>Guests</legend>
-
             <!-- Guest 1 -->
-            <label for="guest_full_name_1">Guest Full Name:</label>
-            <input type="text" name="guest_full_name_1" id="guest_full_name_1" required>
-            <br><br>
+            <div class="row mb-4" id="guest-row">
+                <div class="col-auto">
+                <label for="guest_name_1" class="col-form-label">Guest Full Name</label>
+                </div>
+                <div class="col-auto">
+                <input
+                    type="text" id="guest_name_1" class="form-control" aria-describedby="guestHelpInline" />
+                </div>
+                <div class="col-auto guest-field d-flex align-items-center">
+                <input
+                    class="form-check-input" type="checkbox" value="" id="guest_is_adult_1" />
+                <label class="ms-1 form-check-label" for="guest_is_adult_1">Is Adult</label>
+                </div>
+                <div class="col-auto">
+                <button type="button" class="btn btn-primary" id="add-guest-button">Add More Guests</button>
+                </div>
+            </div>
 
-            <label for="guest_is_adult_1">Is Adult:</label>
-            <input type="checkbox" name="guest_is_adult_1" id="guest_is_adult_1" checked>
-            <br><br>
-
-            <!-- Add more guests dynamically using JavaScript or include more guest fields here -->
-
+            <!-- Container for dynamic guest fields -->
+            <div id="guest-container"></div>
         </fieldset>
+
+        <!-- Add more guests dynamically using JavaScript or include more guest fields here -->
 
         <br>
 
         <button type="submit">Submit Reservation</button>
 
     </form>
-
+    
+<script src="{% static 'js/add_guests.js' %}"></script>
 </body>
 </html>
