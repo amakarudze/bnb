@@ -14,4 +14,5 @@ urlpatterns = [
     path("contact_us/", views.contact_us, name="contact_us"),
     path("rooms/", views.rooms, name="rooms"),
     path("search/", views.search, name="search"),
+    path("room/<uuid:pk>/", views.room, name="room"),
 ]

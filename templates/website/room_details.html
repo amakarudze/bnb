@@ -1,0 +1,33 @@
+{% extends 'website/base.html' %}
+
+{% load static %}
+{% block content %}
+
+<section class="room-details-page">
+    <div class="container">
+        <div class="room-image">
+            <div class="available-status">
+                <div class="blob"></div>
+                {{ status }}
+            </div>
+
+            <img class="thumbnail-image" src="{{ room.photo.url }}" class="img-fluid" alt="Responsive image">
+        </div>
+        <div class="room-title">
+            <h1>Luxurious room with minibar</h1>
+            <p>Room ID: G456</p>
+        </div>
+        <div class="room-details">
+            <p>{{ room.description }}.</p>
+            <p class="mb-0"><strong>Facilities:</strong></p>
+            <ul>
+                <li>Room Type: {{ room.room_type }}</li>
+                <li>Number of beds: {{ room.number_of_beds }} {{ room.bed_type }}s</li>
+                <li>Bathroom: {{ room.bathroom }]</li>
+                <li>Room capacity: {{ room.room_capacity }}.</li>
+            </ul>
+        </div>
+    </div>
+    <a class="book-room-btn" href="{% url 'website:make_reservation' room.pk %}">Book this room</a>
+</section>
+{% endblock %}

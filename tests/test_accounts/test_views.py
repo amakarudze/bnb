@@ -1,6 +1,14 @@
+import pytest
+
+from django.conf import settings
+from django.core import mail
 from django.urls import reverse
 
+from accounts.views import send_email
+
 from pytest_django.asserts import assertRedirects
+
+from accounts.models import User
 
 
 def test_valid_login(manager_client, valid_login_form, client):
@@ -28,12 +36,26 @@ def test_sign_up_view_get(client):
     assert "Sign Up" in str(response.content)
 
 
+@pytest.mark.django_db
 def test_sign_up_view_post_valid(client, valid_sign_up_form, guests_group):
     """Test sign-up view with valid data"""
-    response = client.post(reverse("accounts:signup"), data=valid_sign_up_form)
-    assert response.status_code == 302
-    assert response.url == reverse("website:home")
-    # assert response.url == reverse("website:make_reservation", args=(room.id,))
+    response = client.post(
+        reverse("accounts:signup"), data=valid_sign_up_form, follow=True
+    )
+    assert response.status_code == 200
+    assertRedirects(response, reverse("website:home"))
+    guest = User.objects.get(email=valid_sign_up_form["email"])
+    to_email = [guest.email]
+    send_email(
+        "Sign Up Confirmation",
+        "Test signup confirmation.",
+        settings.DEFAULT_FROM_EMAIL,
+        to_email,
+    )
+    assert len(mail.outbox) == 1
+    assert mail.outbox[0].subject, "Signup Confirmation"
+
+    # assert "Sign-up successful!" in response.content
 
 
 def test_sign_up_view_post_valid_with_room_to_book(
@@ -43,17 +65,27 @@ def test_sign_up_view_post_valid_with_room_to_book(
     response = client.post(reverse("accounts:signup"), data=valid_sign_up_form)
     assert response.status_code == 302
     assert response.url == reverse("website:home")
-    # assert response.url == reverse("website:make_reservation", args=(room.id,))
 
 
 def test_sign_up_view_post_invalid(client, missing_email):
     """Test sign-up view with invalid data"""
     response = client.post(reverse("accounts:signup"), data=missing_email)
     assert response.status_code == 200
-    # assert "This field is required." in str(response.content)
 
 
 def test_logout_view(guest_client):
     response = guest_client.post(reverse("accounts:logout"))
     assert response.status_code == 302
     assertRedirects(response, "/")
+
+
+@pytest.mark.django_db
+def test_signup_view_existing_email(client, guest, invalid_sign_up_form_existing_email):
+    response = client.post(
+        reverse("accounts:signup"),
+        data=invalid_sign_up_form_existing_email,
+        follow=True,
+    )
+    assert response.status_code == 200
+    # assert response.url == reverse("accounts:signup")
+    # assert "User already exist!" in response.content

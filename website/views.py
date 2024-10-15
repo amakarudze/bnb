@@ -107,15 +107,22 @@ def search(request):
 
 
 def about_us(request):
-    return render(request, "website/about_us.html")
+    return render(request, "website/about_us.html", {"title": "About us"})
 
 
 def contact_us(request):
-    return render(request, "website/contact_us.html")
+    return render(request, "website/contact_us.html", {"title": "Contact us"})
 
 
 def rooms(request):
     rooms = Room.objects.filter(can_be_rented=True)
     return render(
         request, "website/search_results.html", {"rooms": rooms, "title": "Our Rooms"}
+    )
+
+
+def room(request, pk):
+    room = Room.objects.get(pk=pk)
+    return render(
+        request, "website/room_details.html", {"title": "Room Details", "room": room}
     )

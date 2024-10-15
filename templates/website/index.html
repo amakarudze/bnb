@@ -68,7 +68,10 @@
                             </div>
                             <div class="price_book_btn">
                                 <div class="price">SEK {{ room.price }}</div>
-                                <a type="button" class="btn btn-primary" href="{% url 'website:make_reservation' room.pk %}">BooK Now</a>
+                                <div class="room-book-btns">
+                                    <a class="btn-view-details" href="{% url 'website:room' room.pk %}">View Details</a>
+                                    <a type="button" class="btn btn-primary" href="{% url 'website:make_reservation' room.pk %}">BooK Now</a>
+                                </div>
                             </div>
                         </div>
                     </div>
