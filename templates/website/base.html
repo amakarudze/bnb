@@ -30,7 +30,7 @@
     <header>
         <div class="container">
             <div class="topbar">
-                <a href="{% url 'website:home' %}" class="company_logo"><img src="{% static 'images/logo.jpg' %}" alt="bnb_logo"></a>
+                <a href="{% url 'website:home' %}" class="company_logo"><img src="{% static 'images/logo.png' %}" alt="bnb_logo"></a>
                 <div class="contact-info">
                     <div class="ci-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 40 40" fill="none">
@@ -50,9 +50,13 @@
                 </div>
                 <div class="cta_btns">
                     {% if user.is_authenticated %}
-                    <a class="p-button" href="#">Log out</a>
+                    <form method="post" action="{% url 'accounts:logout' %}">
+                        {% csrf_token %}
+                        <button class="p-button" type="submit">Log out</button>
+                    </form>
+
                     {% else %}
-                    <a class="p-button signup">Sign Up</a>
+                    <a class="p-button signup" href="{% url 'accounts:signup' %}">Sign Up</a>
                     <a class="p-button" href="{% url 'accounts:login' %}">Log in</a>
                     {% endif %}
                 </div>
@@ -69,8 +73,8 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             About Us</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">About Us</a>
-                                <a class="dropdown-item" href="#">Contact Us</a>
+                                <a class="dropdown-item" href="{% url 'website:about_us' %}">About Us</a>
+                                <a class="dropdown-item" href="{% url 'website:contact_us' %}">Contact Us</a>
                             </div>
                         </li>
                         {% if user.is_authenticated %}
@@ -155,8 +159,8 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             About Us</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">About Us</a>
-                                <a class="dropdown-item" href="#">Contact Us</a>
+                                <a class="dropdown-item" href="{% url 'website:about_us' %}">About Us</a>
+                                <a class="dropdown-item" href="{% url 'website:contact_us' %}">Contact Us</a>
                             </div>
                         </li>
                         {% if user.is_authenticated %}
@@ -217,6 +221,7 @@
     </header>
     <!-- end of header -->
     {% block content %}
+
 
     {% endblock %}
     <!-- footer -->

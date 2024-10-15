@@ -65,3 +65,8 @@ def test_search_view(db, client, reservations_1, rooms, search_form_valid):
     assert "rooms" in response.context
     assert len(response.context["rooms"]) != len(rooms)
     assert len(response.context["rooms"]) == 6
+
+
+def test_room_details_view(client, room):
+    response = client.get(reverse("website:room", args=(room.pk,)))
+    assert response.status_code == 200

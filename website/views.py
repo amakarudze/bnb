@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from events.models import Event
@@ -18,6 +19,7 @@ def home(request):
     )
 
 
+@login_required
 def make_reservation(request, pk):
     if request.method == "POST":
         form = ReservationForm(request.POST)
@@ -77,7 +79,8 @@ def search(request):
     check_in_date = request.GET.get("check_in_date", "")
     check_out_date = request.GET.get("check_out_date", "")
     number_of_adults = request.GET.get("number_of_adults", "")
-    number_of_children = request.POST.get("number_of_children", "")
+    number_of_children = request.GET.get("number_of_children", "")
+    print(number_of_children)
 
     reservations = Reservation.objects.filter(
         check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
@@ -87,7 +90,7 @@ def search(request):
         for room in reservation.rooms.all():
             booked_rooms.append(room.pk)
     rooms = Room.objects.exclude(pk__in=booked_rooms)
-    if number_of_children:
+    if int(number_of_children) > 0:
         suggested_rooms = rooms.filter(room_type="Family")
         if suggested_rooms:
             rooms = suggested_rooms
@@ -104,15 +107,22 @@ def search(request):
 
 
 def about_us(request):
-    return render(request, "website/about_us.html")
+    return render(request, "website/about_us.html", {"title": "About us"})
 
 
 def contact_us(request):
-    return render(request, "website/contact_us.html")
+    return render(request, "website/contact_us.html", {"title": "Contact us"})
 
 
 def rooms(request):
     rooms = Room.objects.filter(can_be_rented=True)
     return render(
         request, "website/search_results.html", {"rooms": rooms, "title": "Our Rooms"}
+    )
+
+
+def room(request, pk):
+    room = Room.objects.get(pk=pk)
+    return render(
+        request, "website/room_details.html", {"title": "Room Details", "room": room}
     )
