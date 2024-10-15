@@ -440,12 +440,21 @@ ul.menulist li a:hover,
     justify-content: space-between;
     padding: 0 16px;
     margin: 16px 0;
-
 }
 
 .price {
     font-size: 18px;
     font-weight: 700;
+}
+
+.room-book-btns {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-view-details {
+    font-size: 14px;
 }
 
 /* login form */
@@ -534,6 +543,12 @@ form .btn:hover {
     overflow-x: auto;
 }
 
+.page-title {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* report page */
 .bento-item {
     height: 200px;
     border-radius: 15px;
@@ -614,6 +629,108 @@ form .btn:hover {
 
 .data-five .data-number {
     color: #8B3B90;
+}
+/* staff dashboard */
+.staff-container{
+
+}
+.staff-container .btn-title{
+    font-size: 20px;
+}
+.staff-container .bento-item{
+    padding: 2rem;
+    cursor: pointer;
+}
+/* room details page */
+.room-details-page {
+    margin-bottom: 3rem;
+}
+
+.thumbnail-image {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+}
+
+.room-title {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.room-title h1 {
+    font-weight: 800;
+    font-size: 28px;
+    color: #313131;
+    margin: 0;
+}
+
+.room-title p {
+    font-size: 16px;
+    color: #616161;
+    margin: 0;
+}
+
+.room-details {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.room-image {
+    position: relative;
+}
+
+.available-status {
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+    display: flex;
+    align-items: center;
+    color: #313131;
+    font-weight: 600;
+    font-size: 14px;
+    background-color: #e0f2f7;
+    width: fit-content;
+    border-radius: 40px;
+    padding: 4px 12px 4px 6px;
+}
+
+.blob {
+    background: #28a745;
+    border-radius: 50%;
+    margin: 10px;
+    height: 14px;
+    width: 14px;
+
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+    transform: scale(1);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+.book-room-btn {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 5rem;
+    background-color: #28a745;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 30px;
 }
 
 /*  */
