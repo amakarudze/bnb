@@ -70,3 +70,14 @@ def test_search_view(db, client, reservations_1, rooms, search_form_valid):
 def test_room_details_view(client, room):
     response = client.get(reverse("website:room", args=(room.pk,)))
     assert response.status_code == 200
+
+
+def test_search_by_booking_code_view(
+    db, client, search_form_by_booking_code, reservation
+):
+    response = client.get(
+        reverse("website:search_result_by_booking_code"),
+        data=search_form_by_booking_code,
+    )
+    assert response.status_code == 200
+    assert "reservations" in response.context

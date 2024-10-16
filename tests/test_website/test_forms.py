@@ -1,7 +1,7 @@
 import pytest
 
 from reservations.forms import ReservationForm
-from website.forms import SearchForm
+from website.forms import SearchForm, SearchByBookingCodeForm
 
 
 @pytest.mark.django_db
@@ -69,3 +69,11 @@ def test_search_form_invalid_check_out_date_less_than_check_in_date(
     assert form.errors == {
         "__all__": ["Check out date should be greater than check in date."]
     }
+
+
+def test_search_form_by_booking_code(
+    search_form_by_booking_code,
+):
+    form = SearchByBookingCodeForm(data=search_form_by_booking_code)
+    assert form.is_valid()
+    assert form.errors == {}
