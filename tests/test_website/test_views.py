@@ -2,6 +2,8 @@ import pytest
 
 from django.shortcuts import reverse
 
+from pytest_django.asserts import assertRedirects
+
 
 def test_home_view_unauthenticated_guest(client, rooms):
     response = client.get("/")
@@ -70,3 +72,14 @@ def test_search_view(db, client, reservations_1, rooms, search_form_valid):
 def test_room_details_view(client, room):
     response = client.get(reverse("website:room", args=(room.pk,)))
     assert response.status_code == 200
+
+
+def test_reservations_view_guest(guest_client):
+    response = guest_client.get(reverse("website:reservations"))
+    assert response.status_code == 200
+
+
+def test_reservations_view_unathenticated_guest(client):
+    response = client.get(reverse("website:reservations"), follow=True)
+    assert response.status_code == 200
+    assertRedirects(response, "/accounts/login/?next=/reservations/")

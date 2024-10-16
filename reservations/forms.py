@@ -1,6 +1,7 @@
 from datetime import date
 from django import forms
 
+from accounts.forms import SignUpForm
 from events.models import Event
 
 from .models import Reservation, Guest
@@ -11,8 +12,24 @@ class ReservationForm(forms.ModelForm):
     Form for creating a reservation.
     """
 
-    check_in_date = forms.DateField()
-    check_out_date = forms.DateField()
+    check_in_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "DD/MM/YYYY",
+                "type": "date",
+            }
+        )
+    )
+    check_out_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "DD/MM/YYYY",
+                "type": "date",
+            }
+        )
+    )
     events = forms.ModelMultipleChoiceField(
         queryset=Event.objects.all(),
         widget=forms.CheckboxSelectMultiple(),
@@ -42,10 +59,16 @@ class ReservationForm(forms.ModelForm):
         if check_out_date and check_in_date:
             if check_out_date <= check_in_date:
                 raise forms.ValidationError(
-                    "Check-out date must be after the check-in date."
+                    {
+                        "check_out_date": [
+                            "Check-out date must be after the check-in date."
+                        ]
+                    }
                 )
             if check_in_date < date.today():
-                raise forms.ValidationError("Check-in date should not be a past date.")
+                raise forms.ValidationError(
+                    {"check_in_date": ["Check-in date should not be a past date."]}
+                )
 
 
 class GuestForm(forms.ModelForm):
@@ -70,3 +93,7 @@ class ReservationsUpdateForm(ReservationForm):
     is_paid = forms.BooleanField(required=False)
     checked_in = forms.BooleanField(required=False)
     checked_out = forms.BooleanField(required=False)
+
+
+class StaffReservationForm(ReservationForm, SignUpForm):
+    pass

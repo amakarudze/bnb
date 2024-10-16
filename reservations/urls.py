@@ -12,4 +12,6 @@ urlpatterns = [
         views.UpdateReservationsView.as_view(),
         name="update_reservation",
     ),
+    path("add_reservation/", views.add_reservation, name="add_reservation"),
+    path("reports/", views.reports, name="reports"),
 ]

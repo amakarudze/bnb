@@ -79,11 +79,12 @@
                         </li>
                         {% if user.is_authenticated %}
                         {% if user.is_staff %}
+                        <li><a href="{% url 'reservations:dashboard' %}" class="nav-link">Dashboard</a></li>
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Reservation</a>
-                                <a class="dropdown-item" href="#">Manage Reservations</a>
+                                <a class="dropdown-item" href="{% url 'reservations:add_reservation' %}">Create New Reservation</a>
+                                <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
                             </div>
                         </li>
                         <li class="nav-dropdown"> <a href="" class="nav-link">
@@ -101,29 +102,15 @@
                             </div>
                         </li>
                         {% else  %}
-                        <li><a href="" class="nav-link"></a></li>
-                        <li class="nav-dropdown"> <a href="" class="nav-link">
-                            Manage Reservations</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Reservation</a>
-                                <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
-                            </div>
-                        </li>
+                        <li><a href="{% url 'website:reservations' %}" class="nav-link">Manage Reservations</a></li>
                         {% endif %}
                         {% if user.is_superuser %}
                         <li class="nav-dropdown"> <a href="" class="nav-link">
-                            Reports</a>
+                            Admin</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Events</a>
-                                <a class="dropdown-item" href="#">Reservations</a>
-                                <a class="dropdown-item" href="#">Room Occupancy</a>
-                            </div>
-                        </li>
-                        <li class="nav-dropdown"> <a href="" class="nav-link">
-                            Staff</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="{% url 'accounts:create_staff' %}">Create New Staff/a>
-                                <a class="dropdown-item" href="#">Manage Staff</a>
+                                <a class="dropdown-item" href="{% url 'accounts:create_staff' %}">Create New Staff</a>
+                                <a class="dropdown-item" href="/admin/">Manage Users</a>
+                                <a class="dropdown-item" href="#">Reports</a>
                             </div>
                         </li>
                         {% endif %}
@@ -165,10 +152,11 @@
                         </li>
                         {% if user.is_authenticated %}
                         {% if user.is_staff %}
+                        <li><a href="{% url 'reservations:dashboard' %}" class="nav-link">Dashboard</a></li>
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Reservation</a>
+                                <a class="dropdown-item" href="{% url 'reservations:add_reservation' %}">Create New Reservation</a>
                                 <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
                             </div>
                         </li>
@@ -187,29 +175,16 @@
                             </div>
                         </li>
                         {% else  %}
-                        <li><a href="" class="nav-link"></a></li>
-                        <li class="nav-dropdown"> <a href="" class="nav-link">
-                            Manage Reservations</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Reservation</a>
-                                <a class="dropdown-item" href="#">Manage Reservations</a>
-                            </div>
-                        </li>
+                        <li><a href="{% url 'website:reservations' %}" class="nav-link">Manage Reservations</a></li>
                         {% endif %}
                         {% if user.is_superuser %}
+
                         <li class="nav-dropdown"> <a href="" class="nav-link">
-                            Reports</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Events</a>
-                                <a class="dropdown-item" href="#">Reservations</a>
-                                <a class="dropdown-item" href="#">Room Occupancy</a>
-                            </div>
-                        </li>
-                        <li class="nav-dropdown"> <a href="" class="nav-link">
-                            Staff</a>
+                            Admin</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'accounts:create_staff' %}">Create New Staff</a>
-                                <a class="dropdown-item" href="#">Manage Staff</a>
+                                <a class="dropdown-item" href="/admin/">Manage Users</a>
+                                <a class="dropdown-item" href="{% url 'reservations:reports' %}">Reports</a>
                             </div>
                         </li>
                         {% endif %}

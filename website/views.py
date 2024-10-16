@@ -26,19 +26,18 @@ def make_reservation(request, pk):
         guest_formset = GuestFormSet(request.POST)
 
         if form.is_valid() and guest_formset.is_valid():
-            # Save the reservation
             reservation = form.save(commit=False)
-            reservation.user = request.user  # Set the current logged-in user
+            reservation.user = request.user
+            reservation.calculate_total_cost()
             reservation.save()
 
-            # Save guests associated with the reservation
             for guest_form in guest_formset:
-                if guest_form.cleaned_data:  # Ensure the form is filled
+                if guest_form.cleaned_data:
                     guest = guest_form.save(commit=False)
                     guest.reservation = reservation
                     guest.save()
 
-            return redirect("website:reservation_success")  # Redirect to a success page
+            return redirect("website:reservation_success")
 
     else:
         room = Room.objects.get(pk=pk)
@@ -71,8 +70,13 @@ def make_reservation(request, pk):
     )
 
 
+@login_required
 def reservation_success(request):
-    return render(request, "website/reservation_success.html")
+    return render(
+        request,
+        "website/reservation_success.html",
+        {"title": "Rerservation successful!"},
+    )
 
 
 def search(request):
@@ -125,4 +129,26 @@ def room(request, pk):
     room = Room.objects.get(pk=pk)
     return render(
         request, "website/room_details.html", {"title": "Room Details", "room": room}
+    )
+
+
+@login_required
+def reservations(request):
+    reservation_list = Reservation.objects.filter(user=request.user).order_by(
+        "-check_in_date"
+    )
+    return render(
+        request,
+        "website/reservations.html",
+        {"title": "Manage Reservations", "reservation_list": reservation_list},
+    )
+
+
+@login_required
+def update_reservation(request, pk):
+    reservation = Reservation.objects.get(pk=pk)
+    return render(
+        request,
+        "website/update_reservation.html",
+        {"title": "Update reservation", "reservation": reservation},
     )

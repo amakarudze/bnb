@@ -36,7 +36,7 @@ def test_search_form_invalid_no_adults(search_form_invalid_no_adults):
 def test_search_form_invalid_zero_adults(search_form_invalid_zero_adults):
     form = SearchForm(data=search_form_invalid_zero_adults)
     assert not form.is_valid()
-    assert form.errors == {"__all__": ["Number of adult guests cannot be 0."]}
+    assert form.errors == {"number_of_adults": ["Number of adult guests cannot be 0."]}
 
 
 def test_search_form_invalid_no_children_number(search_form_invalid_no_children_number):
@@ -49,16 +49,14 @@ def test_search_form_invalid_check_out_same_day(search_form_invalid_check_out_sa
     form = SearchForm(data=search_form_invalid_check_out_same_day)
     assert not form.is_valid()
     assert form.errors == {
-        "__all__": ["Check out date should be greater than check in date."]
+        "check_out_date": ["Check out date should be greater than check in date."]
     }
 
 
 def test_search_form_invalid_check_in_date_past(search_form_invalid_check_in_date_past):
     form = SearchForm(data=search_form_invalid_check_in_date_past)
     assert not form.is_valid()
-    assert form.errors == {
-        "__all__": ["Check in date or check out date cannot be in the past."]
-    }
+    assert form.errors == {"check_in_date": ["Check in date cannot be in the past."]}
 
 
 def test_search_form_invalid_check_out_date_less_than_check_in_date(
@@ -67,5 +65,5 @@ def test_search_form_invalid_check_out_date_less_than_check_in_date(
     form = SearchForm(data=search_form_invalid_check_out_date_less_than_check_in_date)
     assert not form.is_valid()
     assert form.errors == {
-        "__all__": ["Check out date should be greater than check in date."]
+        "check_out_date": ["Check out date should be greater than check in date."]
     }
