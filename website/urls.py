@@ -15,4 +15,14 @@ urlpatterns = [
     path("rooms/", views.rooms, name="rooms"),
     path("search/", views.search, name="search"),
     path("room/<uuid:pk>/", views.room, name="room"),
+    path(
+        "search_by_booking_code",
+        views.search_by_booking_code,
+        name="search_by_booking_code",
+    ),
+    path(
+        "search_result_by_booking_code",
+        views.search_result_by_booking_code,
+        name="search_result_by_booking_code",
+    ),
 ]

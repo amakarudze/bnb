@@ -61,3 +61,17 @@ class SearchForm(forms.Form):
 
         if number_of_adults == 0:
             raise ValidationError("Number of adult guests cannot be 0.")
+
+
+class SearchByBookingCodeForm(forms.Form):
+    booking_code = forms.CharField(
+        max_length=6,
+        label="Enter Unique Booking Code:",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "id": "booking_code",
+                "placeholder": "Booking Code",
+            }
+        ),
+    )
