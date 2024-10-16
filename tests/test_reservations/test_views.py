@@ -70,7 +70,7 @@ def test_reports_view_guest(guest_client):
 
 
 def test_reports_view_staff(front_desk_client):
-    response = front_desk_client.get(reverse("reservations:rreports"), follow=True)
+    response = front_desk_client.get(reverse("reservations:reports"), follow=True)
     assert response.status_code == 302
     assertRedirects(response, reverse("website:home"))
 
