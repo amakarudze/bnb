@@ -151,7 +151,7 @@ def update_reservation(request, pk):
     return render(
         request,
         "website/update_reservation.html",
-        {"title": "Update reservation", "reservation": reservation},
+        {"title": "Update reservation", "reservation": reservation},)
 
       
 def search_by_booking_code(request):
