@@ -25,4 +25,6 @@ urlpatterns = [
         views.search_result_by_booking_code,
         name="search_result_by_booking_code",
     ),
+    path("cancel_reservation/<uuid:pk>", views.cancel_reservation, name="cancel_reservation")
+
 ]

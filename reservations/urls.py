@@ -12,4 +12,7 @@ urlpatterns = [
         views.UpdateReservationsView.as_view(),
         name="update_reservation",
     ),
+    path('add_reservation/', views.add_reservation, name='add_reservation'),
+    path("cancel_reservation/<uuid:pk>", views.cancel_reservation, name="cancel_reservation"),
+
 ]

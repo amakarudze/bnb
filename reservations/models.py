@@ -25,6 +25,8 @@ class Reservation(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     booking_code = models.CharField(max_length=6)
+    is_cancelled = models.BooleanField(default=False)
+
 
     class Meta:
         managed = True

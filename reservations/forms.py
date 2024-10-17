@@ -70,3 +70,8 @@ class ReservationsUpdateForm(ReservationForm):
     is_paid = forms.BooleanField(required=False)
     checked_in = forms.BooleanField(required=False)
     checked_out = forms.BooleanField(required=False)
+    
+
+class AddReservationForm(ReservationForm, SignUpForm):
+    pass
+

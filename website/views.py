@@ -146,3 +146,17 @@ def search_result_by_booking_code(request):
         "website/search_result_by_booking_code.html",
         {"title": "Search Result By Booking Code", "reservations": reservation_detail},
     )
+
+
+def cancel_reservation(request, guest_id):
+    guest = get_object_or_404(Guest, id=guest_id)
+
+    # Get the associated reservation
+    reservation = guest.reservation
+
+    if reservation.is_cancelled:
+        return HttpResponse("This reservation is already canceled.")
+
+    # Mark the reservation as canceled
+    reservation.is_cancelled = True
+    reservation.save()
