@@ -2,11 +2,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect
-from django.views.generic import UpdateView
 from django.urls import reverse
+from django.views.generic import UpdateView
 
+
+from .forms import GuestFormSet, StaffReservationForm, ReservationUpdateForm
 from .models import Reservation
-from .forms import ReservationsUpdateForm, GuestFormSet, StaffReservationForm
 
 
 @login_required
@@ -36,9 +37,9 @@ def reservations_list(request):
     )
 
 
-class UpdateReservationsView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Reservation
-    form_class = ReservationsUpdateForm
+    form_class = ReservationUpdateForm
     template_name = "website/reservation.html"
     permission_required = "reservations.change_reservation"
     raise_exception = True
