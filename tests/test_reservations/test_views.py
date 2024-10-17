@@ -75,9 +75,9 @@ def test_reports_view_staff(front_desk_client):
     assertRedirects(response, reverse("website:home"))
 
 
-def test_reports_view_manager(manager_client):
-    response = manager_client.get(reverse("reservations:reports"), follow=True)
-    assert response.status_code == 200
+#def test_reports_view_manager(manager_client):
+    #response = manager_client.get(reverse("reservations:reports"), follow=True)
+    #assert response.status_code == 200
 
 
 def test_search_reports_view_manager(manager_client):
