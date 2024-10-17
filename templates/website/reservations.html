@@ -1,0 +1,55 @@
+{% extends "website/base.html" %}
+
+{% block content %}
+<div class="container mt-3 mb-3">
+    <h2>List of Reservations</h2>
+
+    <div class="table-container">
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">S.N</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Check In Date</th>
+                    <th scope="col">Check Out Date</th>
+                    <th scope="col">Guests </th>
+                    <th scope="col">Rooms</th>
+                    <th scope="col">Events</th>
+                    <th scope="col">Total Cost</th>
+                    <th scope="col">Paid</th>
+                    <th scope="col">Date Created </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'website:update_reservation' reservation.pk %}">{{ reservation.user }}</a></td>
+                    <td>{{ reservation.check_in_date }}</td>
+                    <td>{{ reservation.check_out_date }}</td>
+                    <td>
+                        <ul> {% for guest in reservation.guest__set %}
+                        <li>{{ forloop.counter }}. {{ guest }} - {% if guest.is_adult %} Adult {% else %} Child {% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                        <p>Number of adults: {{ reservation.number_of_adults }}</p>
+                        <p>Number of children: {{ reservation.number_of_children }}</p>
+                    </td>
+                    <td><ol>{% for room in reservation.rooms.all %} <li> {{ room.name }} </li>{% endfor %}</ol></td>
+                    <td><ol>{% for event in reservation.events.all %} {{ event.name }} {% endfor %}</ol></td>
+                    <td>{{ reservation.total_cost }}</td>
+                    <td>{% if reservation.is_paid %}
+                        <i class="fa-regular fa-square-check text-success"></i>
+                        {% else %}
+                        <i class="fa-regular fa-rectangle-xmark text-danger"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ reservation.date_created }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

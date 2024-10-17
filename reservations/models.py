@@ -34,7 +34,9 @@ class Reservation(models.Model):
 
     def calculate_total_cost(self):
         total = 0
-        self.total_cost = total
+        for room in self.rooms.all():
+            total = room.price * (self.check_out_date - self.check_in_date).days
+            self.total_cost += total
         self.save(update_fields=self.total_cost)
 
 
