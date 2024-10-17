@@ -83,3 +83,14 @@ def test_reservations_view_unathenticated_guest(client):
     response = client.get(reverse("website:reservations"), follow=True)
     assert response.status_code == 200
     assertRedirects(response, "/accounts/login/?next=/reservations/")
+
+    
+def test_search_by_booking_code_view(
+    db, client, search_form_by_booking_code, reservation
+):
+    response = client.get(
+        reverse("website:search_result_by_booking_code"),
+        data=search_form_by_booking_code,
+    )
+    assert response.status_code == 200
+    assert "reservations" in response.context

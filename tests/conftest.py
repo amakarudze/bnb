@@ -559,3 +559,10 @@ def valid_sign_up_form(db):
         "phone_number": "123-456-7890",
     }
     return form
+
+
+@pytest.fixture
+def search_form_by_booking_code():
+    return {
+        "booking_code": "ABCDEF",
+    }

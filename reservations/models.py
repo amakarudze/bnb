@@ -24,6 +24,7 @@ class Reservation(models.Model):
     checked_out = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
+    booking_code = models.CharField(max_length=6)
 
     class Meta:
         managed = True

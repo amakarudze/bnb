@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from events.models import Event
 from reservations.forms import ReservationForm, GuestFormSet
 from reservations.models import Guest, Reservation
+from website.forms import SearchByBookingCodeForm
 from rooms.models import Room
 
 from .forms import SearchForm
@@ -151,4 +152,22 @@ def update_reservation(request, pk):
         request,
         "website/update_reservation.html",
         {"title": "Update reservation", "reservation": reservation},
+
+      
+def search_by_booking_code(request):
+    form = SearchByBookingCodeForm()
+    return render(
+        request,
+        "website/search_by_booking_code.html",
+        {"title": "Search By Booking Code", "form": form},
+    )
+
+
+def search_result_by_booking_code(request):
+    booking_code = request.GET.get("booking_code")
+    reservation_detail = Reservation.objects.filter(booking_code=booking_code)
+    return render(
+        request,
+        "website/search_result_by_booking_code.html",
+        {"title": "Search Result By Booking Code", "reservations": reservation_detail},
     )
