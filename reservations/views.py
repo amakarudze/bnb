@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -6,8 +7,13 @@ from django.urls import reverse
 from django.views.generic import UpdateView
 
 
-from .forms import GuestFormSet, StaffReservationForm, ReservationUpdateForm
-from .models import Reservation
+from .forms import (
+    ReservationUpdateForm,
+    GuestFormSet,
+    StaffReservationForm,
+    SearchReportsForm,
+)
+from .models import Reservation, Event
 
 
 @login_required
@@ -67,4 +73,48 @@ def add_reservation(request):
 def reports(request):
     if not request.user.is_superuser:
         return redirect("website:home")
-    return render(request, "reservations/reports.html", {"title": "Reports"})
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+    reservations = Reservation.objects.filter(
+        check_in_date__gte=start_date, check_in_date__lte=end_date
+    )
+    events = Event.objects.filter(
+        start_date__gte=start_date, start_date__lte=end_date
+    ).count()
+    total_revenue = reservations.aggregate(Sum("total_price"))["total_price__sum"]
+    total_adults = reservations.aggregate(Sum("number_of_adults"))[
+        "number_of_adults__sum"
+    ]
+    total_children = reservations.aggregate(Sum("number_of_children"))[
+        "number_of_children__sum"
+    ]
+    total_bookings = reservations.filter(is_cancelled=False).count()
+    total_rooms_booked = Reservation.rooms.through.objects.count()
+
+    return render(
+        request,
+        "reservations/reports.html",
+        {
+            "title": "Reports",
+            "total_revenue": total_revenue,
+            "total_adults": total_adults,
+            "total_children": total_children,
+            "total_bookings": total_bookings,
+            "events": events,
+            "total_rooms_booked": total_rooms_booked,
+            "start_date": start_date,
+            "end_date": end_date,
+        },
+    )
+
+
+@login_required
+def search_reports(request):
+    if not request.user.is_superuser:
+        return redirect("website:home")
+    form = SearchReportsForm()
+    return render(
+        request,
+        "reservations/search_reports.html",
+        {"form": form, "Title": "Search reports"},
+    )

@@ -14,4 +14,5 @@ urlpatterns = [
     ),
     path("add_reservation/", views.add_reservation, name="add_reservation"),
     path("reports/", views.reports, name="reports"),
+    path("search_reports/", views.search_reports, name="search_reports"),
 ]
