@@ -12,8 +12,29 @@
             <div class="col-md-8">
                 <div class="bento-item bento-tall">
                     <h3 class="card-title">Summary</h3>
+                    <div class="data-table-contienr">
+                        <table class="table bnb_data_table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Room Type</th>
+                                    <th scope="col">Room Capacity</th>
+                                    <th scope="col">Room Occupancy Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td> {{ total_rooms_booked }}</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
 
-                    {{ total_rooms_booked }}
+                   
                 </div>
             </div>
             <!-- Two small items -->
