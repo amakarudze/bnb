@@ -89,7 +89,7 @@ GuestFormSet = forms.modelformset_factory(
 )
 
 
-class ReservationsUpdateForm(ReservationForm):
+class ReservationUpdateForm(ReservationForm):
     is_paid = forms.BooleanField(required=False)
     checked_in = forms.BooleanField(required=False)
     checked_out = forms.BooleanField(required=False)
