@@ -4,3 +4,6 @@ browser = webdriver.Firefox()
 browser.get("http://localhost:8000")
 
 assert "BnB" in browser.title
+
+
+browser.quit()
