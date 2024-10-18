@@ -29,6 +29,9 @@ jobs:
         token: ${{ secrets.TOKEN_GITHUB_ACTIONS }}
     - run: geckodriver --version
 
+    - name: Install libgtk-3
+      run: sudo apt install libgtk-3
+
     - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
