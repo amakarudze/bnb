@@ -1,6 +1,8 @@
 from selenium import webdriver
 
-browser = webdriver.Firefox()
+options = webdriver.FirefoxOptions()
+options.headless = True
+browser = webdriver.Firefox(options=options)
 browser.get("http://localhost:8000")
 
 assert "BnB" in browser.title
