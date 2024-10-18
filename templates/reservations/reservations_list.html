@@ -10,13 +10,13 @@
                 <tr>
                     <th scope="col">S.N</th>
                     <th scope="col">User</th>
+                    <th scope="col">Booking Code</th>
                     <th scope="col">Check In Date</th>
                     <th scope="col">Check Out Date</th>
                     <th scope="col">Guests </th>
                     <th scope="col">Rooms</th>
                     <th scope="col">Events</th>
                     <th scope="col">Total Cost</th>
-                    <th scope="col">Paid</th>
                     <th scope="col">Checked In</th>
                     <th scope="col">Checked Out</th>
                     <th scope="col">Date Created </th>
@@ -27,11 +27,12 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td><a href="{% url 'reservations:update_reservation' reservation.pk %}">{{ reservation.user }}</a></td>
+                    <td>{{ reservation.booking_code }}</td>
                     <td>{{ reservation.check_in_date }}</td>
                     <td>{{ reservation.check_out_date }}</td>
                     <td>
                         <ul> {% for guest in reservation.guest__set %}
-                        <li>{{ forloop.counter }}. {{ guest }} - {% if guest.is_adult %} Adult {% else %} Child {% endif %}</li>
+                        <li>{{ forloop.counter }}. {{ guest.full_name }} - {% if guest.is_adult %} Adult {% else %} Child {% endif %}</li>
                         {% endfor %}
                     </ul>
                         <p>Number of adults: {{ reservation.number_of_adults }}</p>
@@ -39,13 +40,7 @@
                     </td>
                     <td><ol>{% for room in reservation.rooms.all %} <li> {{ room.name }} </li>{% endfor %}</ol></td>
                     <td><ol>{% for event in reservation.events.all %} {{ event.name }} {% endfor %}</ol></td>
-                    <td>{{ reservation.total_cost }}</td>
-                    <td>{% if reservation.is_paid %}
-                        <i class="fa-regular fa-square-check text-success"></i>
-                        {% else %}
-                        <i class="fa-regular fa-rectangle-xmark text-danger"></i>
-                        {% endif %}
-                    </td>
+                    <td>SEK {{ reservation.total_price }}</td>
                     <td>{% if reservation.checked_in %}
                         <i class="fa-regular fa-square-check text-success"></i>
                         {% else %}

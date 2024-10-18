@@ -26,7 +26,7 @@ class Reservation(models.Model):
     checked_out = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    booking_code = models.CharField(max_length=6)
+    booking_code = models.CharField(max_length=6, unique=True)
     is_cancelled = models.BooleanField(default=False)
 
     class Meta:
@@ -35,21 +35,20 @@ class Reservation(models.Model):
     def __str__(self):
         return f"{self.user} {self.check_in_date} - {self.check_out_date}"
 
-    def calculate_total_cost(self):
+    def save(self, *args, **kwargs):
         total = 0
         self.total_price = 0
-        for room in self.rooms.all():
-            total = room.price * (self.check_out_date - self.check_in_date).days
-            self.total_price += total
-        for event in self.events.all():
-            self.total_price += event.price
-        self.save(update_fields=[self.total_price])
-
-    def generate_booking_code(self):
-        self.booking_code = "".join(
-            random.choices(string.ascii_uppercase + string.digits, k=6)
-        )
-        self.save(update_fields=[self.booking_code])
+        if not self.total_price:
+            for room in self.rooms.all():
+                total = room.price * (self.check_out_date - self.check_in_date).days
+                self.total_price += total
+            for event in self.events.all():
+                self.total_price += event.price
+        if not self.booking_code:
+            self.booking_code = "".join(
+                random.choices(string.ascii_uppercase + string.digits, k=6)
+            )
+        return super().save(*args, **kwargs)
 
 
 class Guest(models.Model):

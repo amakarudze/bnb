@@ -1,5 +1,6 @@
 {% extends "website/base.html" %}
 {% load static %}
+<script src="{% static 'js/reservations.js' %}"></script>
 
 {% block content %}
 
@@ -32,6 +33,16 @@
             </div>
             {% endfor %}
         {% endif %}
+        {% endfor %}
+        {{ guest_formset.management_form }}
+
+        {% for form in guest_formset %}
+        <div>
+            <form class="form-inline">
+                <label for="Full name"> Full Name</label>{{ form.full_name }} <label for="">Is Adult</label> {{ form.is_adult }}
+            <button class="btn btn btn-success my-2 my-sm-0" type="submit">+</button>
+            </form>
+        </div>
         {% endfor %}
         <div class="form-group text-center ">
             <button type="submit" class="btn submit">Save</button>
