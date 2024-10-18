@@ -1,3 +1,5 @@
+from django.db.models import Sum
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
@@ -29,7 +31,6 @@ def make_reservation(request, pk):
         if form.is_valid() and guest_formset.is_valid():
             reservation = form.save(commit=False)
             reservation.user = request.user
-            reservation.calculate_total_cost()
             reservation.save()
 
             for guest_form in guest_formset:
@@ -85,7 +86,6 @@ def search(request):
     check_out_date = request.GET.get("check_out_date", "")
     number_of_adults = request.GET.get("number_of_adults", "")
     number_of_children = request.GET.get("number_of_children", "")
-    print(number_of_children)
 
     reservations = Reservation.objects.filter(
         check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
@@ -102,7 +102,14 @@ def search(request):
     else:
         rooms = rooms.exclude(room_type="Family")
     if number_of_adults:
-        pass
+        if (
+            int(number_of_adults)
+            > rooms.aggregate(Sum("room_capacity"))["room_capacity__sum"]
+        ):
+            messages.error(
+                request,
+                "We are sorry we don't have enough room to accommodate you all.",
+            )
 
     return render(
         request,
@@ -151,9 +158,10 @@ def update_reservation(request, pk):
     return render(
         request,
         "website/update_reservation.html",
-        {"title": "Update reservation", "reservation": reservation},)
+        {"title": "Update reservation", "reservation": reservation},
+    )
 
-      
+
 def search_by_booking_code(request):
     form = SearchByBookingCodeForm()
     return render(
