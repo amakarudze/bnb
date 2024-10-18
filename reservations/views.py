@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views.generic import UpdateView
 
 
-from .forms import GuestFormSet, StaffReservationForm, ReservationUpdateForm
+from .forms import GuestFormSet, AddReservationForm, ReservationUpdateForm
 from .models import Reservation
 
 
@@ -59,8 +59,15 @@ class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
     ["reservations.add_reservations", "accounts.add_user"], raise_exception=True
 )
 def add_reservation(request):
-    form = StaffReservationForm()
-    return render(request, "reservations/reservation.html", {"form": form})
+    form = AddReservationForm()
+    guest_formset = GuestFormSet()
+    print(guest_formset)
+    print(guest_formset.empty_form)
+    return render(
+        request,
+        "reservations/reservation.html",
+        {"form": form, "guest_formset": guest_formset},
+    )
 
 
 @login_required

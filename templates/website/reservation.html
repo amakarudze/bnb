@@ -40,19 +40,6 @@
             {% endfor %}
         {% endif %}
         {% endfor %}
-    </fieldset>
-
-        <fieldset>
-            <legend>Add More Guests</legend>
-            {% for form in guest_formset.forms %}
-            <div class="row">
-                {% for field in form %}
-                <div class="col">{{ field.label }} {{ field }}</div>
-                {% endfor %}
-                <div class="col"><button><i class="fa-solid fa-plus"></i></button></div>
-            </div>
-            {% endfor %}
-        </fieldset>
 
         <div class="form-group text-center ">
             <button type="submit" class="btn submit">Save Reservation</button>

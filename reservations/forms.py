@@ -95,5 +95,5 @@ class ReservationUpdateForm(ReservationForm):
     checked_out = forms.BooleanField(required=False)
 
 
-class StaffReservationForm(ReservationForm, SignUpForm):
+class AddReservationForm(ReservationForm, SignUpForm):
     pass
