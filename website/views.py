@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
+from accounts.views import send_email
 from django.shortcuts import render, redirect
 
 from events.models import Event
@@ -37,6 +40,27 @@ def make_reservation(request, pk):
                     guest = guest_form.save(commit=False)
                     guest.reservation = reservation
                     guest.save()
+            #email
+            subject = "Booking Confirmation - BNB"
+            guest_email = reservation.user.email  #email address
+
+            #email template with reservation details
+            message = render_to_string('guest_reservation_confirmation.html', {
+                'reservation': reservation,
+                'booking_reference_code': reservation.booking_code,  # Pass the reference code
+                'room_id': reservation.rooms.first().id,  
+                'check_in_date': reservation.check_in_date,
+                'check_out_date': reservation.check_out_date,
+            })
+            
+            # Send the email
+            send_email(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,  
+                [guest_email],  # Recipient email
+            )
+
 
             return redirect("website:reservation_success")
 
