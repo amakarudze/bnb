@@ -6,13 +6,35 @@
 
 <div class="report-container">
     <div class="container my-5">
-        <h1 class="page-title text-center mb-4">Reports</h1>
+        <h1 class="page-title text-center mb-4">Report for period {{ start_date }} to {{ end_date }}</h1>
         <div class="row g-4">
             <!-- Large item -->
             <div class="col-md-8">
                 <div class="bento-item bento-tall">
                     <h3 class="card-title">Summary</h3>
-                    <img class="summary-graph" src="images/sample_pie_chart.png" alt="">
+                    <div class="data-table-contienr">
+                        <table class="table bnb_data_table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Room Type</th>
+                                    <th scope="col">Room Capacity</th>
+                                    <th scope="col">Room Occupancy Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td> {{ total_rooms_booked }}</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                   
                 </div>
             </div>
             <!-- Two small items -->
@@ -20,14 +42,14 @@
                 <div class="row g-4">
                     <div class="col-12">
                         <div class="bento-item guests-number">
-                            <h3 class="card-title">Number of Guests</h3>
-                            <p class="data-number">245,000</p>
+                            <h3 class="card-title">Number of Adults</h3>
+                            <p class="data-number">{% if total_adults %}{{ total_adults }} {% else %}0 {% endif %}</p>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="bento-item children-number">
                             <h3 class="card-title">Number of Children</h3>
-                            <p class="data-number">7,550</p>
+                            <p class="data-number">{% if total_children %}{{ total_children }} {% else %}0 {% endif %}</p>
                         </div>
                     </div>
                 </div>
@@ -36,21 +58,21 @@
             <div class="col-md-4">
                 <div class="bento-item total-booking">
                     <h3 class="card-title">Total Bookings</h3>
-                    <p class="data-number">6,550</p>
+                    <p class="data-number">{% if total_bookings %}{{ total_bookings }} {% else %}0 {% endif %}</p>
                 </div>
             </div>
             <!-- Medium item -->
             <div class="col-md-4">
                 <div class="bento-item average-guest">
-                    <h3 class="card-title">Average Guests</h3>
-                    <p class="data-number">3,780</p>
+                    <h3 class="card-title">Total Events</h3>
+                    <p class="data-number">{% if events %}{{ events }} {% else %}0 {% endif %}</p>
                 </div>
             </div>
             <!-- Medium item -->
             <div class="col-md-4">
                 <div class="bento-item data-five">
-                    <h3 class="card-title">Sample Data</h3>
-                    <p class="data-number">4650</p>
+                    <h3 class="card-title">Total Revenue</h3>
+                    <p class="data-number">SEK {% if total_revenue %}{{ total_revenue }} {% else %}0 {% endif %}</p>
                 </div>
             </div>
         </div>
