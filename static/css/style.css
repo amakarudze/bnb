@@ -561,8 +561,12 @@ form .btn:hover {
     position: relative;
 }
 
+.bento-item.bento-tall {
+    align-items: normal;
+}
+
 .bento-item:hover {
-    transform: scale(1.05);
+    transform: scale(1.01);
 }
 
 .bento-tall {
@@ -582,13 +586,40 @@ form .btn:hover {
 }
 
 .summary-graph {
-    max-height: 350px;
+    height: 70%;
 }
 
 .data-number {
     font-size: 38px;
     font-weight: 800;
     margin: 0;
+}
+
+.data-table-contienr {
+    margin: 4rem 2rem 1rem;
+    max-height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.bnb_data_table {
+    min-width: 400px;
+    background-color: #B6EDD7;
+    height: fit-content;
+}
+
+.data-table-contienr .table>:not(caption)>*>* {
+    background-color: #B6EDD7;
+}
+
+.data-table-contienr .tbody,
+.data-table-contienr td,
+.data-table-contienr tfoot,
+.data-table-contienr th,
+.data-table-contienr thead,
+.data-table-contienr tr {
+    border-color: #eafff7;
 }
 
 .guests-number {
@@ -630,17 +661,19 @@ form .btn:hover {
 .data-five .data-number {
     color: #8B3B90;
 }
-/* staff dashboard */
-.staff-container{
 
-}
-.staff-container .btn-title{
+/* staff dashboard */
+.staff-container {}
+
+.staff-container .btn-title {
     font-size: 20px;
 }
-.staff-container .bento-item{
+
+.staff-container .bento-item {
     padding: 2rem;
     cursor: pointer;
 }
+
 /* room details page */
 .room-details-page {
     margin-bottom: 3rem;

@@ -97,3 +97,47 @@ class ReservationUpdateForm(ReservationForm):
 
 class AddReservationForm(ReservationForm, SignUpForm):
     pass
+
+
+class SearchReportsForm(forms.Form):
+    start_date = forms.DateField(
+        label="Enter Start Date:",
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "id": "start_date",
+                "placeholder": "DD/MM/YYYY",
+                "type": "date",
+            }
+        ),
+    )
+    end_date = forms.DateField(
+        label="Enter End Date:",
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "id": "end_date",
+                "placeholder": "DD/MM/YYYY",
+                "type": "date",
+            }
+        ),
+    )
+
+    def clean(self):
+        start_date = self.cleaned_data.get("start_date")
+        end_date = self.cleaned_data.get("end_date")
+
+        if start_date and end_date:
+            if end_date < start_date:
+                raise forms.ValidationError(
+                    {"end_date": ["End  date must be greater than Start date."]}
+                )
+
+            if end_date > date.today():
+                raise forms.ValidationError(
+                    {"end_date": ["End date should not be a future date."]}
+                )
+            if start_date > date.today():
+                raise forms.ValidationError(
+                    {"start_date": ["Start date should not be a future date."]}
+                )
