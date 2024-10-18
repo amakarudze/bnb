@@ -20,6 +20,9 @@ jobs:
       with:
         python-version: ${{ matrix.python-version}}
 
+    - uses: browser-actions/setup-firefox@latest
+    - run: firefox --version
+
     - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
