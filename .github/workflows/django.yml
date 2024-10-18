@@ -24,8 +24,9 @@ jobs:
       uses: browser-actions/setup-firefox@latest
     - run: firefox --version
 
-    - name: Gecko Driver
-      uses: browser-actions/setup-geckodriver@latest
+    - uses: browser-actions/setup-geckodriver@latest
+      with:
+        token: ${{ secrets.TOKEN_GITHUB_ACTIONS }}
     - run: geckodriver --version
 
     - name: Install Python Dependencies
