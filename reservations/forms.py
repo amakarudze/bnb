@@ -5,6 +5,7 @@ from events.models import Event
 
 from .models import Reservation, Guest
 
+from accounts.forms import SignUpForm
 
 class ReservationForm(forms.ModelForm):
     """
