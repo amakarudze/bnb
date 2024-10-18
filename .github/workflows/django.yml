@@ -20,16 +20,13 @@ jobs:
       with:
         python-version: ${{ matrix.python-version}}
 
-    - uses: browser-actions/setup-firefox@latest
+    - name: Browser
+      uses: browser-actions/setup-firefox@latest
     - run: firefox --version
 
-    - name: geckodriver/firefox
-      run: |
-        echo "geckodriver/firefox"
-        which geckodriver
-        geckodriver --version
-        which firefox
-        firefox --version
+    - name: Gecko Driver
+      uses: browser-actions/setup-geckodriver@latest
+    - run: geckodriver --version
 
     - name: Install Python Dependencies
       run: |
