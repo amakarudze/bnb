@@ -63,7 +63,7 @@ def make_reservation(request, pk):
                 [guest_email],  # Recipient email
             )
 
-
+            messages.success(request, "Reservation done successfully!")
             return redirect("website:reservation_success")
 
     else:
