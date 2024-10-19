@@ -15,7 +15,7 @@ urlpatterns = [
     path("rooms/", views.rooms, name="rooms"),
     path("search/", views.search, name="search"),
     path("room/<uuid:pk>/", views.room, name="room"),
-    path("website/<uuid:pk>/", views.event, name="event"),
+    path("event/<uuid:pk>/", views.event, name="event"),
     path("reservations/", views.reservations, name="reservations"),
     path("update_reservation/", views.update_reservation, name="update_reservation"),
     path(
