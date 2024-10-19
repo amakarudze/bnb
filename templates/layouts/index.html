@@ -49,6 +49,39 @@
                     <a class="p-button signup">Sign Up</a>
                     <a class="p-button">Log in</a>
                 </div>
+                <div class="login-status">
+                    <div class="loggedin-user">
+                        <!-- icon for manager -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                            <g fill="none" fill-rule="evenodd">
+                                <path
+                                    d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z" />
+                                <path fill="black"
+                                    d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2M8.5 9.5a3.5 3.5 0 1 1 7 0a3.5 3.5 0 0 1-7 0m9.758 7.484A7.99 7.99 0 0 1 12 20a7.99 7.99 0 0 1-6.258-3.016C7.363 15.821 9.575 15 12 15s4.637.821 6.258 1.984" />
+                            </g>
+                        </svg>
+                        <!-- icon for staff -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                            <g fill="none" fill-rule="evenodd">
+                                <path
+                                    d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z" />
+                                <path fill="blue"
+                                    d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2M8.5 9.5a3.5 3.5 0 1 1 7 0a3.5 3.5 0 0 1-7 0m9.758 7.484A7.99 7.99 0 0 1 12 20a7.99 7.99 0 0 1-6.258-3.016C7.363 15.821 9.575 15 12 15s4.637.821 6.258 1.984" />
+                            </g>
+                        </svg>
+                        <!-- icon for guest -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                            <g fill="none" fill-rule="evenodd">
+                                <path
+                                    d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z" />
+                                <path fill="green"
+                                    d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2M8.5 9.5a3.5 3.5 0 1 1 7 0a3.5 3.5 0 0 1-7 0m9.758 7.484A7.99 7.99 0 0 1 12 20a7.99 7.99 0 0 1-6.258-3.016C7.363 15.821 9.575 15 12 15s4.637.821 6.258 1.984" />
+                            </g>
+                        </svg>
+                        <span>Sanjeeb Rokaya</span>
+                    </div>
+                    <a class="logout p-button">Log out</a>
+                </div>
                 <div class="mobilemenu">
                     <div class="hamburger-menu">
                         <div class="rotate-first-initial"></div>
@@ -265,6 +298,78 @@
         </div>
     </section>
 
+    <!-- Success Message Alert -->
+    <div id="successAlert" class="alert-message alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> Your account has been created successfully.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <!-- sample button to trigger alert -->
+    <button type="button" id="showSuccessBtn" class="success btn btn-secondary">Show Success Alert</button>
+
+    <!-- Error Message Alert -->
+    <div id="errorAlert" class="alert-message alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> There was trouble creating your account, please check your details again.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <!-- sample button to trigger alert -->
+    <button type="button" id="showErrorBtn" class="error btn btn-secondary">Show Error Alert</button>
+
+
+    <script>
+        let fadeIntervals = {}; // Store fade intervals for each alert
+
+        // Function to show the alert and close it automatically after 5 seconds
+        function showAlert(alertId) {
+            const alertElement = document.getElementById(alertId);
+            alertElement.style.display = 'block';
+            alertElement.style.opacity = 1;
+
+            // Clear any existing fade out intervals for this alert
+            if (fadeIntervals[alertId]) {
+                clearInterval(fadeIntervals[alertId]);
+                fadeIntervals[alertId] = null;
+            }
+
+            // Automatically close the alert after 5 seconds
+            setTimeout(() => {
+                fadeOut(alertElement);
+            }, 5000);
+        }
+
+        // Function to fade out the alert
+        function fadeOut(element) {
+            let opacity = 1;
+            fadeIntervals[element.id] = setInterval(() => {
+                if (opacity <= 0.1) {
+                    clearInterval(fadeIntervals[element.id]);
+                    fadeIntervals[element.id] = null;
+                    element.style.display = 'none';
+                } else {
+                    opacity -= 0.1;
+                    element.style.opacity = opacity;
+                }
+            }, 50);
+        }
+
+        // Event listeners for buttons to show alerts
+        document.getElementById('showSuccessBtn').addEventListener('click', () => showAlert('successAlert'));
+        document.getElementById('showErrorBtn').addEventListener('click', () => showAlert('errorAlert'));
+
+        // Event listeners for close buttons to hide the alerts
+        document.querySelectorAll('.btn-close').forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                const alertElement = event.target.parentElement;
+                alertElement.style.display = 'none';
+
+                // Clear any ongoing fade out intervals for this alert
+                if (fadeIntervals[alertElement.id]) {
+                    clearInterval(fadeIntervals[alertElement.id]);
+                    fadeIntervals[alertElement.id] = null;
+                }
+            });
+        });
+    </script>
+
     <!-- footer -->
     <footer>
         <div class="container">
@@ -403,7 +508,7 @@
             } = hamburgerMenu.children;
             const menuContent = document.querySelector(".mobilemenu .mm-list");
 
-            // Toggle class
+            // Toggle class 
             if (first.classList.contains("rotate-first-initial")) {
                 menuContent.style.display = "flex";
                 setTimeout(() => {
@@ -424,6 +529,7 @@
             }
         }
     </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
