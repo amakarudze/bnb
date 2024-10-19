@@ -50,16 +50,27 @@ class SearchForm(forms.Form):
         check_out_date = cleaned_data.get("check_out_date")
         number_of_adults = self.cleaned_data.get("number_of_adults")
 
-        if check_in_date < date.today() or check_out_date < date.today():
+        if check_in_date < date.today():
             raise ValidationError(
-                "Check in date or check out date cannot be in the past."
+                {"check_in_date": ["Check in date cannot be in the past."]}
+            )
+        if check_out_date < date.today():
+            raise ValidationError(
+                {"check_out_date": ["Check out date cannot be in the past."]}
             )
         if check_in_date >= check_out_date:
             raise ValidationError(
-                "Check out date should be greater than check in date."
+                {
+                    "check_out_date": [
+                        "Check out date should be greater than check in date."
+                    ]
+                }
             )
 
         if number_of_adults == 0:
+            raise ValidationError(
+                {"number_of_adults": ["Number of adult guests cannot be 0."]}
+            )
             raise ValidationError("Number of adult guests cannot be 0.")
 
 
@@ -75,3 +86,5 @@ class SearchByBookingCodeForm(forms.Form):
             }
         ),
     )
+
+

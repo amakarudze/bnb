@@ -569,23 +569,6 @@ def search_form_by_booking_code():
 
 
 @pytest.fixture
-def guest_formset_valid():
-    guest1={
-        "full_name": "John Doe",
-        "is_adult": True        
-    }
-    guest2={
-        "full_name": "Jane Doe", 
-        "is_adult": True
-    }
-    guest3={
-        "full_name": "Jean Doe", 
-        "is_adult": True
-    }
-    return [guest1, guest2, guest3]
-
-
-@pytest.fixture
 def add_reservation_valid(db, room):
     form = {
         "first_name": "John",

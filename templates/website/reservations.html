@@ -17,8 +17,6 @@
                     <th scope="col">Events</th>
                     <th scope="col">Total Cost</th>
                     <th scope="col">Paid</th>
-                    <th scope="col">Checked In</th>
-                    <th scope="col">Checked Out</th>
                     <th scope="col">Date Created </th>
                 </tr>
             </thead>
@@ -26,7 +24,7 @@
                 {% for reservation in reservations %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td><a href="{% url 'reservations:edit_reservation' reservation.pk %}">{{ reservation.user }}</a></td>
+                    <td><a href="{% url 'website:update_reservation' reservation.pk %}">{{ reservation.user }}</a></td>
                     <td>{{ reservation.check_in_date }}</td>
                     <td>{{ reservation.check_out_date }}</td>
                     <td>
@@ -41,18 +39,6 @@
                     <td><ol>{% for event in reservation.events.all %} {{ event.name }} {% endfor %}</ol></td>
                     <td>{{ reservation.total_cost }}</td>
                     <td>{% if reservation.is_paid %}
-                        <i class="fa-regular fa-square-check text-success"></i>
-                        {% else %}
-                        <i class="fa-regular fa-rectangle-xmark text-danger"></i>
-                        {% endif %}
-                    </td>
-                    <td>{% if reservation.checked_in %}
-                        <i class="fa-regular fa-square-check text-success"></i>
-                        {% else %}
-                        <i class="fa-regular fa-rectangle-xmark text-danger"></i>
-                        {% endif %}
-                    </td>
-                    <td>{% if reservation.checked_out %}
                         <i class="fa-regular fa-square-check text-success"></i>
                         {% else %}
                         <i class="fa-regular fa-rectangle-xmark text-danger"></i>

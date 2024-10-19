@@ -130,12 +130,12 @@ def invalid_sign_up_form_existing_email(db):
         "email": "elsa@test.com",
         "password": "securepassword123",
         "confirm_password": "securepassword123",
-        "dob": "1990-01-01",  #  date format
+        "dob": "1990-01-01",
         "address": "123 Main St",
         "city": "Cityville",
         "postal_code": "12345",
         "state": "State",
-        "country": "US",  #  country code
+        "country": "US",
         "phone_number": "123-456-7890",
     }
     return form

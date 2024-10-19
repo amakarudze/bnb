@@ -1,0 +1,63 @@
+{% extends "website/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="signup-form-container">
+    <div class="form-header-logo">
+        <img src="{% static 'images/logo.jpg' %}" alt="">
+    </div>
+
+    <form action="" class="signup-form" method="POST" action="{% url 'website:update_reservation' reservation.pk %}">
+        {% csrf_token %}
+        <div class="form-group mb-4">
+            <h2 class="form-title">{{ title }}</h2>
+        </div>
+        <fieldset>
+            <legend>Update Reservations</legend>
+
+        {% for field in form %}
+        <div class="form-group mb-4">
+            <label>{{ field.label }}</label>
+            {{ field }}
+        </div>
+        {% if field.errors %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger">
+              <strong>{{ error }}</strong>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+              <strong>{{ error }}</strong>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </fieldset>
+
+        <fieldset>
+            <legend>Add More Guests</legend>
+            {% for form in guest_formset.forms %}
+            <div class="row">
+                {% for field in form %}
+                <div class="col">{{ field.label }} {{ field }}</div>
+                {% endfor %}
+                <div class="col"><button><i class="fa-solid fa-plus"></i></button></div>
+            </div>
+            {% endfor %}
+        </fieldset>
+
+        <div class="form-group text-center ">
+            <button type="submit" class="btn submit">Save Reservation</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+{% endblock %}

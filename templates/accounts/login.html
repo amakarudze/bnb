@@ -25,6 +25,7 @@
             <img src="{% static 'images/logo.jpg' %}" alt="">
         </div>
             <form class="login-form" action="" method="POST">
+             {% csrf_token %}
                 <div class="form-group mb-4">
                     <h2 class="form-title">Log in</h2>
                 </div>

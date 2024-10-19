@@ -7,37 +7,76 @@
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
-    <form class="signup-form">
+    <form class="signup-form" method="post">
         <div class="form-group mb-4">
             <h2 class="form-title">{{ title }}</h2>
         </div>
         {% csrf_token %}
+        <!-- Render main form fields -->
         {% for field in form %}
-        <div class="form-group mb-4">
-            <label>{{ field.label }}</label>
-            {{ field }}
-        </div>
-        {% if field.errors %}
-            {% for error in field.errors %}
-            <div class="alert alert-danger">
-              <strong>{{ error }}</strong>
+            <div class="form-group mb-4">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
+        {% endfor %}
+
+        <!-- Render form-wide errors (non-field errors) -->
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error }}</strong>
+                </div>
             {% endfor %}
         {% endif %}
 
-        {% if form.non_field_errors %}
-            {% for error in form.non_field_errors %}
-            <div class="alert alert-danger">
-              <strong>{{ error }}</strong>
-            </div>
+        <!-- Render the guest formset -->
+        <h4>Add more guest</h4>
+        <div id="container">
+            {{ guest_formset.management_form }}
+            {% for form in guest_formset %}
+                    <div class="guest-form">
+                        {{ form.as_table }}
+                    </div>
             {% endfor %}
-        {% endif %}
-        {% endfor %}
-        <div class="form-group text-center ">
-            <button type="submit" class="btn submit">Save</button>
+            <!-- Button to dynamically add more guest forms -->
+                <input type="button" value="+"  id="add_more" class="btn btn btn-success my-2 my-sm-0">
         </div>
+            <!-- Submit button for the entire form -->
+            <div class="form-group text-center">
+                <button type="submit" class="btn submit">Save</button>
+            </div>
     </form>
 
 </div>
-
 {% endblock %}
+<!-- Load your custom JavaScript -->
+
+<script>
+        let guestForm = document.querySelectorAll(".guest-form")
+        let container = document.querySelector("#container")
+        let addButton = document.querySelector("#add_more")
+        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+
+        let formNum = guestForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e){
+            e.preventDefault()
+
+            let newForm = guestForm[0].cloneNode(true)
+            let formRegex = RegExp(`form-(\\d){1}-`,'g')
+
+            formNum++
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+            container.insertBefore(newForm, addButton)
+            
+            totalForms.setAttribute('value', `${formNum+1}`)
+        }
+</script>

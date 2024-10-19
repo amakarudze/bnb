@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm
@@ -188,5 +190,12 @@ class SignUpForm(forms.Form):
         confirm_password = cleaned_data.get("confirm_password")
 
         if password != confirm_password:
-            raise forms.ValidationError("Passwords do not match.")
+            raise forms.ValidationError({"password": ["Passwords do not match."]})
+
+        dob = cleaned_data.get("dob")
+        if (date.today() - dob).days < 18:
+            raise forms.ValidationError(
+                {"dob": ["You have to be 18 years and above to use our site."]}
+            )
+
         return super().clean()

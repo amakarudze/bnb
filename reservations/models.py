@@ -1,3 +1,5 @@
+import random
+import string
 import uuid
 
 from django.db import models
@@ -18,7 +20,7 @@ class Reservation(models.Model):
     events = models.ManyToManyField(Event, related_name="events_reserved", blank=True)
     check_in_date = models.DateField()
     check_out_date = models.DateField()
-    total_cost = models.FloatField(default=0)
+    total_price = models.FloatField(default=0)
     is_paid = models.BooleanField(default=False)
     checked_in = models.BooleanField(default=False)
     checked_out = models.BooleanField(default=False)
@@ -36,8 +38,19 @@ class Reservation(models.Model):
 
     def calculate_total_cost(self):
         total = 0
-        self.total_cost = total
-        self.save(update_fields=self.total_cost)
+        self.total_price = 0
+        for room in self.rooms.all():
+            total = room.price * (self.check_out_date - self.check_in_date).days
+            self.total_price += total
+        for event in self.events.all():
+            self.total_price += event.price
+        self.save(update_fields=[self.total_price])
+
+    def generate_booking_code(self):
+        self.booking_code = "".join(
+            random.choices(string.ascii_uppercase + string.digits, k=6)
+        )
+        self.save(update_fields=[self.booking_code])
 
 
 class Guest(models.Model):

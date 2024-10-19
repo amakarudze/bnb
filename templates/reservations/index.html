@@ -1,0 +1,45 @@
+{% extends "website/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="staff-container">
+    <div class="container my-5">
+        <h1 class="page-title text-center mb-4">Staff Dashboard</h1>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <a href="{% url 'reservations:add_reservation' %}" class="bento-item total-booking">
+                    <p class="btn-title data-number">Make reservations</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'reservations:reservations_list' %}" class="bento-item data-five">
+                    <p class="btn-title data-number">View reservations</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'events:add_event' %}" class="bento-item average-guest">
+                    <p class="btn-title data-number">Add events</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'events:events_list' %}" class="bento-item guests-number">
+                    <p class="btn-title data-number">View events</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'rooms:add_room' %}" class="bento-item average-guest">
+                    <p class="btn-title data-number">Add rooms</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'rooms:rooms_list' %}" class="bento-item children-number">
+                    <p class="btn-title data-number">View rooms</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from events.models import Event
-from reservations.forms import ReservationForm, GuestFormSet
-from reservations.models import Guest, Reservation
+from reservations.forms import ReservationForm, EditReservationForm
+from reservations.models import Reservation
 from website.forms import SearchByBookingCodeForm
 from rooms.models import Room
 
@@ -27,19 +27,18 @@ def make_reservation(request, pk):
         guest_formset = GuestFormSet(request.POST)
 
         if form.is_valid() and guest_formset.is_valid():
-            # Save the reservation
             reservation = form.save(commit=False)
-            reservation.user = request.user  # Set the current logged-in user
+            reservation.user = request.user
+            reservation.calculate_total_cost()
             reservation.save()
 
-            # Save guests associated with the reservation
             for guest_form in guest_formset:
-                if guest_form.cleaned_data:  # Ensure the form is filled
+                if guest_form.cleaned_data:
                     guest = guest_form.save(commit=False)
                     guest.reservation = reservation
                     guest.save()
 
-            return redirect("website:reservation_success")  # Redirect to a success page
+            return redirect("website:reservation_success")
 
     else:
         room = Room.objects.get(pk=pk)
@@ -72,8 +71,13 @@ def make_reservation(request, pk):
     )
 
 
+@login_required
 def reservation_success(request):
-    return render(request, "website/reservation_success.html")
+    return render(
+        request,
+        "website/reservation_success.html",
+        {"title": "Rerservation successful!"},
+    )
 
 
 def search(request):
@@ -129,6 +133,18 @@ def room(request, pk):
     )
 
 
+@login_required
+def reservations(request):
+    reservation_list = Reservation.objects.filter(user=request.user).order_by(
+        "-check_in_date"
+    )
+    return render(
+        request,
+        "website/reservations.html",
+        {"title": "Manage Reservations", "reservation_list": reservation_list},
+    )
+
+      
 def search_by_booking_code(request):
     form = SearchByBookingCodeForm()
     return render(
@@ -148,15 +164,29 @@ def search_result_by_booking_code(request):
     )
 
 
-def cancel_reservation(request, guest_id):
-    guest = get_object_or_404(Guest, id=guest_id)
+@login_required
+def update_reservation(request, pk):
+    reservation = Reservation.objects.get(id=pk)
 
-    # Get the associated reservation
-    reservation = guest.reservation
+    if request.method == 'POST':
+        form = EditReservationForm(request.POST, instance=reservation)
+        if form.is_valid():
+            updated_reservation = form.save()
+            if updated_reservation.is_cancelled == True:
+                message = render_to_string(
+                    "emails/guest_cancellation_confirmation.html",
+                    {"name": user.first_name, "username": user.email},
+                )
+                from_email = FROM_EMAIL
+                to_email = [reservation.user.email]
+                subject = "Your reservation is cancelled!"
+                send_email(subject, message, from_email, to_email)
 
-    if reservation.is_cancelled:
-        return HttpResponse("This reservation is already canceled.")
+                messages.success(request, "Reservation updated successfully!")   
 
-    # Mark the reservation as canceled
-    reservation.is_cancelled = True
-    reservation.save()
+            return redirect('website:reservations')    
+
+    else:
+        form = EditReservationForm(instance=reservation)
+
+    return render(request, 'website/update_reservation.html', {'form': form, 'title':'Update Reservation', "reservation": reservation})
