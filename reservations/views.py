@@ -1,23 +1,34 @@
+from django.db import IntegrityError
 from django.db.models import Sum
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core import serializers
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic import UpdateView
 
+from accounts.models import User, UserProfile
+from accounts.views import FROM_EMAIL, send_email
+from events.models import Event
+from rooms.models import Room
+from website.forms import SearchForm
 
-from .forms import GuestFormSet, AddReservationForm, ReservationUpdateForm, SearchReportsForm
-from .models import Reservation, Event,Room
+from .forms import AddReservationForm, NewReservationForm, ReservationUpdateForm, SearchReportsForm
+from .models import Reservation
 
 
 @login_required
 def dashboard(request):
     """Dashboard page for the staff reservation website"""
+    form = SearchForm()
     if not request.user.is_staff:
         messages.error(request, "You need to be staff to access this page")
         return redirect("website:home")
-    return render(request, "reservations/index.html", {"title": "Dashboard"})
+    return render(
+        request, "reservations/dashboard.html", {"title": "Dashboard", "form": form}
+    )
 
 
 @login_required
@@ -41,7 +52,7 @@ def reservations_list(request):
 class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Reservation
     form_class = ReservationUpdateForm
-    template_name = "website/reservation.html"
+    template_name = "reservations/reservation_update.html"
     permission_required = "reservations.change_reservation"
     raise_exception = True
 
@@ -51,7 +62,6 @@ class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
     def get_context_data(self, **kwargs) -> dict[str]:
         context = super().get_context_data(**kwargs)
         context["title"] = "Update Reservation"
-        context["guest_formset"] = GuestFormSet()
         return context
 
 
@@ -60,14 +70,89 @@ class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
     ["reservations.add_reservations", "accounts.add_user"], raise_exception=True
 )
 def add_reservation(request):
-    form = AddReservationForm()
-    guest_formset = GuestFormSet()
-    print(guest_formset)
-    print(guest_formset.empty_form)
+    if request.method == "POST":
+        form = AddReservationForm(request.POST)
+
+        if form.is_valid():
+            try:
+                user = User.objects.create_user(
+                    email=form.cleaned_data.get("email"),
+                    first_name=form.cleaned_data.get("first_name"),
+                    last_name=form.cleaned_data.get("last_name"),
+                    password=form.cleaned_data.get("password"),
+                )
+                UserProfile.objects.create(
+                    user=user,
+                    dob=form.cleaned_data.get("dob"),
+                    address=form.cleaned_data.get("address"),
+                    city=form.cleaned_data.get("city"),
+                    postal_code=form.cleaned_data.get("postal_code"),
+                    state=form.cleaned_data.get("state"),
+                    country=form.cleaned_data.get("country"),
+                    phone_number=form.cleaned_data.get("phone_number"),
+                )
+                reservation = Reservation.objects.create(
+                    user=user,
+                    number_of_adults=form.cleaned_data.get("number_of_adults"),
+                    number_of_children=form.cleaned_data.get("number_of_children"),
+                    check_in_date=form.cleaned_data.get("check_in_date"),
+                    check_out_date=form.cleaned_data.get("check_out_date"),
+                )
+                rooms = form.cleaned_data.get("rooms")
+                for room in rooms:
+                    reservation.rooms.set(room)
+                events = form.cleaned_data.get("event")
+                if events:
+                    for event in events:
+                        reservation.events.set(event)
+
+                message = render_to_string(
+                    "emails/guest_reservation_confirmation.html",
+                    {
+                        "name": reservation.user.first_name,
+                        "booking_code": reservation.booking_code,
+                        "check_in_date": reservation.check_in_date,
+                        "check_out_date": reservation.check_out_date,
+                        "rooms": reservation.rooms.all(),
+                    },
+                )
+
+                subject = "Your booking confirmation at BnB!"
+                from_email = FROM_EMAIL
+                send_email(subject, message, from_email, [reservation.user.email])
+
+                messages.success(request, "New reservation added successfully")
+                return redirect("reservations:reservations_list")
+            except IntegrityError:
+                messages.error(request, "User with that email already exist")
+                return redirect("reservations:new_reservation")
+    else:
+        check_in_date = request.session["check_in_date"]
+        check_out_date = request.session["check_out_date"]
+        event_ids = list()
+        for object in serializers.Deserializer("json", request.session["events"]):
+            pk = object.object.pk
+            event_ids.append(pk)
+
+        room_ids = list()
+        for object in serializers.deserialize("json", request.session["rooms"]):
+            pk = object.object.pk
+            room_ids.append(pk)
+        form = AddReservationForm(
+            initial={
+                "check_in_date": check_in_date,
+                "check_out_date": check_out_date,
+                "number_of_adults": request.session["number_of_adults"],
+                "number_of_children": request.session["number_of_children"],
+            }
+        )
+        form.fields["rooms"].queryset = Room.objects.filter(id__in=room_ids)
+        form.fields["events"].queryset = Event.objects.filter(id__in=event_ids)
+
     return render(
         request,
         "reservations/reservation.html",
-        {"form": form, "guest_formset": guest_formset},
+        {"form": form, "title": "Add Reservation"},
     )
 
 
@@ -121,5 +206,57 @@ def search_reports(request):
     return render(
         request,
         "reservations/search_reports.html",
-        {"form": form, "Title": "Search reports"},
+        {"form": form, "Title": "Search reports"})
+    
+
+@login_required
+def new_reservation(request):
+    if request.method == "POST":
+        form = NewReservationForm(request.POST)
+        if form.is_valid():
+            reservation = form.save()
+
+            message = render_to_string(
+                "emails/guest_reservation_confirmation.html",
+                {
+                    "name": reservation.user.first_name,
+                    "booking_code": reservation.booking_code,
+                    "check_in_date": reservation.check_in_date,
+                    "check_out_date": reservation.check_out_date,
+                    "rooms": reservation.rooms.all(),
+                },
+            )
+
+            subject = "Your booking confirmation at BnB!"
+            from_email = FROM_EMAIL
+            send_email(subject, message, from_email, [reservation.user.email])
+
+            messages.success(request, "New reservation added successfully")
+            return redirect("reservations:reservations_list")
+    else:
+        check_in_date = request.session["check_in_date"]
+        check_out_date = request.session["check_out_date"]
+        event_ids = list()
+
+        for object in serializers.Deserializer("json", request.session["events"]):
+            pk = object.object.pk
+            event_ids.append(pk)
+        room_ids = list()
+        for object in serializers.deserialize("json", request.session["rooms"]):
+            pk = object.object.pk
+            room_ids.append(pk)
+        form = NewReservationForm(
+            initial={
+                "check_in_date": check_in_date,
+                "check_out_date": check_out_date,
+                "number_of_adults": request.session["number_of_adults"],
+                "number_of_children": request.session["number_of_children"],
+            }
+        )
+        form.fields["rooms"].queryset = Room.objects.filter(id__in=room_ids)
+        form.fields["events"].queryset = Event.objects.filter(id__in=event_ids)
+    return render(
+        request,
+        "reservations/new_reservation.html",
+        {"title": "Add New Reservation", "form": form},
     )

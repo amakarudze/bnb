@@ -4,6 +4,20 @@
 
 {% block content %}
 
+    <div class="container">
+        <div class="search-form">
+            <h2>Find The Best Room</h2>
+            <div class="container">
+                <form class="form-inline" method="get" action="{% url 'website:search' %}">
+                    {% for field in form %}
+                        {{ field }}
+                    {% endfor %}
+                    <button class="btn btn btn-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 <div class="staff-container">
     <div class="container my-5">
         <h1 class="page-title text-center mb-4">Staff Dashboard</h1>

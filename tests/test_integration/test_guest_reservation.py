@@ -27,9 +27,9 @@ def test_guest_reservation_process(
     assert len(response.context["rooms"]) != len(rooms)
     assert len(response.context["rooms"]) == 6
 
-    response = client.get(reverse("website:make_reservation", args=(room.pk,)))
+    response = client.get(reverse("website:make_reservation"))
     assert response.status_code == 302
-    assertRedirects(response, f"/accounts/login/?next=/make_reservation/{room.pk}/")
+    assertRedirects(response, "/accounts/login/?next=/make_reservation/")
 
     response = client.get(reverse("accounts:signup"))
     assert response.status_code == 200
@@ -49,10 +49,10 @@ def test_guest_reservation_process(
     assertRedirects(response, "/")
 
     client.force_login(guest)
-    response = client.get(reverse("website:make_reservation", args=(room.pk,)))
+    response = client.get(reverse("website:make_reservation"))
     assert response.status_code == 200
     response = client.post(
-        reverse("website:make_reservation", args=(room.pk,)),
+        reverse("website:make_reservation"),
         data=valid_reservation_rooms,
     )
     assert response.status_code == 200

@@ -2,13 +2,15 @@ from django.db.models import Sum
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.template.loader import render_to_string
-from accounts.views import send_email
+from django.core import serializers
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 
+from accounts.models import User
+from accounts.views import FROM_EMAIL, send_email
 from events.models import Event
-from reservations.forms import ReservationForm, GuestFormSet
-from reservations.models import Guest, Reservation
+from reservations.forms import ReservationForm, GuestReservationUpdateForm
+from reservations.models import Reservation
 from website.forms import SearchByBookingCodeForm
 from rooms.models import Room
 
@@ -27,82 +29,93 @@ def home(request):
 
 
 @login_required
-def make_reservation(request, pk):
+def make_reservation(request):
     if request.method == "POST":
         form = ReservationForm(request.POST)
-        guest_formset = GuestFormSet(request.POST)
 
-        if form.is_valid() and guest_formset.is_valid():
+        if form.is_valid():
             reservation = form.save(commit=False)
             reservation.user = request.user
             reservation.save()
 
-            for guest_form in guest_formset:
-                if guest_form.cleaned_data:
-                    guest = guest_form.save(commit=False)
-                    guest.reservation = reservation
-                    guest.save()
-            #email
             subject = "Booking Confirmation - BNB"
-            guest_email = reservation.user.email  #email address
+            guest_email = reservation.user.email
 
-            #email template with reservation details
             message = render_to_string('guest_reservation_confirmation.html', {
                 'reservation': reservation,
-                'booking_reference_code': reservation.booking_code,  # Pass the reference code
-                'room_id': reservation.rooms.first().id,  
+                'booking_reference_code': reservation.booking_code,
+                'room_id': reservation.rooms.all(),  
                 'check_in_date': reservation.check_in_date,
                 'check_out_date': reservation.check_out_date,
             })
             
-            # Send the email
             send_email(
                 subject,
                 message,
                 settings.DEFAULT_FROM_EMAIL,  
-                [guest_email],  # Recipient email
+                [guest_email],
             )
 
+            guest_message = render_to_string(
+                "emails/guest_reservation_confirmation.html",
+                {
+                    "name": reservation.user.first_name,
+                    "booking_code": reservation.booking_code,
+                    "check_in_date": reservation.check_in_date,
+                    "check_out_date": reservation.check_out_date,
+                    "rooms": reservation.rooms.all(),
+                },
+            )
+            staff_message = render_to_string(
+                "emails/staff_notifications.html",
+                {
+                    "booking_code": reservation.booking_code,
+                    "check_in_date": reservation.check_in_date,
+                    "check_out_date": reservation.check_out_date,
+                    "rooms": reservation.rooms.all(),
+                },
+            )
+            staff = [user.email for user in User.objects.filter(is_staff=True)]
+            guest_subject = "Your booking confirmation at BnB!"
+            staff_subject = "New booking notification!"
+            from_email = FROM_EMAIL
 
-            return redirect("website:reservation_success")
+            send_email(
+                guest_subject, guest_message, from_email, [reservation.user.email]
+            )
+            send_email(staff_subject, staff_message, from_email, staff)
+            messages.success(
+                request, "Thank you for making a reservation to stay at the BnB!"
+            )
+            return redirect("website:reservations")
 
     else:
-        room = Room.objects.get(pk=pk)
-        check_in_date = request.GET.get("check_in_date")
-        check_out_date = request.GET.get("check_out_date")
-        if check_in_date and check_out_date:
-            events = Event.objects.filter(
-                start_date__gte=check_in_date, end_date__lte=check_out_date
-            )
-            if events:
-                form = ReservationForm(
-                    initial={
-                        "rooms": room,
-                        "events": events,
-                        "check_in_date": check_in_date,
-                        "check_out_date": check_out_date,
-                    }
-                )
-        else:
-            form = ReservationForm(initial={"rooms": room})
-        guest_formset = GuestFormSet(queryset=Guest.objects.all())
+        check_in_date = request.session["check_in_date"]
+        check_out_date = request.session["check_out_date"]
+
+        event_ids = list()
+        for object in serializers.Deserializer("json", request.session["events"]):
+            pk = object.object.pk
+            event_ids.append(pk)
+        room_ids = list()
+        for object in serializers.deserialize("json", request.session["rooms"]):
+            pk = object.object.pk
+            room_ids.append(pk)
+        form = ReservationForm(
+            initial={
+                "check_in_date": check_in_date,
+                "check_out_date": check_out_date,
+                "number_of_adults": request.session["number_of_adults"],
+                "number_of_children": request.session["number_of_children"],
+            }
+        )
+        form.fields["rooms"].queryset = Room.objects.filter(id__in=room_ids)
+        form.fields["events"].queryset = Event.objects.filter(id__in=event_ids)
 
     return render(
         request,
         "website/reservation.html",
-        {
-            "form": form,
-            "guest_formset": guest_formset,
-        },
-    )
-
-
-@login_required
-def reservation_success(request):
-    return render(
-        request,
-        "website/reservation_success.html",
-        {"title": "Rerservation successful!"},
+        {"form": form, "title": "Make Reservation"},
     )
 
 
@@ -113,6 +126,9 @@ def search(request):
     number_of_children = request.GET.get("number_of_children", "")
     events = Event.objects.all()
 
+    events = Event.objects.filter(
+        start_date__date__lte=check_out_date, end_date__date__gte=check_in_date
+    )
     reservations = Reservation.objects.filter(
         check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
     )
@@ -136,6 +152,14 @@ def search(request):
                 request,
                 "We are sorry we don't have enough room to accommodate you all.",
             )
+            rooms = None
+
+    request.session["rooms"] = serializers.serialize("json", rooms)
+    request.session["check_in_date"] = check_in_date
+    request.session["check_out_date"] = check_out_date
+    request.session["number_of_adults"] = number_of_adults
+    request.session["number_of_children"] = number_of_children
+    request.session["events"] = serializers("json", events)
 
     return render(
         request,
@@ -187,6 +211,39 @@ def reservations(request):
 @login_required
 def update_reservation(request, pk):
     reservation = Reservation.objects.get(pk=pk)
+    form = GuestReservationUpdateForm(instance=reservation)
+    if request.method == "POST":
+        if form.is_valid():
+            is_cancelled = form.cleaned_data["is_cancelled"]
+            if is_cancelled:
+                guest_message = render_to_string(
+                    "emails/guest_cancellation_confirmation.html",
+                    {
+                        "name": reservation.user.first_name,
+                        "booking_code": reservation.booking_code,
+                        "check_in_date": reservation.check_in_date,
+                        "check_out_date": reservation.check_out_date,
+                        "rooms": reservation.rooms.all(),
+                    },
+                )
+            staff_message = render_to_string(
+                "emails/staff_notifications_cancellation.html",
+                {
+                    "booking_code": reservation.booking_code,
+                    "check_in_date": reservation.check_in_date,
+                    "check_out_date": reservation.check_out_date,
+                    "rooms": reservation.rooms.all(),
+                },
+            )
+            staff = [user.email for user in User.objects.filter(is_staff=True)]
+            guest_subject = "Your booking at BnB has been cancelled!"
+            staff_subject = "New booking cancellation notification!"
+            from_email = FROM_EMAIL
+
+            send_email(
+                guest_subject, guest_message, from_email, [reservation.user.email]
+            )
+            send_email(staff_subject, staff_message, from_email, staff)
     return render(
         request,
         "website/update_reservation.html",

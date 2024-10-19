@@ -1,0 +1,64 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- email template css -->
+    <style>
+        body {
+            font-family: 'Trebuchet MS', sans-serif;
+            color: #313131;
+        }
+
+        .booking_confirmation {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .img-confirmation {
+            max-height: 180px;
+        }
+
+        .booking-title {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .booking_confirmation p {
+            margin: 0 0 8px;
+        }
+
+        hr {
+            max-width: 600px;
+            margin-top: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .contact-info {
+            max-width: 500px;
+            font-size: 14px;
+            color: #616161;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- email template -->
+    <div class="booking_confirmation">
+        <center>
+            <img class="img-confirmation" src="images/booking_confirm.svg" alt="">
+            <h1 class="booking-title">New booking has been made through BNB website.</h1>
+            <p>The Booking details are:</p>
+            <p><strong>Booking Number:</strong> {{ booking_code }}</p>
+            <p><strong>Booked Date:</strong> {{ check_in_date }} - {{ check_out_date }}</p>
+            <p><strong>Room(s) ID:</strong>{{ rooms }}</p>
+            <hr>
+
+        </center>
+    </div>
+</body>
+
+</html>
