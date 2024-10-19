@@ -8,7 +8,7 @@ from django.views.generic import UpdateView
 
 
 from .forms import GuestFormSet, AddReservationForm, ReservationUpdateForm, SearchReportsForm
-from .models import Reservation, Event
+from .models import Reservation, Event,Room
 
 
 @login_required
@@ -92,6 +92,8 @@ def reports(request):
     ]
     total_bookings = reservations.filter(is_cancelled=False).count()
     total_rooms_booked = Reservation.rooms.through.objects.count()
+    total_rooms = Room.objects.all()
+
 
     return render(
         request,
@@ -106,6 +108,7 @@ def reports(request):
             "total_rooms_booked": total_rooms_booked,
             "start_date": start_date,
             "end_date": end_date,
+            "total_rooms": total_rooms
         },
     )
 

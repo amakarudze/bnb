@@ -18,10 +18,11 @@ from .forms import SearchForm
 def home(request):
     available_rooms = Room.objects.filter(can_be_rented=True)[:6]
     form = SearchForm()
+    events = Event.objects.filter(fully_booked=False)
     return render(
         request,
         "website/index.html",
-        {"title": "Home", "available_rooms": available_rooms, "form": form},
+        {"title": "Home", "available_rooms": available_rooms, "form": form,"events":events},
     )
 
 
@@ -110,6 +111,7 @@ def search(request):
     check_out_date = request.GET.get("check_out_date", "")
     number_of_adults = request.GET.get("number_of_adults", "")
     number_of_children = request.GET.get("number_of_children", "")
+    events = Event.objects.all()
 
     reservations = Reservation.objects.filter(
         check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
@@ -138,7 +140,7 @@ def search(request):
     return render(
         request,
         "website/search_results.html",
-        {"title": "Search for rooms", "rooms": rooms},
+        {"title": "Search for rooms", "rooms": rooms,"events":events},
     )
 
 
