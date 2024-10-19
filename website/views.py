@@ -165,6 +165,12 @@ def room(request, pk):
         request, "website/room_details.html", {"title": "Room Details", "room": room}
     )
 
+def event(request, pk):
+    event = Event.objects.get(pk=pk)
+    return render(
+        request, "website/event_details.html", {"title": "Event Details", "event": event}
+    )
+
 
 @login_required
 def reservations(request):

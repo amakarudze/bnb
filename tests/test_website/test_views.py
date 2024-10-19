@@ -74,6 +74,11 @@ def test_room_details_view(client, room):
     assert response.status_code == 200
 
 
+def test_event_details_view(client, event):
+    response = client.get(reverse("website:event", args=(event.pk,)))
+    assert response.status_code == 200
+
+
 def test_reservations_view_guest(guest_client):
     response = guest_client.get(reverse("website:reservations"))
     assert response.status_code == 200
