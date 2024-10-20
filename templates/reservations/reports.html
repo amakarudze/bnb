@@ -5,6 +5,14 @@
 {% block content %}
 
 <div class="report-container">
+    {{ reservations }}
+
+    {{ room_occupancy }}
+
+    {{ counter_rooms }}
+
+    {{ period }}
+
     <div class="container my-5">
         <h1 class="page-title text-center mb-4">Report for period {{ start_date }} to {{ end_date }}</h1>
         <div class="row g-4">
@@ -31,12 +39,12 @@
                                     <td>@mdo</td>
                                 </tr>
                                 {% endfor %}
-                                
+
                             </tbody>
                         </table>
                     </div>
 
-                   
+
                 </div>
             </div>
             <!-- Two small items -->

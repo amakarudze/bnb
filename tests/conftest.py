@@ -3,6 +3,7 @@ import pytest
 from datetime import date
 
 from django.contrib.auth.models import Group, Permission
+from django.core import serializers
 from django.test import Client
 
 from accounts.models import User, UserProfile
@@ -566,3 +567,71 @@ def search_form_by_booking_code():
     return {
         "booking_code": "ABCDEF",
     }
+
+
+@pytest.fixture(scope="session", autouse=True)
+def search_results(request, search_form_valid, reservations_1):
+    session = request.node
+    check_in_date = search_form_valid["check_in_date"]
+    check_out_date = search_form_valid["check_out_date"]
+    number_of_adults = search_form_valid["number_of_adults"]
+    number_of_children = search_form_valid["number_of_children"]
+
+    events = Event.objects.filter(
+        start_date__date__lte=check_out_date, end_date__date__gte=check_in_date
+    )
+    reservations = Reservation.objects.filter(
+        check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
+    )
+    booked_rooms = []
+    for reservation in reservations:
+        for room in reservation.rooms.all():
+            booked_rooms.append(room.pk)
+    rooms = Room.objects.exclude(pk__in=booked_rooms)
+
+    session["check_in_date"] = check_in_date
+    session["check_out_date"] = check_out_date
+    session["number_of_adults"] = number_of_adults
+    session["number_of_children"] = number_of_children
+    session["events"] = serializers.serialize("json", events)
+    session["rooms"] = serializers.serialize("json", rooms)
+
+
+@pytest.fixture
+def add_reservation_valid(db, room):
+    form = {
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john.doe@example.com",
+        "password": "securepassword123",
+        "confirm_password": "securepassword123",
+        "dob": "1990-01-01",  #  date format
+        "address": "123 Main St",
+        "city": "Cityville",
+        "postal_code": "12345",
+        "state": "State",
+        "country": "US",  #  country code
+        "phone_number": "123-456-7890",
+        "number_of_adults": 3,
+        "number_of_children": 3,
+        "check_in_date": "2024-12-01",
+        "check_out_date": "2024-12-03",
+        "rooms": [room.id],
+    }
+    return form
+
+
+@pytest.fixture
+def modify_reservation():
+    """Fixture for creating a test reservation."""
+    return {
+        "number_of_adults": 2,
+        "number_of_children": 0,
+        "is_paid": True,
+    }
+
+
+@pytest.fixture
+def cancel_reservation(db):
+    """Fixture for creating a test reservation."""
+    return {"number_of_adults": 2, "number_of_children": 0, "is_cancelled": True}

@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 from accounts.models import User
 from accounts.views import FROM_EMAIL, send_email
 from events.models import Event
-from reservations.forms import ReservationForm, GuestReservationUpdateForm
+from reservations.forms import EditReservationForm, ReservationForm
 from reservations.models import Reservation
 from website.forms import SearchByBookingCodeForm
 from rooms.models import Room
@@ -24,7 +24,12 @@ def home(request):
     return render(
         request,
         "website/index.html",
-        {"title": "Home", "available_rooms": available_rooms, "form": form,"events":events},
+        {
+            "title": "Home",
+            "available_rooms": available_rooms,
+            "form": form,
+            "events": events,
+        },
     )
 
 
@@ -41,18 +46,21 @@ def make_reservation(request):
             subject = "Booking Confirmation - BNB"
             guest_email = reservation.user.email
 
-            message = render_to_string('guest_reservation_confirmation.html', {
-                'reservation': reservation,
-                'booking_reference_code': reservation.booking_code,
-                'room_id': reservation.rooms.all(),  
-                'check_in_date': reservation.check_in_date,
-                'check_out_date': reservation.check_out_date,
-            })
-            
+            message = render_to_string(
+                "guest_reservation_confirmation.html",
+                {
+                    "reservation": reservation,
+                    "booking_reference_code": reservation.booking_code,
+                    "room_id": reservation.rooms.all(),
+                    "check_in_date": reservation.check_in_date,
+                    "check_out_date": reservation.check_out_date,
+                },
+            )
+
             send_email(
                 subject,
                 message,
-                settings.DEFAULT_FROM_EMAIL,  
+                settings.DEFAULT_FROM_EMAIL,
                 [guest_email],
             )
 
@@ -94,7 +102,7 @@ def make_reservation(request):
         check_out_date = request.session["check_out_date"]
 
         event_ids = list()
-        for object in serializers.Deserializer("json", request.session["events"]):
+        for object in serializers.deserialize("json", request.session["events"]):
             pk = object.object.pk
             event_ids.append(pk)
         room_ids = list()
@@ -109,13 +117,15 @@ def make_reservation(request):
                 "number_of_children": request.session["number_of_children"],
             }
         )
-        form.fields["rooms"].queryset = Room.objects.filter(id__in=room_ids)
-        form.fields["events"].queryset = Event.objects.filter(id__in=event_ids)
+        rooms = Room.objects.filter(id__in=room_ids)
+        events = Event.objects.filter(id__in=event_ids)
+        form.fields["rooms"].queryset = rooms
+        form.fields["events"].queryset = events
 
     return render(
         request,
         "website/reservation.html",
-        {"form": form, "title": "Make Reservation"},
+        {"form": form, "title": "Make Reservation", "events": events, "rooms": rooms},
     )
 
 
@@ -159,12 +169,12 @@ def search(request):
     request.session["check_out_date"] = check_out_date
     request.session["number_of_adults"] = number_of_adults
     request.session["number_of_children"] = number_of_children
-    request.session["events"] = serializers("json", events)
+    request.session["events"] = serializers.serialize("json", events)
 
     return render(
         request,
         "website/search_results.html",
-        {"title": "Search for rooms", "rooms": rooms,"events":events},
+        {"title": "Search for rooms", "rooms": rooms, "events": events},
     )
 
 
@@ -189,10 +199,13 @@ def room(request, pk):
         request, "website/room_details.html", {"title": "Room Details", "room": room}
     )
 
+
 def event(request, pk):
     event = Event.objects.get(pk=pk)
     return render(
-        request, "website/event_details.html", {"title": "Event Details", "event": event}
+        request,
+        "website/event_details.html",
+        {"title": "Event Details", "event": event},
     )
 
 
@@ -211,7 +224,7 @@ def reservations(request):
 @login_required
 def update_reservation(request, pk):
     reservation = Reservation.objects.get(pk=pk)
-    form = GuestReservationUpdateForm(instance=reservation)
+    form = EditReservationForm(instance=reservation)
     if request.method == "POST":
         if form.is_valid():
             is_cancelled = form.cleaned_data["is_cancelled"]

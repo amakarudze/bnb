@@ -165,12 +165,16 @@ class SearchReportsForm(forms.Form):
                     {"end_date": ["End  date must be greater than Start date."]}
                 )
 
-            if end_date > date.today():
-                raise forms.ValidationError(
-                    {"end_date": ["End date should not be a future date."]}
-                )
-            if start_date > date.today():
-                raise forms.ValidationError(
-                    {"start_date": ["Start date should not be a future date."]}
-                )
-            
+
+class EditReservationForm(forms.ModelForm):
+    # Guest update form
+    is_cancelled = forms.BooleanField(required=False)
+
+    class Meta:
+        model = Reservation
+        fields = ["number_of_adults", "number_of_children", "events", "is_cancelled"]
+        widgets = {
+            "events": forms.CheckboxSelectMultiple,
+            "number_of_adults": forms.TextInput(attrs={"class": "form-control"}),
+            "number_of_children": forms.TextInput(attrs={"class": "form-control"}),
+        }

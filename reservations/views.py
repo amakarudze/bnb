@@ -1,3 +1,6 @@
+from collections import Counter
+from datetime import datetime
+
 from django.db import IntegrityError
 from django.db.models import Sum
 from django.contrib import messages
@@ -15,7 +18,12 @@ from events.models import Event
 from rooms.models import Room
 from website.forms import SearchForm
 
-from .forms import AddReservationForm, NewReservationForm, ReservationUpdateForm, SearchReportsForm
+from .forms import (
+    AddReservationForm,
+    NewReservationForm,
+    ReservationUpdateForm,
+    SearchReportsForm,
+)
 from .models import Reservation
 
 
@@ -130,7 +138,7 @@ def add_reservation(request):
         check_in_date = request.session["check_in_date"]
         check_out_date = request.session["check_out_date"]
         event_ids = list()
-        for object in serializers.Deserializer("json", request.session["events"]):
+        for object in serializers.deserialize("json", request.session["events"]):
             pk = object.object.pk
             event_ids.append(pk)
 
@@ -164,7 +172,7 @@ def reports(request):
     end_date = request.GET.get("end_date")
     reservations = Reservation.objects.filter(
         check_in_date__gte=start_date, check_in_date__lte=end_date
-    )
+    ).prefetch_related("rooms")
     events = Event.objects.filter(
         start_date__gte=start_date, start_date__lte=end_date
     ).count()
@@ -176,9 +184,20 @@ def reports(request):
         "number_of_children__sum"
     ]
     total_bookings = reservations.filter(is_cancelled=False).count()
-    total_rooms_booked = Reservation.rooms.through.objects.count()
-    total_rooms = Room.objects.all()
+    rooms = reservations.only("rooms")
+    booked_rooms = list()
 
+    for reservation in reservations:
+        for room in reservation.rooms.all():
+            booked_rooms.append(room.pk)
+
+    counter_rooms = Counter(booked_rooms)
+    report_start_date = datetime.strptime(start_date, "%Y-%m-%d")
+    report_end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    period = (report_end_date - report_start_date).days
+
+    total_reservations = reservations.count()
+    total_rooms = Room.objects.all()
 
     return render(
         request,
@@ -190,10 +209,13 @@ def reports(request):
             "total_children": total_children,
             "total_bookings": total_bookings,
             "events": events,
-            "total_rooms_booked": total_rooms_booked,
             "start_date": start_date,
             "end_date": end_date,
-            "total_rooms": total_rooms
+            "total_rooms": total_rooms,
+            "reservations": total_reservations,
+            "room_occupancy": rooms,
+            "counter_rooms": counter_rooms,
+            "period": period,
         },
     )
 
@@ -206,8 +228,9 @@ def search_reports(request):
     return render(
         request,
         "reservations/search_reports.html",
-        {"form": form, "Title": "Search reports"})
-    
+        {"form": form, "Title": "Search reports"},
+    )
+
 
 @login_required
 def new_reservation(request):
@@ -238,7 +261,7 @@ def new_reservation(request):
         check_out_date = request.session["check_out_date"]
         event_ids = list()
 
-        for object in serializers.Deserializer("json", request.session["events"]):
+        for object in serializers.deserialize("json", request.session["events"]):
             pk = object.object.pk
             event_ids.append(pk)
         room_ids = list()
@@ -259,4 +282,39 @@ def new_reservation(request):
         request,
         "reservations/new_reservation.html",
         {"title": "Add New Reservation", "form": form},
+    )
+
+
+@login_required
+def edit_reservation(request, pk):
+    reservation = Reservation.objects.get(id=pk)
+
+    if request.method == "POST":
+        form = ReservationUpdateForm(request.POST, instance=reservation)
+        if form.is_valid():
+            updated_reservation = form.save()
+            if updated_reservation.is_cancelled:
+                message = render_to_string(
+                    "emails/guest_cancellation_confirmation.html",
+                    {
+                        "name": updated_reservation.user.first_name,
+                        "username": updated_reservation.user.email,
+                    },
+                )
+                from_email = FROM_EMAIL
+                to_email = [reservation.user.email]
+                subject = "Your reservation is cancelled!"
+                send_email(subject, message, from_email, to_email)
+
+                messages.success(request, "Reservation updated successfully!")
+
+            return redirect("reservations:reservation_list")
+
+    else:
+        form = ReservationUpdateForm(instance=reservation)
+
+    return render(
+        request,
+        "reservations/update_reservation.html",
+        {"form": form, "title": "Update Reservation", "reservation": reservation},
     )
