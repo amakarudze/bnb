@@ -1,11 +1,8 @@
 from django.db.models import Sum
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse
-from django.views.generic import UpdateView
 
 from accounts.views import FROM_EMAIL, send_email
 
@@ -43,23 +40,6 @@ def reservations_list(request):
         "reservations/reservations_list.html",
         {"title": "Reservations List", "reservations": reservations},
     )
-
-
-class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    model = Reservation
-    form_class = ReservationUpdateForm
-    template_name = "website/reservation.html"
-    permission_required = "reservations.change_reservation"
-    raise_exception = True
-
-    def get_success_url(self) -> str:
-        return reverse("reservations:reservations_list")
-
-    def get_context_data(self, **kwargs) -> dict[str]:
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Update Reservation"
-        context["guest_formset"] = GuestFormSet()
-        return context
 
 
 @login_required
@@ -152,7 +132,7 @@ def edit_reservation(request, pk):
                 subject = "Your reservation is cancelled!"
                 send_email(subject, message, from_email, to_email)
 
-                messages.success(request, "Reservation updated successfully!")
+            messages.success(request, "Reservation updated successfully!")
 
             return redirect("reservations:reservations_list")
 
