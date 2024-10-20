@@ -346,7 +346,7 @@ def reservation(db, room, guest):
         check_in_date="2024-10-24",
         check_out_date="2024-10-28",
     )
-    reservation.rooms.set([room])
+    reservation.rooms.set([room.id])
     return reservation
 
 
@@ -590,3 +590,31 @@ def add_reservation_valid(db, room):
         "rooms": [room.id],
 
     }
+    
+
+@pytest.fixture
+def modify_reservation(db, guest):
+    """Fixture for creating a test reservation."""
+    return Reservation.objects.create(
+        user=guest,
+        number_of_adults=2,
+        number_of_children=0,
+        check_in_date="2024-12-01",
+        check_out_date="2024-12-03",
+        is_paid=True,
+        booking_code="ABC123"
+    )
+
+
+@pytest.fixture
+def cancel_reservation(db, guest):
+    """Fixture for creating a test reservation."""
+    return Reservation.objects.create(
+        user=guest,
+        number_of_adults=2,
+        number_of_children=0,
+        check_in_date="2024-12-01",
+        check_out_date="2024-12-03",
+        booking_code="ABC123",
+        is_cancelled=True
+    )
