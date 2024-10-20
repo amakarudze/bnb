@@ -1,6 +1,9 @@
+from django.test import RequestFactory
 from django.urls import reverse
 
 from pytest_django.asserts import assertRedirects
+
+from reservations.views import add_reservation
 
 
 def test_reservations_list_view_guest(guest_client, reservations):
@@ -100,3 +103,73 @@ def test_edit_reservation_view_cancelled(client, cancel_reservation, reservation
         data=cancel_reservation,
     )
     assert response.status_code == 302
+
+
+def test_add_reservation_view_front_desk_staff(
+    db,
+    front_desk_client,
+    front_desk,
+    add_reservation_valid,
+    guests_group,
+    check_in_date,
+    check_out_date,
+    number_of_adults,
+    number_of_children,
+    available_rooms,
+    upcoming_events,
+):
+    factory = RequestFactory()
+    request = factory.get(reverse("reservations:add_reservation"))
+    request.session = {
+        "check_in_date": check_in_date,
+        "check_out_date": check_out_date,
+        "number_of_adults": number_of_adults,
+        "number_of_children": number_of_children,
+        "rooms": available_rooms,
+        "events": upcoming_events,
+    }
+    request.user = front_desk
+    response = add_reservation(request)
+
+    assert response.status_code == 200
+
+    response = front_desk_client.post(
+        reverse("reservations:add_reservation"),
+        data=add_reservation_valid,
+    )
+    assert response.status_code == 200
+
+
+def test_add_reservation_view_manager(
+    db,
+    manager_client,
+    manager,
+    add_reservation_valid,
+    guests_group,
+    check_in_date,
+    check_out_date,
+    number_of_adults,
+    number_of_children,
+    available_rooms,
+    upcoming_events,
+):
+    factory = RequestFactory()
+    request = factory.get(reverse("reservations:add_reservation"))
+    request.session = {
+        "check_in_date": check_in_date,
+        "check_out_date": check_out_date,
+        "number_of_adults": number_of_adults,
+        "number_of_children": number_of_children,
+        "rooms": available_rooms,
+        "events": upcoming_events,
+    }
+    request.user = manager
+    response = add_reservation(request)
+
+    assert response.status_code == 200
+
+    response = manager_client.post(
+        reverse("reservations:add_reservation"),
+        data=add_reservation_valid,
+    )
+    assert response.status_code == 200

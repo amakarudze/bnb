@@ -1,16 +1,10 @@
-from collections import Counter
-from datetime import datetime
-
 from django.db import IntegrityError
 from django.db.models import Sum
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core import serializers
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse
-from django.views.generic import UpdateView
 
 from accounts.models import User, UserProfile
 from accounts.views import FROM_EMAIL, send_email
@@ -56,48 +50,33 @@ def reservations_list(request):
     )
 
 
-class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    model = Reservation
-    form_class = ReservationUpdateForm
-    template_name = "reservations/reservation_update.html"
-    permission_required = "reservations.change_reservation"
-    raise_exception = True
-
-    def get_success_url(self) -> str:
-        return reverse("reservations:reservations_list")
-
-    def get_context_data(self, **kwargs) -> dict[str]:
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Update Reservation"
-        return context
-
-
 @login_required
 @permission_required(
-    ["reservations.add_reservations", "accounts.add_user"], raise_exception=True
+    ["reservations.add_reservation", "accounts.add_user", "accounts.add_userprofile"],
+    raise_exception=True,
 )
 def add_reservation(request):
     if request.method == "POST":
         form = AddReservationForm(request.POST)
-        email = (form.cleaned_data.get("email"),)
+        email = (request.POST.get("email"),)
 
         if form.is_valid():
             try:
                 user = User.objects.create_user(
-                    email=form.cleaned_data.get("email"),
-                    first_name=form.cleaned_data.get("first_name"),
-                    last_name=form.cleaned_data.get("last_name"),
-                    password=form.cleaned_data.get("password"),
+                    email=request.POST.get("email"),
+                    first_name=request.POST.get("first_name"),
+                    last_name=request.POST.get("last_name"),
+                    password=request.POST.get("password"),
                 )
                 UserProfile.objects.create(
                     user=user,
-                    dob=form.cleaned_data.get("dob"),
-                    address=form.cleaned_data.get("address"),
-                    city=form.cleaned_data.get("city"),
-                    postal_code=form.cleaned_data.get("postal_code"),
-                    state=form.cleaned_data.get("state"),
-                    country=form.cleaned_data.get("country"),
-                    phone_number=form.cleaned_data.get("phone_number"),
+                    dob=request.POST.get("dob"),
+                    address=request.POST.get("address"),
+                    city=request.POST.get("city"),
+                    postal_code=request.POST.get("postal_code"),
+                    state=request.POST.get("state"),
+                    country=request.POST.get("country"),
+                    phone_number=request.POST.get("phone_number"),
                 )
             except IntegrityError:
                 messages.error(request, "User with that email already exist")
@@ -105,15 +84,15 @@ def add_reservation(request):
                 user = User.objects.get(email=email)
                 reservation = Reservation.objects.create(
                     user=user,
-                    number_of_adults=form.cleaned_data.get("number_of_adults"),
-                    number_of_children=form.cleaned_data.get("number_of_children"),
-                    check_in_date=form.cleaned_data.get("check_in_date"),
-                    check_out_date=form.cleaned_data.get("check_out_date"),
+                    number_of_adults=request.POST.get("number_of_adults"),
+                    number_of_children=request.POST.get("number_of_children"),
+                    check_in_date=request.POST.get("check_in_date"),
+                    check_out_date=request.POST.get("check_out_date"),
                 )
-                rooms = form.cleaned_data.get("rooms")
+                rooms = request.POST.get("rooms")
                 for room in rooms:
                     reservation.rooms.set(room)
-                events = form.cleaned_data.get("event")
+                events = request.POST.get("events")
                 if events:
                     for event in events:
                         reservation.events.set(event)
@@ -139,15 +118,19 @@ def add_reservation(request):
     else:
         check_in_date = request.session["check_in_date"]
         check_out_date = request.session["check_out_date"]
+        rooms = request.session["rooms"]
+        events = request.session["events"]
+
         event_ids = list()
-        for object in serializers.deserialize("json", request.session["events"]):
+        for object in serializers.deserialize("json", events):
             pk = object.object.pk
             event_ids.append(pk)
 
         room_ids = list()
-        for object in serializers.deserialize("json", request.session["rooms"]):
+        for object in serializers.deserialize("json", rooms):
             pk = object.object.pk
             room_ids.append(pk)
+
         form = AddReservationForm(
             initial={
                 "check_in_date": check_in_date,
@@ -186,17 +169,6 @@ def reports(request):
         "number_of_children__sum"
     ]
     total_bookings = reservations.filter(is_cancelled=False).count()
-    rooms = reservations.only("rooms")
-    booked_rooms = list()
-
-    for reservation in reservations:
-        for room in reservation.rooms.all():
-            booked_rooms.append(room.pk)
-
-    counter_rooms = Counter(booked_rooms)
-    report_start_date = datetime.strptime(start_date, "%Y-%m-%d")
-    report_end_date = datetime.strptime(end_date, "%Y-%m-%d")
-    period = (report_end_date - report_start_date).days
 
     total_reservations = reservations.count()
     total_rooms = Room.objects.all()
@@ -215,9 +187,6 @@ def reports(request):
             "end_date": end_date,
             "total_rooms": total_rooms,
             "reservations": total_reservations,
-            "room_occupancy": rooms,
-            "counter_rooms": counter_rooms,
-            "period": period,
         },
     )
 
