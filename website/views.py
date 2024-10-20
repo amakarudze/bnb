@@ -226,8 +226,9 @@ def update_reservation(request, pk):
     form = EditReservationForm(instance=reservation)
     if request.method == "POST":
         if form.is_valid():
-            is_cancelled = form.cleaned_data["is_cancelled"]
-            if is_cancelled:
+            updated_reservation = form.save()
+
+            if updated_reservation.is_cancelled:
                 guest_message = render_to_string(
                     "emails/guest_cancellation_confirmation.html",
                     {
@@ -256,6 +257,8 @@ def update_reservation(request, pk):
                 guest_subject, guest_message, from_email, [reservation.user.email]
             )
             send_email(staff_subject, staff_message, from_email, staff)
+        messages.success(request, "Reservation has been successfully updated.")
+        return redirect("website:reservations")
     return render(
         request,
         "website/update_reservation.html",
