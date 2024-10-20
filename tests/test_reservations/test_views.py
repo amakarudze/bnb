@@ -21,29 +21,29 @@ def test_reservations_list_view_manager(manager_client, reservations, reservatio
     assert response.status_code == 200
 
 
-def test_update_reservation_view_front_desk_staff(
+def test_edit_reservation_view_front_desk_staff(
     front_desk_client, reservation, valid_reservation_rooms
 ):
     response = front_desk_client.get(
-        reverse("reservations:update_reservation", args=(reservation.pk,))
+        reverse("reservations:edit_reservation", args=(reservation.pk,))
     )
     assert response.status_code == 200
     response = front_desk_client.post(
-        reverse("reservations:update_reservation", args=(reservation.pk,)),
+        reverse("reservations:edit_reservation", args=(reservation.pk,)),
         data=valid_reservation_rooms,
     )
     assert response.status_code == 302
 
 
-def test_update_reservation_view_manager(
+def test_edit_reservation_view_manager(
     manager_client, reservation, valid_reservation_rooms
 ):
     response = manager_client.get(
-        reverse("reservations:update_reservation", args=(reservation.pk,))
+        reverse("reservations:edit_reservation", args=(reservation.pk,))
     )
     assert response.status_code == 200
     response = manager_client.post(
-        reverse("reservations:update_reservation", args=(reservation.pk,)),
+        reverse("reservations:edit_reservation", args=(reservation.pk,)),
         data=valid_reservation_rooms,
     )
     assert response.status_code == 302
@@ -75,9 +75,9 @@ def test_reports_view_staff(front_desk_client):
     assertRedirects(response, reverse("website:home"))
 
 
-#def test_reports_view_manager(manager_client):
-    #response = manager_client.get(reverse("reservations:reports"), follow=True)
-    #assert response.status_code == 200
+# def test_reports_view_manager(manager_client):
+# response = manager_client.get(reverse("reservations:reports"), follow=True)
+# assert response.status_code == 200
 
 
 def test_search_reports_view_manager(manager_client):

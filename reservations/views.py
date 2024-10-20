@@ -3,12 +3,19 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic import UpdateView
 
+from accounts.views import FROM_EMAIL, send_email
 
-from .forms import GuestFormSet, AddReservationForm, ReservationUpdateForm, SearchReportsForm
-from .models import Reservation, Event,Room
+from .forms import (
+    GuestFormSet,
+    AddReservationForm,
+    ReservationUpdateForm,
+    SearchReportsForm,
+)
+from .models import Reservation, Event, Room
 
 
 @login_required
@@ -94,7 +101,6 @@ def reports(request):
     total_rooms_booked = Reservation.rooms.through.objects.count()
     total_rooms = Room.objects.all()
 
-
     return render(
         request,
         "reservations/reports.html",
@@ -108,7 +114,7 @@ def reports(request):
             "total_rooms_booked": total_rooms_booked,
             "start_date": start_date,
             "end_date": end_date,
-            "total_rooms": total_rooms
+            "total_rooms": total_rooms,
         },
     )
 
@@ -122,4 +128,39 @@ def search_reports(request):
         request,
         "reservations/search_reports.html",
         {"form": form, "Title": "Search reports"},
+    )
+
+
+@login_required
+def edit_reservation(request, pk):
+    reservation = Reservation.objects.get(id=pk)
+
+    if request.method == "POST":
+        form = ReservationUpdateForm(request.POST, instance=reservation)
+        if form.is_valid():
+            updated_reservation = form.save()
+            if updated_reservation.is_cancelled:
+                message = render_to_string(
+                    "emails/guest_cancellation_confirmation.html",
+                    {
+                        "name": updated_reservation.user.first_name,
+                        "username": updated_reservation.user.email,
+                    },
+                )
+                from_email = FROM_EMAIL
+                to_email = [reservation.user.email]
+                subject = "Your reservation is cancelled!"
+                send_email(subject, message, from_email, to_email)
+
+                messages.success(request, "Reservation updated successfully!")
+
+            return redirect("reservations:reservations_list")
+
+    else:
+        form = ReservationUpdateForm(instance=reservation)
+
+    return render(
+        request,
+        "reservations/update_reservation.html",
+        {"form": form, "title": "Update Reservation", "reservation": reservation},
     )

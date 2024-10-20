@@ -8,9 +8,7 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("reservations_list", views.reservations_list, name="reservations_list"),
     path(
-        "update_reservation/<uuid:pk>/",
-        views.UpdateReservationView.as_view(),
-        name="update_reservation",
+        "edit_reservation/<uuid:pk>/", views.edit_reservation, name="edit_reservation"
     ),
     path("add_reservation/", views.add_reservation, name="add_reservation"),
     path("reports/", views.reports, name="reports"),
