@@ -7,6 +7,13 @@
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
+    {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
     <form class="signup-form" method="post" enctype="multipart/form-data" action="{% url 'events:add_event' %}">
         {% csrf_token %}
         <div class="form-group mb-4">
@@ -17,6 +24,7 @@
             <label>{{ field.label }}</label>
             {{ field }}
         </div>
+        {% endfor %}
         {% if form.errors and not form.non_field_errors %}
         {% for error in field.errors %}
             <div class="alert alert-danger">
@@ -31,7 +39,7 @@
                 </div>
             {% endfor %}
         {% endif %}
-        {% endfor %}
+       
 
         <div class="form-group text-center ">
             <button type="submit" class="btn submit">Save Event</button>

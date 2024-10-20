@@ -5,15 +5,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import UpdateView
-from django.http import HttpResponse
 from django.template.loader import render_to_string
 
 from accounts.models import UserProfile, User
 from accounts.views import FROM_EMAIL, send_email
 from events.models import Event
 
-from .models import Reservation
-from .forms import AddReservationForm, ReservationUpdateForm, SearchReportsForm
+from .forms import GuestFormSet, AddReservationForm, ReservationUpdateForm, SearchReportsForm
+from .models import Reservation, Event,Room
 
 
 @login_required
@@ -61,49 +60,19 @@ class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
 
 
 @login_required
+@permission_required(
+    ["reservations.add_reservations", "accounts.add_user"], raise_exception=True
+)
 def add_reservation(request):
-    if request.method == "POST":
-        form = AddReservationForm(request.POST)
-        guest_formset = GuestForm(request.POST)
-        if form.is_valid():
-            user = User.objects.create_user(
-                email=form.cleaned_data.get("email"),
-                first_name=form.cleaned_data.get("first_name"),
-                last_name=form.cleaned_data.get("last_name"),
-                password=form.cleaned_data.get("password"),
-            )
-            UserProfile.objects.create(
-            user=user,
-            dob=form.cleaned_data.get("dob"),
-            address=form.cleaned_data.get("address"),
-            city=form.cleaned_data.get("city"),
-            postal_code=form.cleaned_data.get("postal_code"),
-            state=form.cleaned_data.get("state"),
-            country=form.cleaned_data.get("country"),
-            phone_number=form.cleaned_data.get("phone_number"),
-            )
-            reservation = Reservation.objects.create(
-            user=user,
-            number_of_adults=form.cleaned_data.get("number_of_adults"),
-            number_of_children=form.cleaned_data.get("number_of_children"),
-            rooms=form.cleaned_data.get("rooms"),
-            events=form.cleaned_data.get("event"),
-            check_in_date=form.cleaned_data.get("check_in_date"),
-            check_out_date=form.cleaned_data.get("check_out_date"),
-              )
-        if guest_formset.is_valid():
-             for guest_form in guest_formset:
-                if guest_form.cleaned_data:  
-                    guest = guest_form.save(commit=False)
-                    guest.reservation = reservation
-                    guest.save()
-        messages.success(request, "New reservation added successfully")
-        return redirect("reservations:reservations_list")
-        
-    else:
-        form = AddReservationForm()
-        guest_formset = GuestFormSet()
-    return render(request, "reservations/reservation.html", {"form": form, "guest_formset": guest_formset})
+    form = AddReservationForm()
+    guest_formset = GuestFormSet()
+    print(guest_formset)
+    print(guest_formset.empty_form)
+    return render(
+        request,
+        "reservations/reservation.html",
+        {"form": form, "guest_formset": guest_formset},
+    )
 
 
 @login_required
@@ -127,7 +96,7 @@ def reports(request):
     ]
     total_bookings = reservations.filter(is_cancelled=False).count()
     total_rooms_booked = Reservation.rooms.through.objects.count()
-
+    total_rooms = Room.objects.all()
     return render(
         request,
         "reservations/reports.html",
@@ -141,6 +110,7 @@ def reports(request):
             "total_rooms_booked": total_rooms_booked,
             "start_date": start_date,
             "end_date": end_date,
+            "total_rooms": total_rooms
         },
     )
 

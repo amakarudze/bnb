@@ -1,4 +1,9 @@
+from django.db.models import Sum
+from django.contrib import messages
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
+from accounts.views import send_email
 from django.shortcuts import render, redirect
 
 from events.models import Event
@@ -13,10 +18,11 @@ from .forms import SearchForm
 def home(request):
     available_rooms = Room.objects.filter(can_be_rented=True)[:6]
     form = SearchForm()
+    events = Event.objects.filter(fully_booked=False)
     return render(
         request,
         "website/index.html",
-        {"title": "Home", "available_rooms": available_rooms, "form": form},
+        {"title": "Home", "available_rooms": available_rooms, "form": form,"events":events},
     )
 
 
@@ -37,7 +43,27 @@ def make_reservation(request, pk):
                     guest = guest_form.save(commit=False)
                     guest.reservation = reservation
                     guest.save()
+            #email
+            subject = "Booking Confirmation - BNB"
+            guest_email = reservation.user.email  #email address
 
+            #email template with reservation details
+            message = render_to_string('guest_reservation_confirmation.html', {
+                'reservation': reservation,
+                'booking_reference_code': reservation.booking_code,  # Pass the reference code
+                'room_id': reservation.rooms.first().id,  
+                'check_in_date': reservation.check_in_date,
+                'check_out_date': reservation.check_out_date,
+            })
+            
+            # Send the email
+            send_email(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,  
+                [guest_email],  # Recipient email
+            )
+            messages.success(request, "Reservation done successfully!")
             return redirect("website:reservation_success")
 
     else:
@@ -85,7 +111,7 @@ def search(request):
     check_out_date = request.GET.get("check_out_date", "")
     number_of_adults = request.GET.get("number_of_adults", "")
     number_of_children = request.GET.get("number_of_children", "")
-    print(number_of_children)
+    events = Event.objects.all()
 
     reservations = Reservation.objects.filter(
         check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
@@ -102,12 +128,19 @@ def search(request):
     else:
         rooms = rooms.exclude(room_type="Family")
     if number_of_adults:
-        pass
+        if (
+            int(number_of_adults)
+            > rooms.aggregate(Sum("room_capacity"))["room_capacity__sum"]
+        ):
+            messages.error(
+                request,
+                "We are sorry we don't have enough room to accommodate you all.",
+            )
 
     return render(
         request,
         "website/search_results.html",
-        {"title": "Search for rooms", "rooms": rooms},
+        {"title": "Search for rooms", "rooms": rooms,"events":events},
     )
 
 
@@ -130,6 +163,24 @@ def room(request, pk):
     room = Room.objects.get(pk=pk)
     return render(
         request, "website/room_details.html", {"title": "Room Details", "room": room}
+    )
+
+def event(request, pk):
+    event = Event.objects.get(pk=pk)
+    return render(
+        request, "website/event_details.html", {"title": "Event Details", "event": event}
+    )
+
+
+@login_required
+def reservations(request):
+    reservation_list = Reservation.objects.filter(user=request.user).order_by(
+        "-check_in_date"
+    )
+    return render(
+        request,
+        "website/reservations.html",
+        {"title": "Manage Reservations", "reservation_list": reservation_list},
     )
 
 

@@ -23,13 +23,14 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for room in total_rooms %}
                                 <tr>
-                                    <th scope="row">1</th>
-                                    <td> {{ total_rooms_booked }}</td>
-                                    <td>Otto</td>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td> {{ room.room_type }}</td>
+                                    <td>{{ room.room_capacity }}</td>
                                     <td>@mdo</td>
                                 </tr>
-                                
+                                {% endfor %}                                
                             </tbody>
                         </table>
                     </div>

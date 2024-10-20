@@ -1,0 +1,31 @@
+{% extends 'website/base.html' %}
+
+{% load static %}
+{% block content %}
+
+<section class="room-details-page">
+    <div class="container">
+        <div class="room-image">
+            
+
+            <img class="thumbnail-image" src="{{ event.photo.url }}" class="img-fluid" alt="Responsive image">
+        </div>
+        <div class="room-title">
+            <h1>Fun Event</h1>
+        </div>
+        <div class="room-details">
+            <p>{{ event.name }}.</p>
+            <p class="mb-0"><strong>Facilities:</strong></p>
+            <ul>
+                <li>Event Description: {{ event.description }}</li>
+                <li>Event Venue: {{ event.venue }}</li>
+                <li>Event Host: {{ event.host }} </li>
+                <li>Event Start Date: {{ event.start_date }}</li>
+                <li>Event End Date : {{ event.end_date }}.</li>
+                <li>Event Maximum Participants : {{ event.max_participants }}.</li>
+                <li>Event Additional Information : {{ event.additional_information }}.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}
