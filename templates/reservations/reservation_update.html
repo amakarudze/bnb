@@ -7,7 +7,7 @@
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
-    <form class="signup-form" method="post" action="{% url 'reservations:update_reservation' %}">
+    <form class="signup-form" method="post" action="{% url 'reservations:edit_reservation' reservation.pk %}">
         <div class="form-group mb-4">
             <h2 class="form-title">{{ title }}</h2>
         </div>

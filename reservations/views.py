@@ -308,13 +308,13 @@ def edit_reservation(request, pk):
 
                 messages.success(request, "Reservation updated successfully!")
 
-            return redirect("reservations:reservation_list")
+            return redirect("reservations:reservations_list")
 
     else:
         form = ReservationUpdateForm(instance=reservation)
 
     return render(
         request,
-        "reservations/update_reservation.html",
+        "reservations/reservation_update.html",
         {"form": form, "title": "Update Reservation", "reservation": reservation},
     )

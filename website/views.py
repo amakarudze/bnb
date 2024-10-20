@@ -47,7 +47,7 @@ def make_reservation(request):
             guest_email = reservation.user.email
 
             message = render_to_string(
-                "guest_reservation_confirmation.html",
+                "emails/guest_reservation_confirmation.html",
                 {
                     "reservation": reservation,
                     "booking_reference_code": reservation.booking_code,
@@ -240,7 +240,7 @@ def update_reservation(request, pk):
                     },
                 )
             staff_message = render_to_string(
-                "emails/staff_notifications_cancellation.html",
+                "emails/staff_notifications_cancellations.html",
                 {
                     "booking_code": reservation.booking_code,
                     "check_in_date": reservation.check_in_date,

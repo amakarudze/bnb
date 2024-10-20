@@ -35,7 +35,7 @@ class ReservationForm(forms.ModelForm):
     )
     rooms = forms.ModelMultipleChoiceField(
         queryset=Room.objects.filter(can_be_rented=True),
-        required=False,
+        required=True,
         widget=forms.CheckboxSelectMultiple(),
     )
     events = forms.ModelMultipleChoiceField(
@@ -120,10 +120,6 @@ class AddReservationForm(ReservationForm, SignUpForm):
     pass
 
 
-class GuestReservationUpdateForm(ReservationForm):
-    is_cancelled = forms.BooleanField(required=False)
-
-
 class NewReservationForm(ReservationForm):
     user = forms.ModelChoiceField(
         queryset=User.objects.all(),
@@ -175,6 +171,6 @@ class EditReservationForm(forms.ModelForm):
         fields = ["number_of_adults", "number_of_children", "events", "is_cancelled"]
         widgets = {
             "events": forms.CheckboxSelectMultiple,
-            "number_of_adults": forms.TextInput(attrs={"class": "form-control"}),
-            "number_of_children": forms.TextInput(attrs={"class": "form-control"}),
+            "number_of_adults": forms.NumberInput(attrs={"class": "form-control"}),
+            "number_of_children": forms.NumberInput(attrs={"class": "form-control"}),
         }

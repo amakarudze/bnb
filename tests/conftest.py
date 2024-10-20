@@ -1,13 +1,14 @@
 import pytest
-
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.models import Group, Permission
 from django.core import serializers
+
 from django.test import Client
 
 from accounts.models import User, UserProfile
 from events.models import Event
+
 from reservations.models import Guest, Reservation
 
 from rooms.models import Room
@@ -246,8 +247,8 @@ def event(db):
         photo="image.jpeg",
         host="Jane Doe",
         venue="Mutamba Room",
-        start_date="2024-10-30 09:00",
-        end_date="2024-10-30 13:00",
+        start_date="2024-12-30 09:00",
+        end_date="2024-12-30 13:00",
         min_participants=6,
         max_participants=15,
         num_participants=3,
@@ -268,8 +269,8 @@ def events(db):
                 photo="image.jpeg",
                 host="BnB",
                 venue="Musasa Room",
-                start_date="2024-10-30 20:00",
-                end_date="2024-10-31 00:00",
+                start_date=datetime.strptime("2024-12-30 20:00", "%Y-%m-%d %H:%M"),
+                end_date=datetime.strptime("2024-12-31 00:00", "%Y-%m-%d %H:%M"),
                 min_participants=10,
                 max_participants=20,
                 num_participants=12,
@@ -284,8 +285,8 @@ def events(db):
                 photo="image.jpeg",
                 host="Karlskrona Municipality",
                 venue="Karlskrona Town Square",
-                start_date="2024-10-30 20:00",
-                end_date="2024-10-31 00:00",
+                start_date=datetime.strptime("2024-12-30 20:00", "%Y-%m-%d %H:%M"),
+                end_date=datetime.strptime("2024-12-31 00:00", "%Y-%m-%d %H:%M"),
                 min_participants=10,
                 max_participants=20,
                 num_participants=12,
@@ -450,34 +451,10 @@ def guests(db, reservation):
 
 
 @pytest.fixture
-def reservations_1(db, rooms, guest, guest2, room, events):
-    reservation1 = Reservation.objects.create(
-        user=guest2,
-        number_of_adults=1,
-        number_of_children=0,
-        check_in_date="2024-10-29",
-        check_out_date="2024-11-05",
-    )
-    reservation1.rooms.set([room.id])
-    reservation2 = Reservation.objects.create(
-        user=guest,
-        number_of_adults=3,
-        number_of_children=3,
-        check_in_date="2024-10-28",
-        check_out_date="2024-11-02",
-    )
-
-    reserved_rooms = Room.objects.filter(room_type="Family")
-    reservation2.rooms.set([room.id for room in reserved_rooms])
-    reservation2.events.set([event.id for event in events])
-    return reservation1, reservation2
-
-
-@pytest.fixture
 def search_form_valid():
     return {
-        "check_in_date": "2024-10-31",
-        "check_out_date": "2024-11-03",
+        "check_in_date": "2024-12-24",
+        "check_out_date": "2024-12-31",
         "number_of_adults": 1,
         "number_of_children": 0,
     }
@@ -569,69 +546,36 @@ def search_form_by_booking_code():
     }
 
 
-@pytest.fixture(scope="session", autouse=True)
-def search_results(request, search_form_valid, reservations_1):
-    session = request.node
-    check_in_date = search_form_valid["check_in_date"]
-    check_out_date = search_form_valid["check_out_date"]
-    number_of_adults = search_form_valid["number_of_adults"]
-    number_of_children = search_form_valid["number_of_children"]
-
-    events = Event.objects.filter(
-        start_date__date__lte=check_out_date, end_date__date__gte=check_in_date
-    )
-    reservations = Reservation.objects.filter(
-        check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
-    )
-    booked_rooms = []
-    for reservation in reservations:
-        for room in reservation.rooms.all():
-            booked_rooms.append(room.pk)
-    rooms = Room.objects.exclude(pk__in=booked_rooms)
-
-    session["check_in_date"] = check_in_date
-    session["check_out_date"] = check_out_date
-    session["number_of_adults"] = number_of_adults
-    session["number_of_children"] = number_of_children
-    session["events"] = serializers.serialize("json", events)
-    session["rooms"] = serializers.serialize("json", rooms)
+@pytest.fixture
+def check_in_date():
+    check_in_date = "2024-12-24"
+    return check_in_date
 
 
 @pytest.fixture
-def add_reservation_valid(db, room):
-    form = {
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "john.doe@example.com",
-        "password": "securepassword123",
-        "confirm_password": "securepassword123",
-        "dob": "1990-01-01",  #  date format
-        "address": "123 Main St",
-        "city": "Cityville",
-        "postal_code": "12345",
-        "state": "State",
-        "country": "US",  #  country code
-        "phone_number": "123-456-7890",
-        "number_of_adults": 3,
-        "number_of_children": 3,
-        "check_in_date": "2024-12-01",
-        "check_out_date": "2024-12-03",
-        "rooms": [room.id],
-    }
-    return form
+def check_out_date():
+    check_out_date = "2024-12-31"
+    return check_out_date
 
 
 @pytest.fixture
-def modify_reservation():
-    """Fixture for creating a test reservation."""
-    return {
-        "number_of_adults": 2,
-        "number_of_children": 0,
-        "is_paid": True,
-    }
+def number_of_adults():
+    number_of_adults = 2
+    return number_of_adults
 
 
 @pytest.fixture
-def cancel_reservation(db):
-    """Fixture for creating a test reservation."""
-    return {"number_of_adults": 2, "number_of_children": 0, "is_cancelled": True}
+def number_of_children():
+    number_of_children = 0
+    return number_of_children
+
+
+@pytest.fixture
+def available_rooms(db, rooms):
+    rooms = Room.objects.exclude(room_type="Family")
+    return serializers.serialize("json", rooms)
+
+
+@pytest.fixture
+def upcoming_events(db, events):
+    return serializers.serialize("json", events)
