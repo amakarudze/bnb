@@ -34,7 +34,7 @@ def home(request):
 
 
 @login_required
-def make_reservation(request):
+def make_reservation(request, pk):
     if request.method == "POST":
         form = ReservationForm(request.POST)
 
