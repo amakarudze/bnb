@@ -1,3 +1,6 @@
+from datetime import datetime
+from collections import Counter
+
 from django.db.models import Sum
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
@@ -5,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
 from accounts.views import FROM_EMAIL, send_email
+
 
 from .forms import (
     GuestFormSet,
@@ -64,6 +68,10 @@ def reports(request):
         return redirect("website:home")
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
+    start_day = datetime.strptime(start_date, "%Y-%m-%d").date()
+    end_day = datetime.strptime(end_date, "%Y-%m-%d").date()
+    difference = end_day - start_day
+    period = difference.days
     reservations = Reservation.objects.filter(
         check_in_date__gte=start_date, check_in_date__lte=end_date
     )
@@ -81,6 +89,15 @@ def reports(request):
     total_rooms_booked = Reservation.rooms.through.objects.count()
     total_rooms = Room.objects.all()
 
+    booked_rooms = []
+    for reservation in reservations:
+        for room in reservation.rooms.all():
+            booked_rooms.append(room.room_type)
+    counters = Counter(booked_rooms)
+    result_dict = dict(counters)
+    result = result_dict
+    result = {key: round((value / period) * 100, 2) for key, value in result.items()}
+
     return render(
         request,
         "reservations/reports.html",
@@ -95,6 +112,7 @@ def reports(request):
             "start_date": start_date,
             "end_date": end_date,
             "total_rooms": total_rooms,
+            "result": result,
         },
     )
 
