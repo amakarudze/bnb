@@ -20,7 +20,6 @@ from website.forms import SearchForm
 
 from .forms import (
     AddReservationForm,
-    NewReservationForm,
     ReservationUpdateForm,
     SearchReportsForm,
 )
@@ -80,6 +79,7 @@ class UpdateReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
 def add_reservation(request):
     if request.method == "POST":
         form = AddReservationForm(request.POST)
+        email = (form.cleaned_data.get("email"),)
 
         if form.is_valid():
             try:
@@ -99,6 +99,10 @@ def add_reservation(request):
                     country=form.cleaned_data.get("country"),
                     phone_number=form.cleaned_data.get("phone_number"),
                 )
+            except IntegrityError:
+                messages.error(request, "User with that email already exist")
+
+                user = User.objects.get(email=email)
                 reservation = Reservation.objects.create(
                     user=user,
                     number_of_adults=form.cleaned_data.get("number_of_adults"),
@@ -131,9 +135,7 @@ def add_reservation(request):
 
                 messages.success(request, "New reservation added successfully")
                 return redirect("reservations:reservations_list")
-            except IntegrityError:
-                messages.error(request, "User with that email already exist")
-                return redirect("reservations:new_reservation")
+
     else:
         check_in_date = request.session["check_in_date"]
         check_out_date = request.session["check_out_date"]
@@ -233,66 +235,14 @@ def search_reports(request):
 
 
 @login_required
-def new_reservation(request):
-    if request.method == "POST":
-        form = NewReservationForm(request.POST)
-        if form.is_valid():
-            reservation = form.save()
-
-            message = render_to_string(
-                "emails/guest_reservation_confirmation.html",
-                {
-                    "name": reservation.user.first_name,
-                    "booking_code": reservation.booking_code,
-                    "check_in_date": reservation.check_in_date,
-                    "check_out_date": reservation.check_out_date,
-                    "rooms": reservation.rooms.all(),
-                },
-            )
-
-            subject = "Your booking confirmation at BnB!"
-            from_email = FROM_EMAIL
-            send_email(subject, message, from_email, [reservation.user.email])
-
-            messages.success(request, "New reservation added successfully")
-            return redirect("reservations:reservations_list")
-    else:
-        check_in_date = request.session["check_in_date"]
-        check_out_date = request.session["check_out_date"]
-        event_ids = list()
-
-        for object in serializers.deserialize("json", request.session["events"]):
-            pk = object.object.pk
-            event_ids.append(pk)
-        room_ids = list()
-        for object in serializers.deserialize("json", request.session["rooms"]):
-            pk = object.object.pk
-            room_ids.append(pk)
-        form = NewReservationForm(
-            initial={
-                "check_in_date": check_in_date,
-                "check_out_date": check_out_date,
-                "number_of_adults": request.session["number_of_adults"],
-                "number_of_children": request.session["number_of_children"],
-            }
-        )
-        form.fields["rooms"].queryset = Room.objects.filter(id__in=room_ids)
-        form.fields["events"].queryset = Event.objects.filter(id__in=event_ids)
-    return render(
-        request,
-        "reservations/new_reservation.html",
-        {"title": "Add New Reservation", "form": form},
-    )
-
-
-@login_required
 def edit_reservation(request, pk):
     reservation = Reservation.objects.get(id=pk)
 
     if request.method == "POST":
         form = ReservationUpdateForm(request.POST, instance=reservation)
         if form.is_valid():
-            updated_reservation = form.save()
+            updated_reservation = form.save(commit=False)
+            updated_reservation.save()
             if updated_reservation.is_cancelled:
                 message = render_to_string(
                     "emails/guest_cancellation_confirmation.html",

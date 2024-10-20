@@ -13,7 +13,6 @@ urlpatterns = [
         name="edit_reservation",
     ),
     path("add_reservation/", views.add_reservation, name="add_reservation"),
-    path("new_reservation/", views.new_reservation, name="new_reservation"),
     path("reports/", views.reports, name="reports"),
     path("search_reports/", views.search_reports, name="search_reports"),
 ]
