@@ -123,5 +123,4 @@ def test_search_by_booking_code_view(
         reverse("website:search_result_by_booking_code"),
         data=search_form_by_booking_code,
     )
-    assert response.status_code == 200
-    assert "reservations" in response.context
+    assert response.status_code == 302

@@ -91,10 +91,13 @@ def make_reservation(request):
             from_email = FROM_EMAIL
 
             send_email(
-                guest_subject, guest_message, from_email, [reservation.user.email])
+                guest_subject, guest_message, from_email, [reservation.user.email]
+            )
             send_email(staff_subject, staff_message, from_email, staff)
 
-            messages.success(request, "Thank you for making a reservation to stay at the BnB!")
+            messages.success(
+                request, "Thank you for making a reservation to stay at the BnB!"
+            )
             return redirect("website:reservations")
 
     check_in_date = request.session["check_in_date"]
@@ -273,6 +276,7 @@ def update_reservation(request, pk):
     )
 
 
+@login_required
 def search_by_booking_code(request):
     form = SearchByBookingCodeForm()
     return render(
@@ -282,11 +286,21 @@ def search_by_booking_code(request):
     )
 
 
+@login_required
 def search_result_by_booking_code(request):
     booking_code = request.GET.get("booking_code")
-    reservation_detail = Reservation.objects.filter(booking_code=booking_code)
+    if request.user.is_staff:
+        reservation_detail = Reservation.objects.filter(
+            booking_code=booking_code
+        ).first()
+    else:
+        reservation_detail = (
+            Reservation.objects.filter(booking_code=booking_code)
+            .filter(user=request.user)
+            .first()
+        )
     return render(
         request,
         "website/search_result_by_booking_code.html",
-        {"title": "Search Result By Booking Code", "reservations": reservation_detail},
+        {"title": "Search Result By Booking Code", "reservation": reservation_detail},
     )
