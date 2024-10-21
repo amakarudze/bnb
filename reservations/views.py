@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse
 
 from accounts.models import User, UserProfile
 from accounts.views import FROM_EMAIL, send_email
@@ -23,7 +22,7 @@ from .forms import (
     SearchReportsForm,
 )
 
-from .models import Reservation, Event, Room
+from .models import Reservation
 
 
 @login_required
@@ -192,7 +191,6 @@ def reports(request):
         "number_of_children__sum"
     ]
     total_bookings = reservations.filter(is_cancelled=False).count()
-    total_rooms_booked = Reservation.rooms.through.objects.count()
     total_rooms = Room.objects.all()
     booked_rooms = []
     for reservation in reservations:
