@@ -198,7 +198,7 @@ ul.menulist li a:hover,
     margin: 0;
 }
 
-.mobile-menu li a {
+.mobile-menu li a, .mobile-menu li span {
     padding: 20px;
     color: #313131;
     font-size: 16px;
@@ -208,15 +208,24 @@ ul.menulist li a:hover,
     margin-bottom: 1px;
 }
 
+.mobile-menu li a.dropdown-item {
+    color: #fff;
+}
+
 .mobile-menu .active,
-.mobile-menu li a:hover {
+.mobile-menu li a:hover, .mobile-menu li span:hover {
     background: #653208;
+    color: #fff;
+}
+
+.nav-dropdown:hover .nav-link {
     color: #fff;
 }
 
 .mm-list .contact-info {
     padding: 0 20px;
 }
+
 
 .p-button {
     font-family: var(--default-font);
@@ -433,6 +442,7 @@ ul.menulist li a:hover,
     border-radius: 4px;
     overflow: hidden;
     width: 100%;
+    margin-bottom: 2rem;
 }
 
 .room_card:hover {
@@ -560,6 +570,10 @@ ul.menulist li a:hover,
 
 .signup-form {
     max-width: 600px;
+}
+
+.reservation_form {
+    max-width: 750px;
 }
 
 .form-title {
