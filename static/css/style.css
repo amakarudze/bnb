@@ -379,6 +379,12 @@ ul.menulist li a:hover,
     align-items: stretch;
 }
 
+.aboutus_page {
+    max-width: 700px;
+    margin: 2rem auto;
+    height: 100%;
+}
+
 .whoarewe h2 {
     text-transform: uppercase;
     margin-bottom: 15px;
@@ -426,6 +432,7 @@ ul.menulist li a:hover,
     display: inline-block;
     border-radius: 4px;
     overflow: hidden;
+    width: 100%;
 }
 
 .room_card:hover {
@@ -459,14 +466,21 @@ ul.menulist li a:hover,
     -webkit-box-orient: vertical;
 }
 
-.room-check-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: space-between;
+.tbl-room-checklist {
+    width: 100%;
 }
 
-.room-check-box label {
+.room_option {
+    width: 100%;
+    font-size: 14px;
+    padding-bottom: 1.5rem;
+}
+
+.room_option td {
+    padding-bottom: 0.5rem;
+}
+
+.room_option .ro_title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -479,7 +493,8 @@ ul.menulist li a:hover,
     object-fit: cover;
     border-radius: 8px;
 }
-.room-total-price{
+
+.room-total-price {
     display: flex;
     align-items: center;
     justify-content: end;
