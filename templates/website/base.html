@@ -83,6 +83,7 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{% url 'website:search_by_booking_code' %}">Search Reservation</a>
                                 <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
                             </div>
                         </li>
@@ -104,7 +105,6 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Manage Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Reservation</a>
                                 <a class="dropdown-item" href="{% url 'website:search_by_booking_code' %}">Search Reservation</a>
                                 <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
                             </div>
@@ -162,6 +162,7 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{% url 'website:search_by_booking_code' %}">Search Reservation</a>
                                 <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
                             </div>
                         </li>
