@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from django.db import IntegrityError
-from django.db.models import Sum
+from django.db.models import F, Sum
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
@@ -139,13 +141,27 @@ def add_reservation(request):
                 "number_of_children": request.session["number_of_children"],
             }
         )
-        form.fields["rooms"].queryset = Room.objects.filter(id__in=room_ids)
-        form.fields["events"].queryset = Event.objects.filter(id__in=event_ids)
+        available_rooms = Room.objects.filter(id__in=room_ids)
+        upcoming_events = Event.objects.filter(id__in=event_ids)
+        form.fields["rooms"].queryset = available_rooms
+        form.fields["events"].queryset = upcoming_events
+        check_in = datetime.strptime(check_in_date, "%Y-%m-%d").date()
+        check_out = datetime.strptime(check_out_date, "%Y-%m-%d").date()
+        number_of_nights = (check_out - check_in).days
+        available_rooms = available_rooms.annotate(
+            total_price=F("price") * number_of_nights
+        )
 
     return render(
         request,
         "reservations/reservation.html",
-        {"form": form, "title": "Add Reservation"},
+        {
+            "form": form,
+            "title": "Add Reservation",
+            "available_rooms": available_rooms,
+            "upcoming_events": upcoming_events,
+            "number_of_nights": number_of_nights,
+        },
     )
 
 

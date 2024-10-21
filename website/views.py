@@ -1,4 +1,6 @@
-from django.db.models import Sum
+from datetime import datetime
+
+from django.db.models import F, Sum
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -117,15 +119,26 @@ def make_reservation(request):
                 "number_of_children": request.session["number_of_children"],
             }
         )
-        rooms = Room.objects.filter(id__in=room_ids)
-        events = Event.objects.filter(id__in=event_ids)
-        form.fields["rooms"].queryset = rooms
-        form.fields["events"].queryset = events
+        available_rooms = Room.objects.filter(id__in=room_ids)
+        upcoming_events = Event.objects.filter(id__in=event_ids)
+        form.fields["rooms"].queryset = available_rooms
+        form.fields["events"].queryset = upcoming_events
+        check_in = datetime.strptime(check_in_date, "%Y-%m-%d").date()
+        check_out = datetime.strptime(check_out_date, "%Y-%m-%d").date()
+        number_of_nights = (check_out - check_in).days
+        available_rooms = available_rooms.annotate(
+            total_price=F("price") * number_of_nights
+        )
 
     return render(
         request,
         "website/reservation.html",
-        {"form": form, "title": "Make Reservation", "events": events, "rooms": rooms},
+        {
+            "form": form,
+            "title": "Make Reservation",
+            "upcoming_events": upcoming_events,
+            "available_rooms": available_rooms,
+        },
     )
 
 
@@ -170,7 +183,6 @@ def search(request):
     request.session["number_of_adults"] = number_of_adults
     request.session["number_of_children"] = number_of_children
     request.session["events"] = serializers.serialize("json", events)
-
     return render(
         request,
         "website/search_results.html",
