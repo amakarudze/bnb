@@ -99,36 +99,35 @@ def make_reservation(request):
             )
             return redirect("website:reservations")
 
-    else:
-        check_in_date = request.session["check_in_date"]
-        check_out_date = request.session["check_out_date"]
+    check_in_date = request.session["check_in_date"]
+    check_out_date = request.session["check_out_date"]
 
-        event_ids = list()
-        for object in serializers.deserialize("json", request.session["events"]):
-            pk = object.object.pk
-            event_ids.append(pk)
-        room_ids = list()
-        for object in serializers.deserialize("json", request.session["rooms"]):
-            pk = object.object.pk
-            room_ids.append(pk)
-        form = ReservationForm(
-            initial={
-                "check_in_date": check_in_date,
-                "check_out_date": check_out_date,
-                "number_of_adults": request.session["number_of_adults"],
-                "number_of_children": request.session["number_of_children"],
-            }
-        )
-        available_rooms = Room.objects.filter(id__in=room_ids)
-        upcoming_events = Event.objects.filter(id__in=event_ids)
-        form.fields["rooms"].queryset = available_rooms
-        form.fields["events"].queryset = upcoming_events
-        check_in = datetime.strptime(check_in_date, "%Y-%m-%d").date()
-        check_out = datetime.strptime(check_out_date, "%Y-%m-%d").date()
-        number_of_nights = (check_out - check_in).days
-        available_rooms = available_rooms.annotate(
-            total_price=F("price") * number_of_nights
-        )
+    event_ids = list()
+    for object in serializers.deserialize("json", request.session["events"]):
+        pk = object.object.pk
+        event_ids.append(pk)
+    room_ids = list()
+    for object in serializers.deserialize("json", request.session["rooms"]):
+        pk = object.object.pk
+        room_ids.append(pk)
+    form = ReservationForm(
+        initial={
+            "check_in_date": check_in_date,
+            "check_out_date": check_out_date,
+            "number_of_adults": request.session["number_of_adults"],
+            "number_of_children": request.session["number_of_children"],
+        }
+    )
+    available_rooms = Room.objects.filter(id__in=room_ids)
+    upcoming_events = Event.objects.filter(id__in=event_ids)
+    form.fields["rooms"].queryset = available_rooms
+    form.fields["events"].queryset = upcoming_events
+    check_in = datetime.strptime(check_in_date, "%Y-%m-%d").date()
+    check_out = datetime.strptime(check_out_date, "%Y-%m-%d").date()
+    number_of_nights = (check_out - check_in).days
+    available_rooms = available_rooms.annotate(
+        total_price=F("price") * number_of_nights
+    )
 
     return render(
         request,
