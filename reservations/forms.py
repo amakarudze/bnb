@@ -1,8 +1,11 @@
-from datetime import date
+from datetime import date, datetime
 from django import forms
 
 from accounts.forms import SignUpForm
 from events.models import Event
+from rooms.models import Room
+
+from accounts.models import User
 
 from .models import Reservation, Guest
 
@@ -30,10 +33,15 @@ class ReservationForm(forms.ModelForm):
             }
         )
     )
-    events = forms.ModelMultipleChoiceField(
-        queryset=Event.objects.all(),
+    rooms = forms.ModelMultipleChoiceField(
+        queryset=Room.objects.filter(can_be_rented=True),
+        required=True,
         widget=forms.CheckboxSelectMultiple(),
+    )
+    events = forms.ModelMultipleChoiceField(
+        queryset=Event.objects.filter(start_date__gte=datetime.now()),
         required=False,
+        widget=forms.CheckboxSelectMultiple(),
     )
 
     class Meta:
@@ -47,9 +55,8 @@ class ReservationForm(forms.ModelForm):
             "check_out_date",
         ]
         widgets = {
-            "rooms": forms.CheckboxSelectMultiple,
-            "number_of_adults": forms.TextInput(attrs={"class": "form-control"}),
-            "number_of_children": forms.TextInput(attrs={"class": "form-control"}),
+            "number_of_adults": forms.NumberInput(attrs={"class": "form-control"}),
+            "number_of_children": forms.NumberInput(attrs={"class": "form-control"}),
         }
 
     def clean(self):
@@ -80,23 +87,44 @@ class GuestForm(forms.ModelForm):
         model = Guest
         fields = ["full_name", "is_adult"]
 
+    full_name = forms.CharField(
+        label="Full name",
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Full name"}
+        ),
+    )
+    is_adult = forms.BooleanField(
+        label="Is Adult",
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+                "type": "checkbox",
+                "value": "",
+                "required": False,
+            }
+        ),
+    )
 
-GuestFormSet = forms.modelformset_factory(
-    Guest,
-    form=GuestForm,
-    extra=1,
-    can_delete=True,
-)
+
+GuestFormSet = forms.formset_factory(GuestForm, extra=1, max_num=10, validate_min=True)
 
 
 class ReservationUpdateForm(ReservationForm):
     is_paid = forms.BooleanField(required=False)
     checked_in = forms.BooleanField(required=False)
     checked_out = forms.BooleanField(required=False)
+    is_cancelled = forms.BooleanField(required=False)
 
 
 class AddReservationForm(ReservationForm, SignUpForm):
     pass
+
+
+class NewReservationForm(ReservationForm):
+    user = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
 
 
 class SearchReportsForm(forms.Form):
@@ -133,11 +161,16 @@ class SearchReportsForm(forms.Form):
                     {"end_date": ["End  date must be greater than Start date."]}
                 )
 
-            if end_date > date.today():
-                raise forms.ValidationError(
-                    {"end_date": ["End date should not be a future date."]}
-                )
-            if start_date > date.today():
-                raise forms.ValidationError(
-                    {"start_date": ["Start date should not be a future date."]}
-                )
+
+class EditReservationForm(forms.ModelForm):
+    # Guest update form
+    is_cancelled = forms.BooleanField(required=False)
+
+    class Meta:
+        model = Reservation
+        fields = ["number_of_adults", "number_of_children", "events", "is_cancelled"]
+        widgets = {
+            "events": forms.CheckboxSelectMultiple,
+            "number_of_adults": forms.NumberInput(attrs={"class": "form-control"}),
+            "number_of_children": forms.NumberInput(attrs={"class": "form-control"}),
+        }

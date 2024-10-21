@@ -38,4 +38,4 @@ class Event(models.Model):
         managed = True
 
     def __str__(self):
-        return f"{self.name} from {self.start_date} to {self.end_date}"
+        return f"{self.name} on {self.start_date}"
