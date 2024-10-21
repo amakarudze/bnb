@@ -18,25 +18,21 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Room Type</th>
-                                    <th scope="col">Room Capacity</th>
                                     <th scope="col">Room Occupancy Rate</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for room in total_rooms %}
+                                {% for key,value in result.items %}
+                               
                                 <tr>
                                     <th scope="row">{{ forloop.counter }}</th>
-                                    <td> {{ room.room_type }}</td>
-                                    <td>{{ room.room_capacity }}</td>
-                                    <td>@mdo</td>
+                                    <td> {{ key }}</td>
+                                    <td>{{value}} %</td>
                                 </tr>
                                 {% endfor %}
-
                             </tbody>
                         </table>
                     </div>
-
-
                 </div>
             </div>
             <!-- Two small items -->

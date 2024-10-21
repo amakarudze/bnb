@@ -91,12 +91,10 @@ def make_reservation(request):
             from_email = FROM_EMAIL
 
             send_email(
-                guest_subject, guest_message, from_email, [reservation.user.email]
-            )
+                guest_subject, guest_message, from_email, [reservation.user.email])
             send_email(staff_subject, staff_message, from_email, staff)
-            messages.success(
-                request, "Thank you for making a reservation to stay at the BnB!"
-            )
+
+            messages.success(request, "Thank you for making a reservation to stay at the BnB!")
             return redirect("website:reservations")
 
     check_in_date = request.session["check_in_date"]

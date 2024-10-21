@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect
@@ -18,6 +19,7 @@ def add_event(request):
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, "Event Saved Successfully!")
         return redirect("events:events_list")
     return render(request, "events/event.html", {"title": "Add Event", "form": form})
 

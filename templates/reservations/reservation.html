@@ -7,7 +7,15 @@
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
+  {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
     <form class="signup-form reservation_form" method="post" action="{% url 'reservations:add_reservation' %}">
+ 
         <div class="form-group mb-4">
             <h2 class="form-title">{{ title }}</h2>
         </div>

@@ -9,6 +9,13 @@
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
+    {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
 
     <form action="" class="signup-form reservation_form" method="post" action="{% url 'website:make_reservation' %}">
         {% csrf_token %}
@@ -17,7 +24,6 @@
         </div>
         {% csrf_token %}
             <legend>Reservation Details</legend>
-
             {% for field in form %}
             {% if field is form.rooms %}
             <strong>Select Your Room(s)</strong>
@@ -119,6 +125,7 @@
             </div>
             {% endif %}
             {% endfor %}
+
         {% if field.errors %}
             {% for error in field.errors %}
             <div class="alert alert-danger">
