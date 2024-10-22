@@ -100,23 +100,37 @@ def make_reservation(request):
             )
             return redirect("website:reservations")
 
-    check_in_date = request.session["check_in_date"]
-    check_out_date = request.session["check_out_date"]
+    check_in_date = (
+        ""
+        if request.session["check_in_date"] is None
+        else request.session["check_in_date"]
+    )
+    check_out_date = (
+        ""
+        if request.session["check_out_date"] is None
+        else request.session["check_out_date"]
+    )
 
     event_ids = list()
-    for object in serializers.deserialize("json", request.session["events"]):
-        pk = object.object.pk
-        event_ids.append(pk)
+    if request.session["events"]:
+        for object in serializers.deserialize("json", request.session["events"]):
+            pk = object.object.pk
+            event_ids.append(pk)
     room_ids = list()
-    for object in serializers.deserialize("json", request.session["rooms"]):
-        pk = object.object.pk
-        room_ids.append(pk)
+    if request.session["rooms"]:
+        for object in serializers.deserialize("json", request.session["rooms"]):
+            pk = object.object.pk
+            room_ids.append(pk)
     form = ReservationForm(
         initial={
             "check_in_date": check_in_date,
             "check_out_date": check_out_date,
-            "number_of_adults": request.session["number_of_adults"],
-            "number_of_children": request.session["number_of_children"],
+            "number_of_adults": ""
+            if request.session["number_of_adults"] is None
+            else request.session["number_of_adults"],
+            "number_of_children": ""
+            if request.session["number_of_children"] is None
+            else request.session["number_of_children"],
         }
     )
     available_rooms = Room.objects.filter(id__in=room_ids)
