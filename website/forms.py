@@ -10,7 +10,7 @@ class SearchForm(forms.Form):
             attrs={
                 "id": "check_in_date",
                 "class": "form-control mr-sm-2",
-                "placeholder": "YYYY-MM-DD",
+                "placeholder": "Check in date",
                 "type": "date",
             }
         )
@@ -20,7 +20,7 @@ class SearchForm(forms.Form):
             attrs={
                 "id": "check_out_date",
                 "class": "form-control mr-sm-2",
-                "placeholder": "YYYY-MM-DD",
+                "placeholder": "Check out date",
                 "type": "date",
             }
         )
