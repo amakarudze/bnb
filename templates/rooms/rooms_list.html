@@ -1,6 +1,16 @@
 {% extends "website/base.html" %}
 
 {% block content %}
+
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == "error" %} <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% elif message.tags == "success" %} <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
 <div class="container mt-3 mb-3">
     <h2>List of Rooms for Rent</h2>
 

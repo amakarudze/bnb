@@ -25,11 +25,14 @@
         </div>
         {% csrf_token %}
         {% for field in form %}
+
+
         {% if field is form.rooms %}
         <strong>Select Your Room(s)</strong>
         <div class="form-group mb-4">
             <label>{{ field.label }}</label>
             {{ field }}
+            {{ field.errors }}
         </div>
         <strong>Room Details</strong>
         <table class="tbl-room-checklist">
@@ -76,6 +79,7 @@
         <div class="form-group mb-4">
             <label>{{ field.label }}</label>
             {{ field }}
+            {{ field.errors }}
         </div>
         {% if upcoming_events %}
         <strong>Event Details</strong>
@@ -122,19 +126,10 @@
         <div class="form-group mb-4">
             <label>{{ field.label }}</label>
             {{ field }}
+            {{ field.errors }}
         </div>
         {% endif %}
         {% endfor %}
-
-        {% if form.errors %}
-            {% for field in form %}
-            {% for error in field.errors %}
-            <div class="alert alert-danger">
-              <strong>{{ error }}</strong>
-            </div>
-            {% endfor %}
-            {% endfor %}
-        {% endif %}
 
         <div class="form-group text-center ">
             <button type="submit" class="btn submit">Save</button>

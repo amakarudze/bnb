@@ -582,20 +582,9 @@ def upcoming_events(db, events):
 
 
 @pytest.fixture
-def add_reservation_valid(db, room):
+def add_reservation_valid(db, room, guest):
     form = {
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "john.doe@example.com",
-        "password": "securepassword123",
-        "confirm_password": "securepassword123",
-        "dob": "1990-01-01",  #  date format
-        "address": "123 Main St",
-        "city": "Cityville",
-        "postal_code": "12345",
-        "state": "State",
-        "country": "US",  #  country code
-        "phone_number": "123-456-7890",
+        "user": guest,
         "number_of_adults": 3,
         "number_of_children": 3,
         "check_in_date": "2024-12-01",

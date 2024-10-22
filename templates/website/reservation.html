@@ -5,17 +5,18 @@
 
 {% block content %}
 
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == "error" %} <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% elif message.tags == "success" %} <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
 <div class="signup-form-container">
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
-    {% if messages %}
-        <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
 
     {% for key, val in form.errors.items %}
     <p>{{val}}</p>
@@ -131,7 +132,7 @@
         {% endfor %}
 
         {% if form.errors %}
-            {% for fiel.in form %}
+            {% for field in form %}
             {% for error in field.errors %}
             <div class="alert alert-danger">
               <strong>{{ error }}</strong>

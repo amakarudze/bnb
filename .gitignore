@@ -58,3 +58,4 @@ venv.bak/
 static/.DS_Store
 
 media/
+staticfiles/

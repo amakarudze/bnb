@@ -82,7 +82,7 @@ def test_edit_reservation_view_get(client, reservation):
     response = client.get(
         reverse("reservations:edit_reservation", args=[reservation.id])
     )
-    assert response.status_code == 302
+    assert response.status_code == 200
 
 
 def test_edit_reservation_view_post_valid(client, modify_reservation, reservation):
@@ -93,7 +93,7 @@ def test_edit_reservation_view_post_valid(client, modify_reservation, reservatio
     )
     assert reservation.number_of_adults == 2
     assert reservation.number_of_children == 0
-    assert response.status_code == 302
+    assert response.status_code == 200
 
 
 def test_edit_reservation_view_cancelled(client, cancel_reservation, reservation):

@@ -1,11 +1,11 @@
 from datetime import date, datetime
+
 from django import forms
 
-from accounts.forms import SignUpForm
-from events.models import Event
-from rooms.models import Room
 
 from accounts.models import User
+from events.models import Event
+from rooms.models import Room
 
 from .models import Reservation, Guest
 
@@ -109,15 +109,59 @@ class GuestForm(forms.ModelForm):
 GuestFormSet = forms.formset_factory(GuestForm, extra=1, max_num=10, validate_min=True)
 
 
-class ReservationUpdateForm(ReservationForm):
+class ReservationUpdateForm(forms.ModelForm):
+    check_in_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "DD/MM/YYYY",
+                "type": "date",
+            }
+        )
+    )
+    check_out_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "DD/MM/YYYY",
+                "type": "date",
+            }
+        )
+    )
+    rooms = forms.ModelMultipleChoiceField(
+        queryset=Room.objects.filter(can_be_rented=True),
+        required=True,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+    events = forms.ModelMultipleChoiceField(
+        queryset=Event.objects.filter(start_date__gte=datetime.now()),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+
     is_paid = forms.BooleanField(required=False)
     checked_in = forms.BooleanField(required=False)
     checked_out = forms.BooleanField(required=False)
     is_cancelled = forms.BooleanField(required=False)
 
-
-class AddReservationForm(ReservationForm, SignUpForm):
-    pass
+    class Meta:
+        model = Reservation
+        fields = [
+            "number_of_adults",
+            "number_of_children",
+            "rooms",
+            "events",
+            "check_in_date",
+            "check_out_date",
+            "is_paid",
+            "checked_in",
+            "checked_out",
+            "is_cancelled",
+        ]
+        widgets = {
+            "number_of_adults": forms.NumberInput(attrs={"class": "form-control"}),
+            "number_of_children": forms.NumberInput(attrs={"class": "form-control"}),
+        }
 
 
 class NewReservationForm(ReservationForm):
@@ -125,6 +169,82 @@ class NewReservationForm(ReservationForm):
         queryset=User.objects.all(),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+    """
+    def __init__(self, *args, **kwargs):
+        super(NewReservationForm, self).__init__(*args, **kwargs)
+        self.fields["user"].widget = RelatedFieldWidgetWrapper(
+            FilteredSelectMultiple(
+                ("user"),
+                True,
+            ),
+            Reservation._meta.get_field("user").remote_field,
+            bnb_admin_site,
+            can_add_related=True,
+        )
+        self.fields["user"].queryset = User.objects.all()
+    """
+    check_in_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "DD/MM/YYYY",
+                "type": "date",
+            }
+        )
+    )
+    check_out_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "DD/MM/YYYY",
+                "type": "date",
+            }
+        )
+    )
+    rooms = forms.ModelMultipleChoiceField(
+        queryset=Room.objects.filter(can_be_rented=True),
+        required=True,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+    events = forms.ModelMultipleChoiceField(
+        queryset=Event.objects.filter(start_date__gte=datetime.now()),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+
+    class Meta:
+        model = Reservation
+        widgets = {
+            "number_of_adults": forms.NumberInput(attrs={"class": "form-control"}),
+            "number_of_children": forms.NumberInput(attrs={"class": "form-control"}),
+        }
+        fields = [
+            "user",
+            "number_of_adults",
+            "number_of_children",
+            "rooms",
+            "events",
+            "check_in_date",
+            "check_out_date",
+        ]
+
+    def clean(self):
+        check_in_date = self.cleaned_data.get("check_in_date")
+        check_out_date = self.cleaned_data.get("check_out_date")
+
+        if check_out_date and check_in_date:
+            if check_out_date <= check_in_date:
+                raise forms.ValidationError(
+                    {
+                        "check_out_date": [
+                            "Check-out date must be after the check-in date."
+                        ]
+                    }
+                )
+            if check_in_date < date.today():
+                raise forms.ValidationError(
+                    {"check_in_date": ["Check-in date should not be a past date."]}
+                )
 
 
 class SearchReportsForm(forms.Form):
