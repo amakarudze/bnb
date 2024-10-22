@@ -50,10 +50,6 @@
                 </div>
                 <div class="cta_btns">
                     {% if user.is_authenticated %}
-                    <form method="post" action="{% url 'accounts:logout' %}" style="margin: 0;">
-                        {% csrf_token %}
-                        <button class="logout p-button" type="submit">Log out</button>
-                    </form>
                     <div class="login-status">
                         <div class="loggedin-user">
                             {% if user.is_superuser %}
