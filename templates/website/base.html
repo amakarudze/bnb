@@ -50,9 +50,9 @@
                 </div>
                 <div class="cta_btns">
                     {% if user.is_authenticated %}
-                    <form method="post" action="{% url 'accounts:logout' %}">
+                    <form method="post" action="{% url 'accounts:logout' %}" style="margin: 0;">
                         {% csrf_token %}
-                        <button class="p-button" type="submit">Log out</button>
+                        <button class="logout p-button" type="submit">Log out</button>
                     </form>
 
                     {% else %}
@@ -101,7 +101,6 @@
                         <li class="nav-dropdown"> <a href="" class="nav-link">
                             Manage Reservations</a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Create New Reservation</a>
                                 <a class="dropdown-item" href="{% url 'website:search_by_booking_code' %}">Search Reservation</a>
                                 <a class="dropdown-item" href="{% url 'reservations:reservations_list' %}">Manage Reservations</a>
                             </div>
