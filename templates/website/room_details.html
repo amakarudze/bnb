@@ -23,12 +23,12 @@
             <ul>
                 <li>Room Type: {{ room.room_type }}</li>
                 <li>Number of beds: {{ room.number_of_beds }} {{ room.bed_type }}s</li>
-                <li>Bathroom: {{ room.bathroom }]</li>
+                <li>Bathroom: {{ room.bathroom }}</li>
                 <li>Room capacity: {{ room.room_capacity }}.</li>
             </ul>
             <p><small><strong>Note:</strong>You must book a room to participate in an event.</small></p>
         </div>
     </div>
-    <a class="book-room-btn" href="{% url 'website:make_reservation' room.pk %}">Book this room</a>
+    <a class="book-room-btn" href="{% url 'website:make_reservation' %}">Book this room</a>
 </section>
 {% endblock %}

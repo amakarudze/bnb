@@ -9,21 +9,123 @@
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
+    {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
 
-    <form action="" class="signup-form" method="POST">
+    <form action="" class="signup-form reservation_form" method="post" action="{% url 'website:make_reservation' %}">
         {% csrf_token %}
         <div class="form-group mb-4">
             <h2 class="form-title">{{ title }}</h2>
         </div>
         {% csrf_token %}
-        <fieldset>
             <legend>Reservation Details</legend>
+            {% for field in form %}
+            {% if field is form.rooms %}
+            <strong>Select Your Room(s)</strong>
+            <div class="form-group mb-4">
+                <label>{{ field.label }}</label>
+                {{ field }}
+            </div>
+            <strong>Room Details</strong>
+            <table class="tbl-room-checklist">
+                <tr class="room_option">
+                    <td>
+                        <span class="ro_title"><b>Room Name</b></span>
+                    </td>
+                    <td>
+                        <b>Photo</b>
+                    </td>
+                    <td>
+                        <span class="ro_title"><b>Room Type</b></span>
+                    </td>
+                    <td>
+                        <span class="room_rate"><b>Price/day</b></span>
+                    </td>
+                    <td>
+                        <span class="rate_total"><strong>Total Price</strong></span>
+                    </td>
+                </tr>
+                {% for room in available_rooms %}
+                <tr class="room_option mb-3">
+                    <td>
+                        <span class="ro_title">{{ room.name }}</span>
+                    </td>
+                    <td>
+                        <img class="room_thumbnail" src="{{ room.photo.url}}" alt="">
+                    </td>
+                    <td>
+                        <span class="ro_title">{{ room.room_type}}</span>
+                    </td>
+                    <td>
+                        <span class="room_rate">SEK {{ room.price }}</span>
+                    </td>
+                    <td>
+                        <span class="rate_total"><strong>SEK {{ room.total_price }}</strong></span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
 
-        {% for field in form %}
-        <div class="form-group mb-4">
-            <label>{{ field.label }}</label>
-            {{ field }}
-        </div>
+            {% elif field is form.events %}
+            <strong>Select Your Event(s)</strong>
+            <div class="form-group mb-4">
+                <label>{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% if upcoming_events %}
+            <strong>Event Details</strong>
+            <table class="tbl-room-checklist">
+                <tr class="room_option">
+                    <td>
+                        <span class="ro_title"><b>Event Name</b></span>
+                    </td>
+                    <td>
+                        <b>Photo</b>
+                    </td>
+                    <td>
+                        <span class="ro_title"><b>Venue</b></span>
+                    </td>
+                    <td>
+                        <span class="room_rate"><b>Price</b></span>
+                    </td>
+                    <td>
+                        <span class="rate_total"><strong>Age Restrictions</strong></span>
+                    </td>
+                </tr>
+                {% for event in upcoming_events %}
+                <tr class="room_option mb-3">
+                    <td>
+                        <span class="ro_title">{{ event.name }}</span>
+                    </td>
+                    <td>
+                        <img class="room_thumbnail" src="{{ event.photo.url }}" alt="">
+                    </td>
+                    <td>
+                        <span class="ro_title">{{ event.venue }}</span>
+                    </td>
+                    <td>
+                        <span class="room_rate">SEK {{ event.price }}</span>
+                    </td>
+                    <td>
+                        <span class="rate_total">{{ event.age_restrictions }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            {% else %}
+            <div class="form-group mb-4">
+                <label>{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endif %}
+            {% endfor %}
+
         {% if field.errors %}
             {% for error in field.errors %}
             <div class="alert alert-danger">
@@ -39,20 +141,6 @@
             </div>
             {% endfor %}
         {% endif %}
-        {% endfor %}
-    </fieldset>
-
-        <fieldset>
-            <legend>Add More Guests</legend>
-            {% for form in guest_formset.forms %}
-            <div class="row">
-                {% for field in form %}
-                <div class="col">{{ field.label }} {{ field }}</div>
-                {% endfor %}
-                <div class="col"><button><i class="fa-solid fa-plus"></i></button></div>
-            </div>
-            {% endfor %}
-        </fieldset>
 
         <div class="form-group text-center ">
             <button type="submit" class="btn submit">Save Reservation</button>

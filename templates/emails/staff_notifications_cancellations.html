@@ -50,14 +50,13 @@
     <div class="booking_confirmation">
         <center>
             <img class="img-confirmation" src="images/booking_confirm.svg" alt="">
-            <h1 class="booking-title">Thank you for your booking at BNB.</h1>
-            <p>Your Booking details are:</p>
-            <p><strong>Booking Number:</strong> 2034-3456</p>
-            <p><strong>Booking Date:</strong> 20th - 24th April, 2024</p>
-            <p><strong>Room ID:</strong> G234</p>
+            <h1 class="booking-title">New booking has been cancelled through BNB website.</h1>
+            <p>The Booking details are:</p>
+            <p><strong>Booking Number:</strong> {{ booking_code }}</p>
+            <p><strong>Booked Date:</strong> {{ check_in_date }} - {{ check_out_date }}</p>
+            <p><strong>Room(s) ID:</strong>{{ rooms }}</p>
             <hr>
-            <p class="contact-info">If you did not make this booking then kindly contact BnB at <a
-                    href="">bnbinfo@gmail.com</a> or call at 076 567 000.</p>
+
         </center>
     </div>
 </body>

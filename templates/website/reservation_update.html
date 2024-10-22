@@ -1,25 +1,24 @@
-{% extends "website/base.html" %}
+{% extends 'website/base.html' %}
+
 {% load static %}
+<script src="{% static 'js/reservations.js' %}"></script>
 
 {% block content %}
-
-{% if messages %}
-<ul class="messages">
-{% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-{% endfor %}
-</ul>
-{% endif %}
 
 <div class="signup-form-container">
     <div class="form-header-logo">
         <img src="{% static 'images/logo.jpg' %}" alt="">
     </div>
-    <form class="signup-form" method="post" action="{% url 'accounts:signup' %}">
+
+    <form action="" class="signup-form" method="post" action="{% url 'website:update_reservation' %}">
+        {% csrf_token %}
         <div class="form-group mb-4">
-            <h2 class="form-title">Sign up</h2>
+            <h2 class="form-title">{{ title }}</h2>
         </div>
         {% csrf_token %}
+        <fieldset>
+            <legend>Reservation Details</legend>
+
         {% for field in form %}
         <div class="form-group mb-4">
             <label>{{ field.label }}</label>
@@ -41,12 +40,10 @@
             </div>
             {% endfor %}
         {% endif %}
+
         <div class="form-group text-center ">
-            <button type="submit" class="btn submit">Signup</button>
-            <p class="alt-message">Already have an account?<a href="{% url 'accounts:login' %}"> Login</a></p>
+            <button type="submit" class="btn submit">Save Reservation</button>
         </div>
     </form>
-
 </div>
-
 {% endblock %}
