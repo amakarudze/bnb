@@ -63,7 +63,7 @@ def reservations_list(request):
 def add_reservation(request):
     if request.method == "POST":
         form = AddReservationForm(request.POST)
-        email = (request.POST.get("email"),)
+        email = request.POST.get("email")
 
         if form.is_valid():
             try:
@@ -83,6 +83,7 @@ def add_reservation(request):
                     country=request.POST.get("country"),
                     phone_number=request.POST.get("phone_number"),
                 )
+
             except IntegrityError:
                 messages.error(request, "User with that email already exist")
 
@@ -94,13 +95,6 @@ def add_reservation(request):
                     check_in_date=request.POST.get("check_in_date"),
                     check_out_date=request.POST.get("check_out_date"),
                 )
-                rooms = request.POST.get("rooms")
-                for room in rooms:
-                    reservation.rooms.set(room)
-                events = request.POST.get("events")
-                if events:
-                    for event in events:
-                        reservation.events.set(event)
 
                 message = render_to_string(
                     "emails/guest_reservation_confirmation.html",
@@ -130,17 +124,17 @@ def add_reservation(request):
         if request.session["check_out_date"] is None
         else request.session["check_out_date"]
     )
-    rooms = "" if request.session["rooms"] else request.session["rooms"]
-    events = "" if request.session["events"] else request.session["events"]
+    rooms = request.session["rooms"]
+    events = request.session["events"]
 
     event_ids = list()
-    if events:
+    if events is not None:
         for object in serializers.deserialize("json", events):
             pk = object.object.pk
             event_ids.append(pk)
 
     room_ids = list()
-    if rooms:
+    if rooms is not None:
         for object in serializers.deserialize("json", rooms):
             pk = object.object.pk
             room_ids.append(pk)

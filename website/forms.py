@@ -72,7 +72,6 @@ class SearchForm(forms.Form):
             raise ValidationError(
                 {"number_of_adults": ["Number of adult guests cannot be 0."]}
             )
-            raise ValidationError("Number of adult guests cannot be 0.")
 
 
 class SearchByBookingCodeForm(forms.Form):

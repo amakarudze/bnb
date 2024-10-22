@@ -37,6 +37,7 @@ def home(request):
 
 @login_required
 def make_reservation(request):
+    form = ReservationForm(request.POST)
     if request.method == "POST":
         form = ReservationForm(request.POST)
 
@@ -44,6 +45,7 @@ def make_reservation(request):
             reservation = form.save(commit=False)
             reservation.user = request.user
             reservation.save()
+            reservation.save_m2m()
 
             subject = "Booking Confirmation - BNB"
             guest_email = reservation.user.email
@@ -190,9 +192,9 @@ def search(request):
                 "We are sorry we don't have enough room to accommodate you all.",
             )
             rooms = None
-    if rooms:
+    if rooms is not None:
         request.session["rooms"] = serializers.serialize("json", rooms)
-    if events:
+    if events is not None:
         request.session["events"] = serializers.serialize("json", events)
     request.session["check_in_date"] = check_in_date
     request.session["check_out_date"] = check_out_date
