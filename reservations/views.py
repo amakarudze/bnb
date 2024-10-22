@@ -120,27 +120,41 @@ def add_reservation(request):
                 messages.success(request, "New reservation added successfully")
                 return redirect("reservations:reservations_list")
 
-    check_in_date = request.session["check_in_date"]
-    check_out_date = request.session["check_out_date"]
-    rooms = request.session["rooms"]
-    events = request.session["events"]
+    check_in_date = (
+        ""
+        if request.session["check_in_date"] is None
+        else request.session["check_in_date"]
+    )
+    check_out_date = (
+        ""
+        if request.session["check_out_date"] is None
+        else request.session["check_out_date"]
+    )
+    rooms = "" if request.session["rooms"] else request.session["rooms"]
+    events = "" if request.session["events"] else request.session["events"]
 
     event_ids = list()
-    for object in serializers.deserialize("json", events):
-        pk = object.object.pk
-        event_ids.append(pk)
+    if events:
+        for object in serializers.deserialize("json", events):
+            pk = object.object.pk
+            event_ids.append(pk)
 
     room_ids = list()
-    for object in serializers.deserialize("json", rooms):
-        pk = object.object.pk
-        room_ids.append(pk)
+    if rooms:
+        for object in serializers.deserialize("json", rooms):
+            pk = object.object.pk
+            room_ids.append(pk)
 
     form = AddReservationForm(
         initial={
             "check_in_date": check_in_date,
             "check_out_date": check_out_date,
-            "number_of_adults": request.session["number_of_adults"],
-            "number_of_children": request.session["number_of_children"],
+            "number_of_adults": ""
+            if request.session["number_of_adults"] is None
+            else request.session["number_of_adults"],
+            "number_of_children": ""
+            if request.session["number_of_children"] is None
+            else request.session["number_of_children"],
         }
     )
     available_rooms = Room.objects.filter(id__in=room_ids)
