@@ -30,7 +30,7 @@ class SearchForm(forms.Form):
             attrs={
                 "id": "number_of_adults",
                 "class": "form-control mr-sm-2",
-                "placeholder": 0,
+                "placeholder": "Number of adults",
             }
         )
     )
@@ -39,7 +39,7 @@ class SearchForm(forms.Form):
             attrs={
                 "id": "number_of_children",
                 "class": "form-control mr-sm-2",
-                "placeholder": 0,
+                "placeholder": "Number of children",
                 "required": False,
             }
         )

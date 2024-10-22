@@ -256,6 +256,10 @@ ul.menulist li a:hover,
     gap: 16px;
 }
 
+.login-status form {
+    margin: 0;
+}
+
 .logout {
     background-color: #fff;
     color: #313131;
