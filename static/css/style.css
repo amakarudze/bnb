@@ -864,15 +864,11 @@ form .btn:hover {
 }
 
 .alert-message {
-    display: none;
-    opacity: 1;
-    max-width: 500px;
-    position: fixed;
-    top: 10px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    z-index: 999999;
+    padding: 8px 12px;
+    background-color:#f8d7da;
+    color:#58151c;
+    display: flex;
+    align-items: center;
 }
 
 /*  */
