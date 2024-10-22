@@ -26,6 +26,7 @@
                 <li>Bathroom: {{ room.bathroom }]</li>
                 <li>Room capacity: {{ room.room_capacity }}.</li>
             </ul>
+            <p><small><strong>Note:</strong>You must book a room to participate in an event.</small></p>
         </div>
     </div>
     <a class="book-room-btn" href="{% url 'website:make_reservation' room.pk %}">Book this room</a>
