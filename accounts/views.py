@@ -46,8 +46,15 @@ def create_staff(request):
                     last_name=last_name,
                     password=password1,
                 )
+                message = render_to_string(
+                    "emails/new_staff_account_confirmation.html",
+                    {"name": first_name, "username": email},
+                )
+                from_email = FROM_EMAIL
+                to_email = [email]
+                subject = "Your BnB account is created!"
                 # Inform the user form was saved successfully.
-                send_email()
+                send_email(subject, message, from_email, to_email)
                 messages.success(request, "New Staff was created successfully")
                 return redirect("website:home")
         except IntegrityError:
@@ -58,7 +65,6 @@ def create_staff(request):
 
 
 def signup(request):
-    room = request.GET.get("room_id")
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -93,14 +99,7 @@ def signup(request):
                 )
                 if authenticated_user is not None:
                     login(request, authenticated_user)
-
-                    room = request.GET.get("room.uuid")
-                    if room:
-                        return redirect(
-                            reverse("website:make_reservation", args=(room,))
-                        )
-                    else:
-                        return redirect("website:home")
+                    reverse("website:make_reservation")
 
                 from_email = FROM_EMAIL
                 to_email = [user.email]

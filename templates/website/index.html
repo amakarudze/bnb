@@ -33,6 +33,13 @@
                 <div class="search-form">
                     <h2>Find Your Best Room</h2>
                     <div class="container">
+                        {% if messages %}
+                         <ul class="messages">
+                         {% for message in messages %}
+                         <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                          {% endfor %}
+                        </ul>
+                        {% endif %}
                         <form class="form-inline" method="get" action="{% url 'website:search' %}">
                             {% for field in form %}
                                 {{ field }}
@@ -41,6 +48,7 @@
                         </form>
                     </div>
                 </div>
+                
             </div>
         </div>
 
@@ -70,7 +78,7 @@
                                 <div class="price">SEK {{ room.price }}</div>
                                 <div class="room-book-btns">
                                     <a class="btn-view-details" href="{% url 'website:room' room.pk %}">View Details</a>
-                                    <a type="button" class="btn btn-primary" href="{% url 'website:make_reservation' room.pk %}">BooK Now</a>
+                                    <a type="button" class="btn btn-primary" href="{% url 'website:make_reservation' %}">BooK Now</a>
                                 </div>
                             </div>
                         </div>
@@ -85,6 +93,41 @@
             </div>
         </div>
     </section>
+    <section class="rooms"></section>
+    <div class="container">
+        <h2 class="section-title">Suggested Events</h2>
+        {% if events %}
+            {% for event in events %}
+            {% if forloop.first %}<div class="row">{% endif %}
+                <div class="col-md-4">
+                    <div class="room_card">
+                        <img class="room_img" src="{{ event.photo.url }}" alt="rooms_image">
+                        <div class="room_details">
+                            <h3>{{ event.name }}</h3>
+                            <p>
+                                {{ event.description }}
+                            </p>
+                            <p>Event Venue: {{ event.venue }}</p>
+                            <p>Event Date: {{ event.start_date }}</p>
+                        </div>
+                        <div class="price_book_btn">
+                            <div class="price">SEK {{ event.price }}</div>
+                            <div class="room-book-btns">
+                                <a class="btn-view-details" href="{% url 'website:event' event.pk %}">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+                {% if forloop.last %}</div>{% endif %}
+                {% endfor %}
+        {% else %}
+            <h4>Sorry we do not have any upcoming events.</h4>
+            <p>No events during the selected period.</p>
+        {% endif %}
+        </div>
+    </div>
+</section>
 
     <!-- aout us -->
     <section class="whoarewe" id="about">

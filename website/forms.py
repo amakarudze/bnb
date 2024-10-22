@@ -40,6 +40,7 @@ class SearchForm(forms.Form):
                 "id": "number_of_children",
                 "class": "form-control mr-sm-2",
                 "placeholder": 0,
+                "required": False,
             }
         )
     )

@@ -7,9 +7,9 @@
 <section class="reservations">
     <div class="container">
         <h2 class="section-title">Reservation Details</h2>
-        {% if reservations %}
-            {% for reservation in reservations %}
-            {% if forloop.first %}<div class="row">{% endif %}
+        {% if reservation %}
+
+            <div class="row">
                 <div class="col-md-4">
                     <div class="reservation_card">
 
@@ -21,11 +21,10 @@
 
                     </div>
                 </div>
-                {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
-                {% if forloop.last %}</div>{% endif %}
-                {% endfor %}
+                </div>
+
         {% else %}
-            <h4>Sorry we do not have any Reservations against entered Booking Code.</h4>
+            <h4>Sorry we do not have any Reservation against entered Booking Code.</h4>
             <p>No bookings available!</p>
         {% endif %}
         </div>
