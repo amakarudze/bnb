@@ -190,13 +190,15 @@ def search(request):
                 "We are sorry we don't have enough room to accommodate you all.",
             )
             rooms = None
-
-    request.session["rooms"] = serializers.serialize("json", rooms)
+    if rooms:
+        request.session["rooms"] = serializers.serialize("json", rooms)
+    if events:
+        request.session["events"] = serializers.serialize("json", events)
     request.session["check_in_date"] = check_in_date
     request.session["check_out_date"] = check_out_date
     request.session["number_of_adults"] = number_of_adults
     request.session["number_of_children"] = number_of_children
-    request.session["events"] = serializers.serialize("json", events)
+
     return render(
         request,
         "website/search_results.html",
