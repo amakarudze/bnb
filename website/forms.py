@@ -10,7 +10,7 @@ class SearchForm(forms.Form):
             attrs={
                 "id": "check_in_date",
                 "class": "form-control mr-sm-2",
-                "placeholder": "YYYY-MM-DD",
+                "placeholder": "Check in date",
                 "type": "date",
             }
         )
@@ -20,7 +20,7 @@ class SearchForm(forms.Form):
             attrs={
                 "id": "check_out_date",
                 "class": "form-control mr-sm-2",
-                "placeholder": "YYYY-MM-DD",
+                "placeholder": "Check out date",
                 "type": "date",
             }
         )
@@ -30,7 +30,7 @@ class SearchForm(forms.Form):
             attrs={
                 "id": "number_of_adults",
                 "class": "form-control mr-sm-2",
-                "placeholder": 0,
+                "placeholder": "Number of adults",
             }
         )
     )
@@ -39,7 +39,7 @@ class SearchForm(forms.Form):
             attrs={
                 "id": "number_of_children",
                 "class": "form-control mr-sm-2",
-                "placeholder": 0,
+                "placeholder": "Number of children",
                 "required": False,
             }
         )
