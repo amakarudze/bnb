@@ -70,12 +70,8 @@
                     <div class="mm-list">
                         <ul class="nav-menu mobile-menu">
                             <li><a href="{% url 'website:home' %}" class="nav-link active">Home</a></li>
-                        <li class="nav-dropdown"> <a href="" class="nav-link">
+                        <li> <a href="{% url 'website:about_us' %}" class="nav-link">
                             About Us</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="{% url 'website:about_us' %}">About Us</a>
-                                <a class="dropdown-item" href="{% url 'website:contact_us' %}">Contact Us</a>
-                            </div>
                         </li>
                         {% if user.is_authenticated %}
                         {% if user.is_staff %}
@@ -150,12 +146,8 @@
                 <div class="navmenu">
                     <ul class="menulist">
                         <li><a href="{% url 'website:home' %}" class="nav-link active">Home</a></li>
-                        <li class="nav-dropdown"> <a href="" class="nav-link">
+                        <li> <a href="{% url 'website:about_us' %}" class="nav-link">
                             About Us</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="{% url 'website:about_us' %}">About Us</a>
-                                <a class="dropdown-item" href="{% url 'website:contact_us' %}">Contact Us</a>
-                            </div>
                         </li>
                         {% if user.is_authenticated %}
                         {% if user.is_staff %}
