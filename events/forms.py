@@ -9,7 +9,7 @@ class EventForm(forms.ModelForm):
             attrs={
                 "class": "form-control",
                 "id": "name",
-                "placeholder": "Enter Room Name",
+                "placeholder": "Enter Event Name",
             }
         )
     )
@@ -18,7 +18,7 @@ class EventForm(forms.ModelForm):
             attrs={
                 "class": "form-control",
                 "id": "description",
-                "placeholde": "Describe the room for guests.",
+                "placeholde": "Describe the event for guests.",
             }
         )
     )
