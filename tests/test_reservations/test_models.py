@@ -1,7 +1,7 @@
 def test_reservation_model_string_representation(reservation):
     assert (
         str(reservation)
-        == f"{reservation.user.get_full_name()} {reservation.check_in_date} - {reservation.check_out_date}"
+        == f"{reservation.user} {reservation.check_in_date} - {reservation.check_out_date}"
     )
 
 

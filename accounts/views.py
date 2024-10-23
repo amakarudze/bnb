@@ -1,3 +1,4 @@
+from urllib.error import URLError
 from django.db import IntegrityError
 from django.conf import settings
 from django.contrib import messages
@@ -28,10 +29,8 @@ def send_email(subject, message, from_email, to_email):
 @login_required
 @permission_required("accounts.add_staff", raise_exception=True)
 def create_staff(request):
-    form = CreateStaffForm()
+    form = CreateStaffForm(request.POST)
     if request.method == "POST":
-        form = CreateStaffForm(request.POST)
-
         try:
             # We need to do error handling in case the email already exist
             if form.is_valid():
@@ -54,9 +53,12 @@ def create_staff(request):
                 to_email = [email]
                 subject = "Your BnB account is created!"
                 # Inform the user form was saved successfully.
-                send_email(subject, message, from_email, to_email)
+                try:
+                    send_email(subject, message, from_email, to_email)
+                except URLError:
+                    pass
                 messages.success(request, "New Staff was created successfully")
-                return redirect("website:home")
+                return redirect("reservations:dashboard")
         except IntegrityError:
             messages.error(request, "The Staff has already been registered.")
     return render(
@@ -65,6 +67,7 @@ def create_staff(request):
 
 
 def signup(request):
+    form = SignUpForm()
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -104,14 +107,14 @@ def signup(request):
                 from_email = FROM_EMAIL
                 to_email = [user.email]
                 subject = "Thank you for signing up at BnB!"
-                send_email(subject, message, from_email, to_email)
+                try:
+                    send_email(subject, message, from_email, to_email)
+                except URLError:
+                    pass
 
                 messages.success(request, "Sign-up successful!")
 
             except IntegrityError:
-                messages.error(request, "User already exist!")
-
-    else:
-        form = SignUpForm()
+                messages.error(request, "User with that email already exists!")
 
     return render(request, "accounts/signup.html", {"form": form})

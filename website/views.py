@@ -1,12 +1,16 @@
-from datetime import datetime
+from datetime import datetime, date
+from urllib.error import URLError
 
 from django.db.models import F, Sum
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core import serializers
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.views.generic import UpdateView
+from django.urls import reverse
 
 from accounts.models import User
 from accounts.views import FROM_EMAIL, send_email
@@ -37,9 +41,8 @@ def home(request):
 
 @login_required
 def make_reservation(request):
+    form = ReservationForm(request.POST)
     if request.method == "POST":
-        form = ReservationForm(request.POST)
-
         if form.is_valid():
             reservation = form.save(commit=False)
             reservation.user = request.user
@@ -58,24 +61,16 @@ def make_reservation(request):
                     "check_out_date": reservation.check_out_date,
                 },
             )
+            try:
+                send_email(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [guest_email],
+                )
+            except URLError:
+                pass
 
-            send_email(
-                subject,
-                message,
-                settings.DEFAULT_FROM_EMAIL,
-                [guest_email],
-            )
-
-            guest_message = render_to_string(
-                "emails/guest_reservation_confirmation.html",
-                {
-                    "name": reservation.user.first_name,
-                    "booking_code": reservation.booking_code,
-                    "check_in_date": reservation.check_in_date,
-                    "check_out_date": reservation.check_out_date,
-                    "rooms": reservation.rooms.all(),
-                },
-            )
             staff_message = render_to_string(
                 "emails/staff_notifications.html",
                 {
@@ -86,14 +81,12 @@ def make_reservation(request):
                 },
             )
             staff = [user.email for user in User.objects.filter(is_staff=True)]
-            guest_subject = "Your booking confirmation at BnB!"
             staff_subject = "New booking notification!"
             from_email = FROM_EMAIL
-
-            send_email(
-                guest_subject, guest_message, from_email, [reservation.user.email]
-            )
-            send_email(staff_subject, staff_message, from_email, staff)
+            try:
+                send_email(staff_subject, staff_message, from_email, staff)
+            except URLError:
+                pass
 
             messages.success(
                 request, "Thank you for making a reservation to stay at the BnB!"
@@ -161,49 +154,94 @@ def search(request):
     check_out_date = request.GET.get("check_out_date", "")
     number_of_adults = request.GET.get("number_of_adults", "")
     number_of_children = request.GET.get("number_of_children", "")
-    events = Event.objects.all()
+    check_in = datetime.strptime(check_in_date, "%Y-%m-%d").date()
+    check_out = datetime.strptime(check_out_date, "%Y-%m-%d").date()
 
-    events = Event.objects.filter(
-        start_date__date__lte=check_out_date, end_date__date__gte=check_in_date
-    )
-    reservations = Reservation.objects.filter(
-        check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
-    )
-    booked_rooms = []
-    for reservation in reservations:
-        for room in reservation.rooms.all():
-            booked_rooms.append(room.pk)
-    rooms = Room.objects.exclude(pk__in=booked_rooms)
-    if int(number_of_children) > 0:
-        suggested_rooms = rooms.filter(room_type="Family")
-        if suggested_rooms:
-            rooms = suggested_rooms
+    if check_in < date.today():
+        messages.error(request, "Check in date cannot be in the past.")
+        return render(
+            request,
+            "website/search_results.html",
+            {"title": "Search for rooms", "rooms": None, "events": None},
+        )
+    if check_out < date.today():
+        messages.error(request, "Check out date cannot be in the past.")
+        return render(
+            request,
+            "website/search_results.html",
+            {"title": "Search for rooms", "rooms": None, "events": None},
+        )
+    elif check_in >= check_out:
+        messages.error(request, "Check out date should be greater than check in date.")
+        return render(
+            request,
+            "website/search_results.html",
+            {"title": "Search for rooms", "rooms": None, "events": None},
+        )
+    elif int(number_of_adults) <= 0:
+        return render(
+            request,
+            "website/search_results.html",
+            {"title": "Search for rooms", "rooms": None, "events": None},
+        )
+    elif int(number_of_children) < 0:
+        return render(
+            request,
+            "website/search_results.html",
+            {"title": "Search for rooms", "rooms": None, "events": None},
+        )
+
     else:
-        rooms = rooms.exclude(room_type="Family")
-    if number_of_adults:
-        if (
-            int(number_of_adults)
-            > rooms.aggregate(Sum("room_capacity"))["room_capacity__sum"]
-        ):
+        events = Event.objects.all()
+
+        events = Event.objects.filter(
+            start_date__date__lte=check_out_date, end_date__date__gte=check_in_date
+        )
+        reservations = Reservation.objects.filter(
+            check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
+        ).filter(is_cancelled=False)
+        booked_rooms = []
+        for reservation in reservations:
+            for room in reservation.rooms.all():
+                booked_rooms.append(room.pk)
+        rooms = Room.objects.exclude(pk__in=booked_rooms).filter(can_be_rented=True)
+        if len(rooms) == 0:
             messages.error(
                 request,
                 "We are sorry we don't have enough room to accommodate you all.",
             )
-            rooms = None
-    if rooms:
-        request.session["rooms"] = serializers.serialize("json", rooms)
-    if events:
-        request.session["events"] = serializers.serialize("json", events)
-    request.session["check_in_date"] = check_in_date
-    request.session["check_out_date"] = check_out_date
-    request.session["number_of_adults"] = number_of_adults
-    request.session["number_of_children"] = number_of_children
+        else:
+            if int(number_of_children) > 0:
+                suggested_rooms = rooms.filter(room_type="Family")
+                if suggested_rooms:
+                    rooms = suggested_rooms
+            else:
+                rooms = rooms.exclude(room_type="Family")
+            if number_of_adults:
+                if (
+                    int(number_of_adults)
+                    > rooms.aggregate(Sum("room_capacity"))["room_capacity__sum"]
+                ):
+                    messages.error(
+                        request,
+                        "We are sorry we don't have enough room to accommodate you all.",
+                    )
+                    rooms = None
 
-    return render(
-        request,
-        "website/search_results.html",
-        {"title": "Search for rooms", "rooms": rooms, "events": events},
-    )
+        if rooms is not None:
+            request.session["rooms"] = serializers.serialize("json", rooms)
+        if events is not None:
+            request.session["events"] = serializers.serialize("json", events)
+        request.session["check_in_date"] = check_in_date
+        request.session["check_out_date"] = check_out_date
+        request.session["number_of_adults"] = number_of_adults
+        request.session["number_of_children"] = number_of_children
+
+        return render(
+            request,
+            "website/search_results.html",
+            {"title": "Search for rooms", "rooms": rooms, "events": events},
+        )
 
 
 def about_us(request):
@@ -249,47 +287,32 @@ def reservations(request):
     )
 
 
-@login_required
-def update_reservation(request, pk):
-    reservation = Reservation.objects.get(pk=pk)
-    form = EditReservationForm(instance=reservation)
-    if request.method == "POST":
-        if form.is_valid():
-            is_cancelled = form.cleaned_data["is_cancelled"]
-            if is_cancelled:
-                guest_message = render_to_string(
-                    "emails/guest_cancellation_confirmation.html",
-                    {
-                        "name": reservation.user.first_name,
-                        "booking_code": reservation.booking_code,
-                        "check_in_date": reservation.check_in_date,
-                        "check_out_date": reservation.check_out_date,
-                        "rooms": reservation.rooms.all(),
-                    },
-                )
-            staff_message = render_to_string(
-                "emails/staff_notifications_cancellations.html",
+class UpdateReservationView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
+    model = Reservation
+    form_class = EditReservationForm
+    template_name = "website/reservation_update.html"
+    permission_required = "reservations.change_resevation"
+    raise_exception = True
+
+    def get_success_url(self) -> str:
+        reservation = self.get_object()
+        if reservation.is_cancelled:
+            message = render_to_string(
+                "emails/guest_cancellation_confirmation.html",
                 {
-                    "booking_code": reservation.booking_code,
-                    "check_in_date": reservation.check_in_date,
-                    "check_out_date": reservation.check_out_date,
-                    "rooms": reservation.rooms.all(),
+                    "name": reservation.user.first_name,
+                    "username": reservation.user.email,
                 },
             )
-            staff = [user.email for user in User.objects.filter(is_staff=True)]
-            guest_subject = "Your booking at BnB has been cancelled!"
-            staff_subject = "New booking cancellation notification!"
             from_email = FROM_EMAIL
-
-            send_email(
-                guest_subject, guest_message, from_email, [reservation.user.email]
-            )
-            send_email(staff_subject, staff_message, from_email, staff)
-    return render(
-        request,
-        "website/update_reservation.html",
-        {"title": "Update reservation", "reservation": reservation},
-    )
+            to_email = [reservation.user.email]
+            subject = "Your reservation is cancelled!"
+            try:
+                send_email(subject, message, from_email, to_email)
+            except URLError:
+                pass
+            messages.success(self.request, "Reservation is successfully cancelled.")
+        return reverse("website:reservations")
 
 
 @login_required

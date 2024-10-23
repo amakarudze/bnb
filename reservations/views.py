@@ -1,15 +1,17 @@
 from collections import Counter
 from datetime import datetime
+from urllib.error import URLError
 
-from django.db import IntegrityError
 from django.db.models import F, Sum
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core import serializers
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.views.generic import UpdateView
+from django.urls import reverse
 
-from accounts.models import User, UserProfile
 from accounts.views import FROM_EMAIL, send_email
 from events.models import Event
 from rooms.models import Room
@@ -17,7 +19,7 @@ from website.forms import SearchForm
 
 
 from .forms import (
-    AddReservationForm,
+    NewReservationForm,
     ReservationUpdateForm,
     SearchReportsForm,
 )
@@ -62,63 +64,34 @@ def reservations_list(request):
 )
 def add_reservation(request):
     if request.method == "POST":
-        form = AddReservationForm(request.POST)
-        email = (request.POST.get("email"),)
+        form = NewReservationForm(request.POST)
+        print(form.errors)
+        user_id = request.POST.get("user")
+        print(user_id)
 
         if form.is_valid():
+            reservation = form.save()
+            reservation.save()
+            message = render_to_string(
+                "emails/guest_reservation_confirmation.html",
+                {
+                    "name": reservation.user.first_name,
+                    "booking_code": reservation.booking_code,
+                    "check_in_date": reservation.check_in_date,
+                    "check_out_date": reservation.check_out_date,
+                    "rooms": reservation.rooms.all(),
+                },
+            )
+
+            subject = "Your booking confirmation at BnB!"
+            from_email = FROM_EMAIL
             try:
-                user = User.objects.create_user(
-                    email=request.POST.get("email"),
-                    first_name=request.POST.get("first_name"),
-                    last_name=request.POST.get("last_name"),
-                    password=request.POST.get("password"),
-                )
-                UserProfile.objects.create(
-                    user=user,
-                    dob=request.POST.get("dob"),
-                    address=request.POST.get("address"),
-                    city=request.POST.get("city"),
-                    postal_code=request.POST.get("postal_code"),
-                    state=request.POST.get("state"),
-                    country=request.POST.get("country"),
-                    phone_number=request.POST.get("phone_number"),
-                )
-            except IntegrityError:
-                messages.error(request, "User with that email already exist")
-
-                user = User.objects.get(email=email)
-                reservation = Reservation.objects.create(
-                    user=user,
-                    number_of_adults=request.POST.get("number_of_adults"),
-                    number_of_children=request.POST.get("number_of_children"),
-                    check_in_date=request.POST.get("check_in_date"),
-                    check_out_date=request.POST.get("check_out_date"),
-                )
-                rooms = request.POST.get("rooms")
-                for room in rooms:
-                    reservation.rooms.set(room)
-                events = request.POST.get("events")
-                if events:
-                    for event in events:
-                        reservation.events.set(event)
-
-                message = render_to_string(
-                    "emails/guest_reservation_confirmation.html",
-                    {
-                        "name": reservation.user.first_name,
-                        "booking_code": reservation.booking_code,
-                        "check_in_date": reservation.check_in_date,
-                        "check_out_date": reservation.check_out_date,
-                        "rooms": reservation.rooms.all(),
-                    },
-                )
-
-                subject = "Your booking confirmation at BnB!"
-                from_email = FROM_EMAIL
                 send_email(subject, message, from_email, [reservation.user.email])
+            except URLError:
+                pass
 
-                messages.success(request, "New reservation added successfully")
-                return redirect("reservations:reservations_list")
+            messages.success(request, "New reservation added successfully")
+            return redirect("reservations:reservations_list")
 
     check_in_date = (
         ""
@@ -130,22 +103,22 @@ def add_reservation(request):
         if request.session["check_out_date"] is None
         else request.session["check_out_date"]
     )
-    rooms = "" if request.session["rooms"] else request.session["rooms"]
-    events = "" if request.session["events"] else request.session["events"]
+    rooms = request.session["rooms"]
+    events = request.session["events"]
 
     event_ids = list()
-    if events:
+    if events is not None:
         for object in serializers.deserialize("json", events):
             pk = object.object.pk
             event_ids.append(pk)
 
     room_ids = list()
-    if rooms:
+    if rooms is not None:
         for object in serializers.deserialize("json", rooms):
             pk = object.object.pk
             room_ids.append(pk)
 
-    form = AddReservationForm(
+    form = NewReservationForm(
         initial={
             "check_in_date": check_in_date,
             "check_out_date": check_out_date,
@@ -245,37 +218,29 @@ def search_reports(request):
     )
 
 
-@login_required
-def edit_reservation(request, pk):
-    reservation = Reservation.objects.get(id=pk)
+class UpdateReservationView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
+    model = Reservation
+    form_class = ReservationUpdateForm
+    template_name = "reservations/reservation_update.html"
+    permission_required = "reservations.change_reservation"
+    raise_exception = True
 
-    if request.method == "POST":
-        form = ReservationUpdateForm(request.POST, instance=reservation)
-        if form.is_valid():
-            updated_reservation = form.save(commit=False)
-            updated_reservation.save()
-            if updated_reservation.is_cancelled:
-                message = render_to_string(
-                    "emails/guest_cancellation_confirmation.html",
-                    {
-                        "name": updated_reservation.user.first_name,
-                        "username": updated_reservation.user.email,
-                    },
-                )
-                from_email = FROM_EMAIL
-                to_email = [reservation.user.email]
-                subject = "Your reservation is cancelled!"
+    def get_success_url(self) -> str:
+        reservation = self.get_object()
+        if reservation.is_cancelled:
+            message = render_to_string(
+                "emails/guest_cancellation_confirmation.html",
+                {
+                    "name": reservation.user.first_name,
+                    "username": reservation.user.email,
+                },
+            )
+            from_email = FROM_EMAIL
+            to_email = [reservation.user.email]
+            subject = "Your reservation is cancelled!"
+            try:
                 send_email(subject, message, from_email, to_email)
-
-                messages.success(request, "Reservation updated successfully!")
-
-            return redirect("reservations:reservations_list")
-
-    else:
-        form = ReservationUpdateForm(instance=reservation)
-
-    return render(
-        request,
-        "reservations/reservation_update.html",
-        {"form": form, "title": "Update Reservation", "reservation": reservation},
-    )
+            except URLError:
+                pass
+            messages.success(self.request, "Reservation is successfully cancelled.")
+        return reverse("reservations:reservations_list")

@@ -9,7 +9,7 @@ class EventForm(forms.ModelForm):
             attrs={
                 "class": "form-control",
                 "id": "name",
-                "placeholder": "Enter Room Name",
+                "placeholder": "Enter Event Name",
             }
         )
     )
@@ -18,7 +18,7 @@ class EventForm(forms.ModelForm):
             attrs={
                 "class": "form-control",
                 "id": "description",
-                "placeholde": "Describe the room for guests.",
+                "placeholde": "Describe the event for guests.",
             }
         )
     )
@@ -41,15 +41,65 @@ class EventForm(forms.ModelForm):
             }
         )
     )
-    start_date = forms.DateField()
-    end_date = forms.DateField()
-    min_participants = forms.IntegerField()
-    max_participants = forms.IntegerField()
-    num_participants = forms.IntegerField()
+    start_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "id": "start_date",
+                "class": "form-control mr-sm-2",
+                "placeholder": "YYYY-MM-DD",
+                "type": "date",
+            }
+        )
+    )
+    end_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                "id": "end_date",
+                "class": "form-control mr-sm-2",
+                "placeholder": "YYYY-MM-DD",
+                "type": "date",
+            }
+        )
+    )
+    min_participants = forms.IntegerField(
+        widget=forms.NumberInput(
+            attrs={
+                "id": "min_participants",
+                "class": "form-control mr-sm-2",
+                "placeholder": 0,
+            }
+        )
+    )
+    max_participants = forms.IntegerField(
+        widget=forms.NumberInput(
+            attrs={
+                "id": "max_participants",
+                "class": "form-control mr-sm-2",
+                "placeholder": 0,
+            }
+        )
+    )
+    num_participants = forms.IntegerField(
+        widget=forms.NumberInput(
+            attrs={
+                "id": "num_participants",
+                "class": "form-control mr-sm-2",
+                "placeholder": 0,
+            }
+        )
+    )
     fully_booked = forms.BooleanField(
         required=False,
     )
-    price = forms.FloatField()
+    price = forms.FloatField(
+        widget=forms.NumberInput(
+            attrs={
+                "id": "price",
+                "class": "form-control mr-sm-2",
+                "placeholder": 0,
+            }
+        )
+    )
 
     age_restrictions = forms.ChoiceField(
         choices=AGE_RESTRICTIONS,

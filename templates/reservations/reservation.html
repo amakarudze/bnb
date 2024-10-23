@@ -14,18 +14,25 @@
         {% endfor %}
         </ul>
         {% endif %}
+
+        {% for key, val in form.errors.items %}
+        <p>{{val}}</p>
+        {% endfor %}
     <form class="signup-form reservation_form" method="post" action="{% url 'reservations:add_reservation' %}">
- 
+
         <div class="form-group mb-4">
             <h2 class="form-title">{{ title }}</h2>
         </div>
         {% csrf_token %}
         {% for field in form %}
+
+
         {% if field is form.rooms %}
         <strong>Select Your Room(s)</strong>
         <div class="form-group mb-4">
             <label>{{ field.label }}</label>
             {{ field }}
+            {{ field.errors }}
         </div>
         <strong>Room Details</strong>
         <table class="tbl-room-checklist">
@@ -72,6 +79,7 @@
         <div class="form-group mb-4">
             <label>{{ field.label }}</label>
             {{ field }}
+            {{ field.errors }}
         </div>
         {% if upcoming_events %}
         <strong>Event Details</strong>
@@ -118,25 +126,10 @@
         <div class="form-group mb-4">
             <label>{{ field.label }}</label>
             {{ field }}
+            {{ field.errors }}
         </div>
         {% endif %}
         {% endfor %}
-
-        {% if field.errors %}
-            {% for error in field.errors %}
-            <div class="alert alert-danger">
-              <strong>{{ error }}</strong>
-            </div>
-            {% endfor %}
-        {% endif %}
-
-        {% if form.non_field_errors %}
-            {% for error in form.non_field_errors %}
-            <div class="alert alert-danger">
-              <strong>{{ error }}</strong>
-            </div>
-            {% endfor %}
-        {% endif %}
 
         <div class="form-group text-center ">
             <button type="submit" class="btn submit">Save</button>

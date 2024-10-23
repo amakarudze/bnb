@@ -29,7 +29,7 @@ def test_create_superuser_method(manager):
 
 
 def test_user_model_string_representation(manager):
-    assert str(manager) == f"{manager.first_name} {manager.last_name}"
+    assert str(manager) == f"{manager.first_name} {manager.last_name} - {manager.email}"
 
 
 def test_userprofile_model_string_representation(guest_profile):

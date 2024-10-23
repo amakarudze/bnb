@@ -40,6 +40,7 @@
                 <div class="form-group mb-4">
                     <label class="col-form-label">{{ field.label }}</label>
                      {{ field }}
+                     {{ field.errors }}
                 </div>
             {% endfor %}
             {% if form.errors and not form.non_field_errors %}

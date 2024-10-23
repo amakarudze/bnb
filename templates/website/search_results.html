@@ -6,6 +6,15 @@
 
 <section class="rooms">
     <div class="container">
+
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == "error" %} <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% elif message.tags == "success" %} <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
         <h2 class="section-title">Suggested Rooms</h2>
         {% if rooms %}
             {% for room in rooms %}
@@ -38,6 +47,11 @@
                 {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
                 {% if forloop.last %}</div>{% endif %}
                 {% endfor %}
+
+        {% elif messages %}
+        <h4>Errors with your search details </h4>
+        <p>Please address the errors in your search details.</p>
+
         {% else %}
             <h4>Sorry we are fully booked.</h4>
             <p>No available rooms during the selected period.</p>
@@ -73,6 +87,10 @@
             {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
             {% if forloop.last %}</div>{% endif %}
             {% endfor %}
+    {% elif messages %}
+        <h4>Errors with your search details </h4>
+        <p>Please address the errors in your search details.</p>
+
     {% else %}
         <h4>Sorry we do not have any upcoming events.</h4>
         <p>No events during the selected period.</p>

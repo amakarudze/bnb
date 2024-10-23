@@ -72,7 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         """String representation of the model."""
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name} - {self.email}"
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
