@@ -1,3 +1,4 @@
+from urllib.error import URLError
 from django.db import IntegrityError
 from django.conf import settings
 from django.contrib import messages
@@ -52,7 +53,10 @@ def create_staff(request):
                 to_email = [email]
                 subject = "Your BnB account is created!"
                 # Inform the user form was saved successfully.
-                send_email(subject, message, from_email, to_email)
+                try:
+                    send_email(subject, message, from_email, to_email)
+                except URLError:
+                    pass
                 messages.success(request, "New Staff was created successfully")
                 return redirect("reservations:dashboard")
         except IntegrityError:
@@ -103,7 +107,10 @@ def signup(request):
                 from_email = FROM_EMAIL
                 to_email = [user.email]
                 subject = "Thank you for signing up at BnB!"
-                send_email(subject, message, from_email, to_email)
+                try:
+                    send_email(subject, message, from_email, to_email)
+                except URLError:
+                    pass
 
                 messages.success(request, "Sign-up successful!")
 

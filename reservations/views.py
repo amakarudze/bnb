@@ -1,5 +1,6 @@
 from collections import Counter
 from datetime import datetime
+from urllib.error import URLError
 
 from django.db.models import F, Sum
 from django.contrib import messages
@@ -84,7 +85,10 @@ def add_reservation(request):
 
             subject = "Your booking confirmation at BnB!"
             from_email = FROM_EMAIL
-            send_email(subject, message, from_email, [reservation.user.email])
+            try:
+                send_email(subject, message, from_email, [reservation.user.email])
+            except URLError:
+                pass
 
             messages.success(request, "New reservation added successfully")
             return redirect("reservations:reservations_list")
@@ -234,6 +238,9 @@ class UpdateReservationView(UpdateView, LoginRequiredMixin, PermissionRequiredMi
             from_email = FROM_EMAIL
             to_email = [reservation.user.email]
             subject = "Your reservation is cancelled!"
-            send_email(subject, message, from_email, to_email)
+            try:
+                send_email(subject, message, from_email, to_email)
+            except URLError:
+                pass
             messages.success(self.request, "Reservation is successfully cancelled.")
         return reverse("reservations:reservations_list")

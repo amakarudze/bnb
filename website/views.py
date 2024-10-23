@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from urllib.error import URLError
 
 from django.db.models import F, Sum
 from django.contrib import messages
@@ -60,24 +61,16 @@ def make_reservation(request):
                     "check_out_date": reservation.check_out_date,
                 },
             )
+            try:
+                send_email(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [guest_email],
+                )
+            except URLError:
+                pass
 
-            send_email(
-                subject,
-                message,
-                settings.DEFAULT_FROM_EMAIL,
-                [guest_email],
-            )
-
-            guest_message = render_to_string(
-                "emails/guest_reservation_confirmation.html",
-                {
-                    "name": reservation.user.first_name,
-                    "booking_code": reservation.booking_code,
-                    "check_in_date": reservation.check_in_date,
-                    "check_out_date": reservation.check_out_date,
-                    "rooms": reservation.rooms.all(),
-                },
-            )
             staff_message = render_to_string(
                 "emails/staff_notifications.html",
                 {
@@ -88,14 +81,12 @@ def make_reservation(request):
                 },
             )
             staff = [user.email for user in User.objects.filter(is_staff=True)]
-            guest_subject = "Your booking confirmation at BnB!"
             staff_subject = "New booking notification!"
             from_email = FROM_EMAIL
-
-            send_email(
-                guest_subject, guest_message, from_email, [reservation.user.email]
-            )
-            send_email(staff_subject, staff_message, from_email, staff)
+            try:
+                send_email(staff_subject, staff_message, from_email, staff)
+            except URLError:
+                pass
 
             messages.success(
                 request, "Thank you for making a reservation to stay at the BnB!"
@@ -208,12 +199,12 @@ def search(request):
         )
         reservations = Reservation.objects.filter(
             check_in_date__lte=check_out_date, check_out_date__gte=check_in_date
-        )
+        ).filter(is_cancelled=False)
         booked_rooms = []
         for reservation in reservations:
             for room in reservation.rooms.all():
                 booked_rooms.append(room.pk)
-        rooms = Room.objects.exclude(pk__in=booked_rooms)
+        rooms = Room.objects.exclude(pk__in=booked_rooms).filter(can_be_rented=True)
         if len(rooms) == 0:
             messages.error(
                 request,
@@ -316,7 +307,10 @@ class UpdateReservationView(UpdateView, LoginRequiredMixin, PermissionRequiredMi
             from_email = FROM_EMAIL
             to_email = [reservation.user.email]
             subject = "Your reservation is cancelled!"
-            send_email(subject, message, from_email, to_email)
+            try:
+                send_email(subject, message, from_email, to_email)
+            except URLError:
+                pass
             messages.success(self.request, "Reservation is successfully cancelled.")
         return reverse("website:reservations")
 
